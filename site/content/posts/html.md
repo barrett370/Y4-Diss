@@ -6,5 +6,5 @@ draft: false
 
 
 
-[Link](posts/ncl)
+[Link](./posts/ncl)
 
