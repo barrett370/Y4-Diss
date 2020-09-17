@@ -6,5 +6,5 @@ draft: false
 
 
 
-[Link](ncl)
+[Link](/Y4-Diss/posts/ncl)
 
