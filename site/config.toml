@@ -3,3 +3,10 @@ languageCode = "en-us"
 title = "My Dissertation Blog"
 publishDir = "../docs"
 theme = "ananke"
+staticDir = "./static"
+
+
+[markup]
+	[markup.goldmark]
+		[markup.goldmark.renderer]
+			unsafe = true
