@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Posts on My Dissertation Blog</title>
-    <link>sam-barrett.codes/Y4-Diss/posts/</link>
+    <link>/docs/posts/</link>
     <description>Recent content in Posts on My Dissertation Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Thu, 17 Sep 2020 00:00:10 +0000</lastBuildDate>
     
-	<atom:link href="sam-barrett.codes/Y4-Diss/posts/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="/docs/posts/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Intro</title>
-      <link>sam-barrett.codes/Y4-Diss/posts/intro/</link>
+      <link>/docs/posts/intro/</link>
       <pubDate>Thu, 17 Sep 2020 00:00:10 +0000</pubDate>
       
-      <guid>sam-barrett.codes/Y4-Diss/posts/intro/</guid>
+      <guid>/docs/posts/intro/</guid>
       <description></description>
     </item>
     

@@ -1,4 +1,4 @@
-baseURL = "sam-barrett.codes/Y4-Diss/"
+baseURL = "/docs/"
 languageCode = "en-us"
 title = "My Dissertation Blog"
 publishDir = "../docs"
