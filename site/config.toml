@@ -1,4 +1,4 @@
-baseURL = "/docs/"
+baseURL = "/Y4-Diss/"
 languageCode = "en-us"
 title = "My Dissertation Blog"
 publishDir = "../docs"
