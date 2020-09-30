@@ -17,7 +17,7 @@ This was my initial idea, I had thought I would look into and develop proof (or 
 
 ### Something _Quantum-y_
 
-[qsalt](Y4-Diss/images/qsalt)
+![qsalt](/Y4-Diss/images/qsalt.jpg)
 
 - [Quantum Applications on route finding and planning](https://www.dwavesys.com/sites/default/files/Quantum%20optimised%20planning%20%28with%20workplan%29.pdf), may allow to loop back in with Autonomous road network planning.
 	- [VW research](https://www.volkswagen-newsroom.com/en/press-releases/volkswagen-optimizes-traffic-flow-with-quantum-computers-5507)
