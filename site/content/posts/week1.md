@@ -1,7 +1,7 @@
 ---
 title: "Log: Week 1"
 date: 2020-09-30T11:42:50+01:00
-draft: false
+draft: true
 ---
 
 This week, I have been primarily concerned with researching possible project topics.

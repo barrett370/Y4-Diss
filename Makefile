@@ -1,7 +1,7 @@
 
-.PHONY site:
+.PHONY: site
 site:
 	cd site && hugo && cd ..
-.PHONY deploy:
+.PHONY: deploy
 deploy:
 	make site && git add * && ./utils/datecommit.sh && git push
