@@ -1,7 +1,7 @@
 ---
 title: "Log: Week 1"
 date: 2020-09-30T11:42:50+01:00
-draft: true
+draft: false
 ---
 
 This week, I have been primarily concerned with researching possible project topics.
@@ -17,12 +17,12 @@ This was my initial idea, I had thought I would look into and develop proof (or 
 
 ### Something _Quantum-y_
 
+[qsalt](Y4-Diss/images/qsalt)
+
 - [Quantum Applications on route finding and planning](https://www.dwavesys.com/sites/default/files/Quantum%20optimised%20planning%20%28with%20workplan%29.pdf), may allow to loop back in with Autonomous road network planning.
 	- [VW research](https://www.volkswagen-newsroom.com/en/press-releases/volkswagen-optimizes-traffic-flow-with-quantum-computers-5507)
+	- The area of Quantum Genetic Algorithms for path finding seems active. I have found a [ paper ](https://link.springer.com/article/10.1007/s11280-018-0594-x#citeas) by Tian, Y et al. dated from 2019 on quantum route selection using a (I)QGA
 
-### Something related to complexity
-
-- ??  
 
 
 
