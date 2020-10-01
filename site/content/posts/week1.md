@@ -14,7 +14,7 @@ I had originally thought I would like to do research into nature inspired optimi
 
 This was my initial idea, I had thought I would look into and develop proof (or dis-proof) of concept algorithms which would attempt to plan routes in real time for a network (or swarm) of autonomous, inter-connected agents (modelling vehicles)
 
-### Something _Quantum-y_
+### Incorporating Quantum Computing research
 
 - [Quantum Applications on route finding and planning](https://www.dwavesys.com/sites/default/files/Quantum%20optimised%20planning%20%28with%20workplan%29.pdf), may allow to loop back in with Autonomous road network planning.
   - [VW research](https://www.volkswagen-newsroom.com/en/press-releases/volkswagen-optimizes-traffic-flow-with-quantum-computers-5507)
@@ -27,3 +27,5 @@ This was my initial idea, I had thought I would look into and develop proof (or 
 My intention for next week is to continue to read around the subjects listed above, I have already collated ~5 papers related to GAs and QGAs.
 
 Look into the current research & implementations of QGAs in programming languages, including the use of the Qiskit package for python.
+
+
