@@ -1,0 +1,5 @@
+{
+    "python.linting.pylintEnabled": true,
+    "python.linting.enabled": true,
+    "python.pythonPath": "/home/sam/.local/share/virtualenvs/code-v9-UdEhy/bin/python"
+}
