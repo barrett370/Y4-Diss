@@ -20,12 +20,11 @@ This was my initial idea, I had thought I would look into and develop proof (or 
   - [VW research](https://www.volkswagen-newsroom.com/en/press-releases/volkswagen-optimizes-traffic-flow-with-quantum-computers-5507)
   - The area of Quantum Genetic Algorithms for path finding seems active. I have found a [paper](https://link.springer.com/article/10.1007/s11280-018-0594-x#citeas) by Tian, Y et al. dated from 2019 on quantum route selection using a[n] (I)QGA
   
-- According to [this](https://www.researchgate.net/publication/309214642_Quantum_Genetic_Algorithms_for_Computer_Scientists) paper, in a "RQGA, we can consider the population is made up of a single chromosome in a state of superposition" meaning the optimal solution (given enough qubits) is found in a single generation". This could have good applications within real-time systems such as self-driving cars.
+- According to [this](https://www.researchgate.net/publication/309214642_Quantum_Genetic_Algorithms_for_Computer_Scientists) paper, in a "RQGA, we can consider the population is made up of a single chromosome in a state of superposition" meaning the optimal solution (given enough qubits) is found in a single generation. This could have good applications within real-time systems such as self-driving cars.
 
 ## Plan for Next Week
 
 My intention for next week is to continue to read around the subjects listed above, I have already collated ~5 papers related to GAs and QGAs.
 
-Look into the current research & implementations of QGAs in programming languages, including the use of the Qiskit package for python.
-
+I would also like to look into the current research & implementations of QGAs in programming languages, including the use of the Qiskit package for python.
 
