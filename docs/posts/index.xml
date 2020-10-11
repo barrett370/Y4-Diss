@@ -2,17 +2,17 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Posts on My Dissertation Blog</title>
-    <link>https://sam-barrett.codes/Y4-Diss/posts/</link>
+    <link>/Y4-Diss/posts/</link>
     <description>Recent content in Posts on My Dissertation Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 08 Oct 2020 12:42:50 +0100</lastBuildDate><atom:link href="https://sam-barrett.codes/Y4-Diss/posts/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 08 Oct 2020 12:42:50 +0100</lastBuildDate><atom:link href="/Y4-Diss/posts/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Log: Week 2</title>
-      <link>https://sam-barrett.codes/Y4-Diss/posts/week2/</link>
+      <link>/Y4-Diss/posts/week2/</link>
       <pubDate>Thu, 08 Oct 2020 12:42:50 +0100</pubDate>
       
-      <guid>https://sam-barrett.codes/Y4-Diss/posts/week2/</guid>
+      <guid>/Y4-Diss/posts/week2/</guid>
       <description>This week I have been mainly gathering and reading academic papers surrounding GAs, Swarm Algorithms, QGAs and any reasearch applying these areas onto routing or network optimisation.
 I have started using Zotoro to keep track of any papers I have found. I am annotating papers as I read them so as to help me when I come to reference certain sections.
 Papers Read:
@@ -21,10 +21,10 @@ Papers Read:
     
     <item>
       <title>Log: Week 1</title>
-      <link>https://sam-barrett.codes/Y4-Diss/posts/week1/</link>
+      <link>/Y4-Diss/posts/week1/</link>
       <pubDate>Wed, 30 Sep 2020 11:42:50 +0100</pubDate>
       
-      <guid>https://sam-barrett.codes/Y4-Diss/posts/week1/</guid>
+      <guid>/Y4-Diss/posts/week1/</guid>
       <description>This week, I have been primarily concerned with researching possible project topics.
 I had originally thought I would like to do research into nature inspired optimisation techniques and their potential applications in the world of fully autonomous road networks. Whilst this is still an area I am interested in, and would like to research, it has been suggested to me that it might be beneficial for me to choose a topic more closely related to my supervisor&amp;rsquo;s field of study.</description>
     </item>
