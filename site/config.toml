@@ -1,6 +1,6 @@
 baseURL = "/Y4-Diss/"
 languageCode = "en-us"
-title = "My Dissertation Blog"
+title = "My Final Year Project Blog"
 publishDir = "../docs"
 theme="ananke"
 staticDir = "./static"

@@ -4,7 +4,7 @@ date: 2020-10-08T12:42:50+01:00
 draft: false 
 ---
 
-This week I have been mainly gathering and reading academic papers surrounding GAs, Swarm Algorithms, QGAs and any reasearch applying these areas onto routing or network optimisation.
+This week I have been mainly gathering and reading academic papers surrounding GAs, Swarm Algorithms, QGAs and any research applying these areas onto routing or network optimisation.
 
 I have started using Zotoro to keep track of any papers I have found. I am annotating papers as I read them so as to help me when I come to reference certain sections.
 
