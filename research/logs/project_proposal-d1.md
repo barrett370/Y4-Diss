@@ -22,7 +22,7 @@ Key points to incorporate into question:
 
 The question I would attempt to answer would be:
 
-> What is the suitability of (Q)GAs with regards to fully autonomous road networks? How well do they perform and how feasible are they to implement over the next 1,10 and 50 years?
+> What is the suitability of (Q)GAs with regards to fully autonomous road networks? How well do they perform and how feasible are they to implement over the next 1,10 or 50 years?
 
 Possible report title:
 
@@ -40,3 +40,12 @@ Possible report title:
 - Discuss viability & possibility of improvement in future years, what needs to change/ be improved for this to be feasible?
 
 ## Milestones
+
+- Research Phase
+  - This initial phase will conclude once I feel I have a good grasp of the current research & idea of what direction I am going to go in
+- Classical Implementation Phase
+  - In this phase I will focus on researching applications of classical genetic algorithms, culminating in producing simulated results using a range of different approaches studied and proposed by myself.
+- Quantum Extension Phase
+  - Time and ability permitting, I will then move on to study the benefits and drawbacks of a quantum approach, producing simulations run on a classical computer & perhaps a very simplified version running on IBMQ infrastructure, further study will prove whether this is possible.
+- Write-up Phase
+  - I will then move onto finalising my report. I will have been contributing to it over the course of the previous phases but here I will focus on formatting & conclusions.
