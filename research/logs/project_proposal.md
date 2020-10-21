@@ -1,9 +1,6 @@
----
-title: "Project Proposal"
-#date: 2020-10-02T13:12:34+01:00
-draft: true
----
+# Project Proposal
 
+Sam Barrett, 1803086
 
 ## Topic
 

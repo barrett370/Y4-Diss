@@ -1,0 +1,5 @@
+#!/bin/zsh
+
+filename=${1%%.*}
+pandoc $1 -o ./pdfs/"${filename}".pdf
+
