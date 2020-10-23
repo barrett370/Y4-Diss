@@ -1,0 +1,35 @@
+\section{Genetic Algorithms}
+
+Genetic algorithms are optimisation techniques that employ the same rationale as classical Evolution as seen in nature.
+
+In a general sense, optimisation techniques work to find the set of parameters $\mathcal{P}$ that minimise an objective function $\mathcal{F}$. 
+Genetic algorithms approach this by representing these sets as individuals in a population, $P$. Over the course of multiple generations, the best solutions are determined and promoted until termination criteria are met or the maximum number of generations is reached.
+
+As our candidates are essentially a collection of parameters to the function we are trying to optimise, we can extend our metaphor further by mapping each element of a individual to a \textit{gene} in a individual's genome. 
+
+The representation we use in a GA is problem specific. Often we have to provide functions to facilitate the mapping between the problem specific set of possible solutions and the encoded genotype space in which we optimise.
+
+Genetic algorithms are both \textit{probabilistically optimal} and \textit{probabilistically complete}\cite{kalaOnroadIntelligentVehicles2016} meaning that given infinite time, the algorithm \textbf{will} find a solution, if one exists, and it \textbf{will} be the \textit{most} optimal.
+
+\begin{algorithm}[H]
+	\label{GenericGA}
+	\SetAlgoLined
+	\KwResult{Best Solution, $p_{ \texttt{best}}$}	
+	Generate initial population, $P_0$ of size $n$\;
+	Evaluate fitness of each individual in $P_0$, $\{F(p_{0,1},\ldots, p_{0,n})\}$\;
+	\While{termination criteria are not met}{
+		\textbf{Selection}: Select individuals from $P_t$ based on their fitness\;
+		\textbf{Variation}: Apply variation operators to parents from $P_t$ to produce offspring\;
+		\textbf{Evaluation}: Evaluate the fitness of the newly bred individuals\;
+		\textbf{Reproduction}: Generate a new population $P_{t+1}$ using individuals from $P_t$ as well as the newly bred candidates.\;
+		$t$++
+	}
+	return $p_{\texttt{best}}$
+
+	\caption{Generic Genetic Algorithm}
+\end{algorithm}
+
+
+\section{Autonomous Road Networks}
+
+\section{Quantum Genetic Algorithms}
