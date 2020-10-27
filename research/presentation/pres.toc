@@ -1,0 +1,4 @@
+\beamer@sectionintoc {1}{My Topic}{2}{0}{1}
+\beamer@sectionintoc {2}{Literature}{3}{0}{2}
+\beamer@sectionintoc {3}{Methods}{4}{0}{3}
+\beamer@sectionintoc {4}{Bibliography}{7}{0}{4}
