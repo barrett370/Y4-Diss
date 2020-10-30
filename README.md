@@ -1,2 +1,2 @@
-# Welcome to my Dissertation Repo
+# Welcome to my Dissertation Repository
 
