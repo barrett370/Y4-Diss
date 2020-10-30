@@ -2,14 +2,16 @@
 
 Genetic algorithms are optimisation techniques that employ the same rationale as classical Evolution as seen in nature.
 
+Genetic Algorithms can trace their origins back to the late 1960s when they were first proposed by John Holland. Holland went on to write the first book on the subject titled \textit{Adaptation in Natural and Artificial Systems} \cite{hollandAdaptationNaturalArtificial1992} in 1975.
+
 In a general sense, optimisation techniques work to find the set of parameters $\mathcal{P}$ that minimise an objective function $\mathcal{F}$. 
 Genetic algorithms approach this by representing these sets as individuals in a population, $P$. Over the course of multiple generations, the best solutions are determined and promoted until termination criteria are met or the maximum number of generations is reached.
 
 As our candidates are essentially a collection of parameters to the function we are trying to optimise, we can extend our metaphor further by mapping each element of a individual to a \textit{gene} in a individual's genome. 
 
-The representation we use in a GA is problem specific. Often we have to provide functions to facilitate the mapping between the problem specific set of possible solutions and the encoded genotype space in which we optimise.
+The representation we use in a GA is problem specific. Often we have to provide functions to facilitate the mapping between the problem specific set of possible solutions and the encoded genotype space in which we optimise. The most basic representation being a string of binary numbers.
 
-Genetic algorithms are both \textit{probabilistically optimal} and \textit{probabilistically complete}\cite{kalaOnroadIntelligentVehicles2016} meaning that given infinite time, the algorithm \textbf{will} find a solution, if one exists, and it \textbf{will} be the \textit{most} optimal.
+Genetic algorithms are both \textit{probabilistically optimal} and \textit{probabilistically complete}\cite{kalaOnroadIntelligentVehicles2016} meaning that: given infinite time, not only will the algorithm find \textit{a} solution, (if one exists), it will find \textbf{the} optimal solution from the set of all possible solutions, $\mathcal{P}^*$.
 
 \begin{algorithm}[H]
 	\label{GenericGA}
@@ -29,7 +31,16 @@ Genetic algorithms are both \textit{probabilistically optimal} and \textit{proba
 	\caption{Generic Genetic Algorithm}
 \end{algorithm}
 
+\subsection{Selection}
+\subsection{Variation}
+\subsection{Evaluation}
+\subsection{Reproduction}
+
+
+
 
 \section{Autonomous Road Networks}
 
 \section{Quantum Genetic Algorithms}
+
+\section{Alternative Technologies}
