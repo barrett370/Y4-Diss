@@ -1,6 +1,7 @@
 
 \documentclass{beamer}
 \usepackage{pgfpages}
+\setbeamertemplate{bibliography item}{\insertbiblabel}
 
 % UNCOMMENT FOR FINAL COMPILATION WITH SPEAKER NOTES
 
@@ -46,7 +47,7 @@
 
         \item Semi-autonomous vehicles are becoming more prevalent 
         \item Roads are becoming more congested with a 78\% increase in motor traffic since 1993 \cite{HighwaysEnglandNetwork2015}
-        \item Fully autonomous vehicle trials have been legal in parts of the US since 2015\cite{AutonomousVehiclesSelfDriving}, with the UK set to follow by next year (2021)\cite{UKWantsFully2019}
+        \item Fully autonomous vehicle trials have been legal in parts of the US since 2015\cite{AutonomousVehiclesSelfDriving}, with the UK set to follow by next year (2021)\cite{unknownUKWantsFully2019}
         \item Much of the current research into autonomous vehicle routing focuses on environments where human drivers are still present
         \item By removing the human element and working on theoretical \textit{fully autonomous road networks} we can make many useful assumptions about the behaviour of other vehicles
         \item The solution to road congestion is not to build bigger roads, it is to optimise the traffic flows.
@@ -96,78 +97,73 @@
         \begin{itemize}
             \item A many of the technologies being researched with regards to vehicular planning suffer from the same problem from my point of view, they are \textit{black box approaches} meaning given a model, it is very difficult, if not impossible, to reason about and predict the decisions it makes. Such systems could end up making decisions based on imperfections in the training set. Such issues will make these systems less dependable and make people less likely to put their faith in them.
             \item In a paper from 2013, Kala and Warwick proposed a method of representing roads as a set of boundary functions in Cartesian space. All points on the road are defined using these functions as a new basis, this seems to be a good approach as it eliminates the possibility of plotting routes outside of the road space.
+
+    \item in a book by Kala published in 2016, 3 years after his initial paper on autonomous planning, he talks about the possibility of planning using GAs to optimise Bézier curves. Each curve is determined by $n$ control points allowing for complex motions to be abstracted to a single objective function.
         \end{itemize}
+
 
 
     }
 
 
     \begin{itemize}
-        \item Other approaches involve \textit{black box approaches}. 
-        \item The downside of such an approach is that it is very difficult to reason and predict the actions of the system. The ability to assure safety of such a critical system is very important and so GAs offer a much more predictable result
+        \item Other approaches involve \textit{black box approaches}, such as the use of Reinforcement and deep inverse reinforcement learning by You et al.\cite{youAdvancedPlanningAutonomous2019}
+        \item The downside of such an approach is that it is very difficult to reason and predict the actions of the system with a high degree of certainty. The ability to assure safety of such a critical system is very important and so GAs offer a much more predictable result
         \item Kala and Warwick \cite{kalaMotionPlanningAutonomous2013} proposed a system of two coordinate systems to safely represent points on the road within Cartesian space.
+        \item In a book by Kala \cite{kalaOnroadIntelligentVehicles2016} he proposes GAs optimise Bézier curves representing the movement arc of a vehicle
     \end{itemize}
 \end{frame}
 
+\begin{frame}
+
+    \note{
+    
+        here you can see a possible implementation as described by Kala in his book. You can see the control points determine the shape of the curve and allow the individual to avoid obstacles between two graph nodes.
+
+        Below you can see the formal definition for a Bezier curve with $n$ control points where $C_j$ is the $j$th control point
+
+    }
+    \begin{figure}[KalaBezier]
+        \centering
+        \includegraphics[width=0.8\linewidth]{kalaBezier.png}
+        \caption{Bézier curves for route representation from Kala \cite{kalaOnroadIntelligentVehicles2016}}%
+        \label{fig:.ext}
+    \end{figure}
+
+    \begin{equation}
+        \textbf{B}(t) = \Sigma_{j=0}^n t^j \textbf{C}_j
+    \end{equation}
+
+    \begin{equation}
+        \textbf{C}_j = \frac{n!}{(n-j)!} \sum^{j}_{i=0} \frac{(-1)^{i+j} \textbf{P}_i}{i!(j-i)!} = \prod_{m=0}^{j-1} (n-m) \sum^{j}_{i=0} \frac{(-1)^{i+j} \textbf{P}_i}{i!(j-i)!} 
+    \end{equation}\cite{BezierCurve2020}
+\end{frame}
 
 \section{Methods}
-\begin{frame}
-    \frametitle{Methods}
-\note{    Talk about what criteria an implementation would need to satisfy, talk about methods to satisfy them and condense lang choice to focus on fulfillment of criteria}
-    \framesubtitle{Language Choice} 
-    Not final but preliminary implementations have used Julia\cite{JuliaProgrammingLanguage}
+
+\begin{frame}{Methods}
+    \note{
+        \begin{itemize}
+            \item My project is more research focused rather than focused on producing a usable product.
+            \item However, if a system such as the one I am proposing was ever implemented it would need to adhere to strict requirements to guarantee safety, performance and reliability
+            \begin{itemize}
+                \item It would need to be robust, by this I mean it would need to be well tested, written in a strongly typed language where it's actions can be reasoned about. A language such as Rust or OCaml have very strong compilers to the point where if they compile it is very rare for programs written in them to crash at runtime.
+            \end{itemize}
+        \end{itemize}
+
+    }
     \begin{itemize}
-        \item C-like performance
-        \item Python \& Matlab -like syntax
-        \item Matlab like matrices 
-        \item Allows for both OO and functional approaches to problems
-        \item Can be compiled
-        \item Allows for use of Unicode in variable \& function names so implementations of advanced mathematical expressions are much more readable
+        \item My Project is more researched based, will not yield a saleable \textit{product}
+        \item If my proposed system were to be implemented, it would need to fit the following criteria
+        \begin{itemize}
+            \item Robust
+            \item Secure
+            \item Performant
+            \item Run on relatively low-end hardware
+            \item Written in a language with good support now and in the future 
+            \item Able to compile to a binary to protect source code 
+        \end{itemize}
     \end{itemize}
-\end{frame}
-
-\begin{frame}
-    \begin{figure}[Example Julia code]
-        \centering
-        \includegraphics[scale=0.26]{juliaeg.png}
-        \caption{Example Julia code}%
-        \label{fig:name}
-    \end{figure}
-\end{frame}
-
-\begin{frame}
-Alternative languages include C, Python and Rust
-\pause
-
-\textbf{ C:}
-\begin{itemize}
-    \item Compiles down to binary
-    \item Antiquated syntax
-    \item Possible (and easy) to write memory unsafe code
-    \item Vast array of libraries due to age \& use
-    \item No functional properties, harder to implement readable mathematics
-\end{itemize}
-\pause
-\textbf{Python:}
-\begin{itemize}
-    \item Simple syntax
-    \item Wealth of stress-tested libraries
-    \item Slow relative to alternatives
-    \item unable to compile to binary format
-    \item Has some functional capabilities
-    \item Has some static typing ability
-\end{itemize}
-\pause
-\end{frame}
-\begin{frame}
-\textbf{Rust:}
-\begin{itemize}
-    \item Slower to prototype in as stricter type system to guarantee memory safety
-    \item Memory safe, advantage over C/C++
-    \item Very performant, runs well on embedded systems
-    \item Relatively large binaries due to static dependency linking
-    \item Easier to package \& deploy than Julia
-\end{itemize}
 \end{frame}
 
 \section{Bibliography}

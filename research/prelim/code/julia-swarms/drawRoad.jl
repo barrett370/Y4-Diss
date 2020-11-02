@@ -1,8 +1,9 @@
 
-using Plots
+using Plots; gr
+theme(:dark)
 
-
-b2(x) = sin(0.2*x + 2.0 ) # function for straight bottom of a road
+b2(x) = sin(x + 2.0)
+b1(x) = b2(x) + 5 
 width = 5
 testRoad = Road(
     width,
@@ -10,6 +11,7 @@ testRoad = Road(
 )
 
 
-plot(b2,0,π/2)
-# plot!(b1)
+plot(b2,0,π)
+savefig("sin1")
+plot!(b1,0,π)
 savefig("sin")
