@@ -5,11 +5,15 @@
 
 
 struct Road
-    width:: Float32 # Width of road
-    b2 :: Function# Function defining the bottom boundary of the road in cartesian space
-    getY_ :: Function
-    function Road(w,b2)
-        getY(_x,x,y)= √((x-_x)^2 + (y-b2(_x))^2)/w
-        new(w,b2,getY)
+    boundary_1 :: Function
+    boundary_2 :: Function
+    Ỹ :: Function
+    function Road(b1,b2)
+        Y = function Y(x,y)
+            y_b1 = b1(x)
+            y_b2 = b2(x)
+            y_b1 + √((y-y_b1)^2) / √((y_b1-y_b2)^2)
+        end
+        new(b1,b2,Y)
     end
 end
