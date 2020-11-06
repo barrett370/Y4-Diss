@@ -33,6 +33,7 @@ function plotGeneration(P::Array{Phenotype},n=100)
     for i in 1:length(P)
         plot_curve!(plt,i,P[i].genotype,n)
     end
+    display(plt)
 end
 
 MAX_P = 5
