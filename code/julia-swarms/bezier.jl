@@ -1,5 +1,7 @@
 import Base.*
 import Base.+
+using Plots
+
 
 struct ControlPoint
     x::Float64
@@ -37,5 +39,16 @@ function plot_curve(c::BezierCurve,n::Integer)
         append!(ps_x,C[1])
         append!(ps_y,C[2])
     end
-    plot(ps_x,ps_y)
+    plot(ps_x,ps_y,ylims=(0,1))
+end
+
+function plot_curve!(plt,i::Integer,c::BezierCurve,n::Integer)
+    ps_x = []
+    ps_y = []
+    for x in range(0,1,step=1/n)
+        C = c(x)
+        append!(ps_x,C[1])
+        append!(ps_y,C[2])
+    end
+    display(plot!(plt,ps_x,ps_y,ylims=(0,1),label=string("Individual-",i)))
 end
