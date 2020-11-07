@@ -36,23 +36,23 @@ function plotGeneration(P::Array{Phenotype},n=100)
     display(plt)
 end
 
-MAX_P = 5
+MAX_P = 4
 
 
-function generatePopulation(n::Integer,start::Point,goal::Point) :: Array{Phenotype}
+function generatePopulation(n::Integer,start::Point,goal::Point,r::Road) :: Array{Phenotype}
     x_distance = abs(start.x-goal.x)
     y_distance = abs(start.y-goal.y)
     P = []
     for i in 1:n
         ps = [ControlPoint(start.x,start.y)]
         for i in 1:rand(1:MAX_P)
-            new_x = ps[end].x + rand(0.0:.1:x_distance/n)
+            new_x = ps[end].x + rand(0.2:.1:x_distance/n)
             if new_x > goal.x
                 new_x = goal.x
             end
-            new_y = ps[end].y + 0.6*rand(0.0:.01:y_distance/n)
-            if new_y > 1
-                new_y = 1
+            new_y = ps[end].y + rand(-(y_distance/n):0.5:(y_distance/n))
+            if r.Ỹ(new_x,new_y) > 1
+                new_y = r.boundary_2(new_x)
             end
             if new_y > goal.y
                 new_y = goal.y
@@ -62,7 +62,9 @@ function generatePopulation(n::Integer,start::Point,goal::Point) :: Array{Phenot
                     new_x,
                     new_y
             )])
-            if new_x == goal.x && new_y == goal.y
+            if new_x  >= goal.x && new_y >= goal.y
+                println("Breaking")
+                @show new_x
                 break
             end
         end

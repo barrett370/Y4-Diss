@@ -50,5 +50,5 @@ function plot_curve!(plt,i::Integer,c::BezierCurve,n::Integer)
         append!(ps_x,C[1])
         append!(ps_y,C[2])
     end
-    (plot!(plt,ps_x,ps_y,ylims=(0,1),label=string("Individual-",i)))
+    (plot!(plt,ps_x,ps_y,label=string("Individual-",i)))
 end
