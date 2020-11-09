@@ -5,8 +5,8 @@
 
 % UNCOMMENT FOR FINAL COMPILATION WITH SPEAKER NOTES
 
-\setbeameroption{show notes on second screen=right} % Both
-\setbeamertemplate{note page}{\pagecolor{yellow!5}\insertnote}\usepackage{palatino}
+%\setbeameroption{show notes on second screen=right} % Both
+%\setbeamertemplate{note page}{\pagecolor{yellow!5}\insertnote}\usepackage{palatino}
 
 
 \usepackage{graphicx}
@@ -14,7 +14,7 @@
 
 
 \author{Sam Barrett, 1803086}
-\title{{Master's Project Presentation} \\ \texorpdfstring
+\title{{Applications of genetic algorithms on fully-autonomous road networks} \\ \texorpdfstring
         {\includegraphics[scale=0.1]{uobcrest.jpg}}
     }
 \institute{{University of Birmingham}}
@@ -56,6 +56,28 @@
     \end{itemize}
 \end{frame}
 
+\begin{frame}{My Topic II}
+
+    \begin{itemize}
+        \item Huge undertaking to overhaul the existing motorway network even with a relatively small network such as that of the UK
+        \item Such a system would require a government mandate projecting decades into the future
+            \begin{itemize}
+                \item e.g. All vehicles produced by 2035 will need to adhere to a universal routing standard.
+                \item All car manufacturers would need to have the ability to produce fully autonomous vehicles \& have a standard sensor array.
+            \end{itemize}
+        \item Other problems that would need to be addressed include:
+            \begin{itemize}
+                \item Integrating priority-based routing to allow for emergency services to have a higher preference when routing vehicles
+            \end{itemize}
+        \item From a technical perspective, there are many things that need to be implemented to make such a system possible. 
+            \begin{itemize}
+                \item The encoding of routes into a real-valued string of genes
+                \item The decoding of a real-valued string of genes to a route which a vehicle can take
+                \item The implementation of a function to determine the fitness of an individual route. 
+            \end{itemize}
+    \end{itemize}
+
+\end{frame}
 
 \section{Literature}
 \begin{frame}[allowframebreaks]
@@ -130,15 +152,14 @@
         \label{fig:.ext}
     \end{figure}
 
-    \begin{equation}
-        \textbf{B}(t) = \Sigma_{j=0}^n t^j \textbf{C}_j
-    \end{equation}
-
-    \begin{equation}
-        \textbf{C}_j = \frac{n!}{(n-j)!} \sum^{j}_{i=0} \frac{(-1)^{i+j} \textbf{P}_i}{i!(j-i)!} = \prod_{m=0}^{j-1} (n-m) \sum^{j}_{i=0} \frac{(-1)^{i+j} \textbf{P}_i}{i!(j-i)!} 
-    \end{equation}\cite{BezierCurve2020}
+    \begin{itemize}
+        \item A Bézier curve with $n$ control points is said to have a \textit{degree} of $n-1$ (initial point is called $P_0$ and is not counted in degree)
+        \item A Bézier with a degree of 1 is a straight line between the two control points (the start and end point)
+        \item Further control points \textit{bend} the line into a curve.
+        \item The curve does not necessarily pass through all intermediate control points but it is determined by them.
+        \item Bézier curves are smooth $\implies$ good for representing vehicle routes
+    \end{itemize}
 \end{frame}
-
 \section{Methods}
 
 \begin{frame}{Methods}

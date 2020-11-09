@@ -1,4 +1,6 @@
 include("bezier.jl")
+include("roadNetwork.jl")
+
 
 struct Point
     x::Real
@@ -11,6 +13,11 @@ struct Phenotype
     genotype::BezierCurve
     goal::Point
 end
+struct Individual
+    phenotype::Phenotype
+    fitness::Real
+end
+
 
 
 
@@ -23,15 +30,26 @@ function getGenotypeString(genotype::BezierCurve)::Array{Real}
     genotype_str
 end
 
-function plotIndividual(p::Phenotype,n=100)
-    plot_curve(p.genotype,n)
+function plotIndividual(p::Individual,n=100)
+    plot_curve(p.phenotype.genotype,n)
+end
+
+function plotIndividual!(plt,p::Individual,road::Road,n=100)
+    plot_road_curve!(plt,1,p.phenotype.genotype,n,road)
 end
 
 
-function plotGeneration(P::Array{Phenotype},n=100)
+function plotGeneration(P::Array{Individual},n=100)
     plt = plot()
     for i in 1:length(P)
-        plot_curve!(plt,i,P[i].genotype,n)
+        plot_curve!(plt,i,P[i].phenotype.genotype,n)
+    end
+    display(plt)
+end
+
+function plotGeneration!(plt,P::Array{Individual},road::Road,n=100)
+    for i in 1:length(P)
+        plot_road_curve!(plt,i,P[i].phenotype.genotype,n,road)
     end
     display(plt)
 end
@@ -39,7 +57,7 @@ end
 MAX_P = 4
 
 
-function generatePopulation(n::Integer,start::Point,goal::Point,r::Road) :: Array{Phenotype}
+function generatePopulation(n::Integer,start::Point,goal::Point,r::Road) :: Array{Individual}
     x_distance = abs(start.x-goal.x)
     y_distance = abs(start.y-goal.y)
     P = []
@@ -69,7 +87,7 @@ function generatePopulation(n::Integer,start::Point,goal::Point,r::Road) :: Arra
             end
         end
         append!(ps,[ControlPoint(goal.x,goal.y)])
-        append!(P,[Phenotype(start,[],BezierCurve(ps),goal)])
+        append!(P,[Individual(Phenotype(start,[],BezierCurve(ps),goal),0)])
     end
     P
 end
