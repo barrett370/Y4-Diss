@@ -19,8 +19,10 @@ function draw_road(r::Road,s::Real,e::Real)
     plot!(rg,r.boundary_2,s,e,linewidth=3,linecolor=:black)
 end
 
-boundary1(x) = sin(0.3*x)
-boundary2(x) = sin(0.35*x)+4
+# boundary1(x) = sin(0.3*x)
+# boundary2(x) = sin(0.35*x)+4
+boundary1(x) = 0 
+boundary2(x) = 4
 road = Road(
         boundary1,
         boundary2

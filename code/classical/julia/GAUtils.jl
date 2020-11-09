@@ -13,7 +13,7 @@ struct Phenotype
     genotype::BezierCurve
     goal::Point
 end
-struct Individual
+mutable struct Individual
     phenotype::Phenotype
     fitness::Real
 end

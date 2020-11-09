@@ -21,10 +21,14 @@ function Fitness(i::Individual)
     α = 0
     β = 0
     n = length(i.phenotype.genotype.control_points)
-    l = (2 * chord_length(i.phenotype.genotype) + (n - 1) * polygon_length(i.phenotype.genotype)) / (n + 1)
+    l =
+        (
+            2 * chord_length(i.phenotype.genotype) +
+            (n - 1) * polygon_length(i.phenotype.genotype)
+        ) / (n + 1)
     l1 = 0 # length of infeasible segment
     l2 = 0 # length of path in which min safe distance is broken
-    l + α*l1 + β*l2
+    l + α * l1 + β * l2
 end
 
 𝓕 = Fitness # function alias
@@ -43,9 +47,7 @@ function GA()
     P = generatePopulation(n, start, goal, road)
 
     while true # Replace with stopping criteria
-        for p in P
-            p.fitness = 𝓕(p)
-        end
+        map(p -> p.fitness =  p |> 𝓕, P) # Calculate fitness for population
         # Selection
 
         # Genetic Operators

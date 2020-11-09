@@ -1,7 +1,7 @@
 import Base.*
 import Base.+
 using Plots
-
+using MLStyle
 
 struct ControlPoint
     x::Float64
@@ -22,23 +22,14 @@ function (+)(a::ControlPoint, b::ControlPoint)
     ControlPoint(b.x + a.x, b.y + a.y)
 end
 
-# function (curve::BezierCurve)(t::Real)
-#     n = length(curve.control_points)
-#     acc = ControlPoint(0,0)
-#     for i = 1:n
-#         acc += binomial(n, i) * ((1 - t)^(n - i)) * (t^i) * curve.control_points[i]
-#     end
-#     return acc
-# end
-
 function (curve::BezierCurve)(t::Real)::ControlPoint
-    n = length(curve.control_points)
-    if n == 1
-        return curve.control_points[1]::ControlPoint
-    else
-        b1::BezierCurve = BezierCurve(curve.control_points[1:end-1])
-        b2::BezierCurve = BezierCurve(curve.control_points[2:end])
-        return ((1 - t) * b1(t)) + (t * b2(t))
+    @match curve.control_points begin
+        [p] => p;
+        _ => begin
+            b1::BezierCurve = BezierCurve(curve.control_points[1:end-1])
+            b2::BezierCurve = BezierCurve(curve.control_points[2:end])
+            return ((1 - t) * b1(t)) + (t * b2(t))
+        end
     end
 end
 

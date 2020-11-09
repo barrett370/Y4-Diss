@@ -41,7 +41,6 @@
 
         \end{itemize}
     }
-    \framesubtitle{Applications of Genetic Algorithms on Fully Autonomous Road Networks}
 
     \begin{itemize}
 
@@ -56,7 +55,7 @@
     \end{itemize}
 \end{frame}
 
-\begin{frame}{My Topic II}
+\begin{frame}
 
     \begin{itemize}
         \item Huge undertaking to overhaul the existing motorway network even with a relatively small network such as that of the UK
@@ -69,23 +68,29 @@
             \begin{itemize}
                 \item Integrating priority-based routing to allow for emergency services to have a higher preference when routing vehicles
             \end{itemize}
+    \end{itemize}
+\end{frame}
+\begin{frame}
+    \begin{itemize}
         \item From a technical perspective, there are many things that need to be implemented to make such a system possible. 
             \begin{itemize}
                 \item The encoding of routes into a real-valued string of genes
                 \item The decoding of a real-valued string of genes to a route which a vehicle can take
                 \item The implementation of a function to determine the fitness of an individual route. 
+                \item Implementation of genetic operators: Selection, crossover and mutation.
+                \item Cleanup operators to make certain any new individuals are valid
             \end{itemize}
     \end{itemize}
 
 \end{frame}
 
 \section{Literature}
-\begin{frame}[allowframebreaks]
+\begin{frame}
 
     \note{
 
         \begin{itemize}
-            \item As previously mentioned most current research into GA applications within the car industry has a very broad scope. 
+            \item As previously mentioned most current research into Genetic Algorithm \textit{(GA)} applications within the vehicle industry has a very broad scope. 
             \item Designing possible solutions that would fit into the current road networks easily. 
             \item I am intending to focus on a much more aspirational system, specifically looking at theoretical autonomous Motorways. 
             \item This enables me to overhaul the current road layout which was designed to aid human drivers not the overall efficiency of the system.
@@ -107,13 +112,13 @@
     \begin{enumerate}
         \item It is a class of optimisation algorithms that I find particularly interesting
 
-        \item GAs are \textit{probabilistically optimal and complete}, i.e given infinite time, they will always produce the global optimal solution if such a solution exists
+        \item GAs are \textit{probabilistically optimal and complete}, i.e given infinite time, they will always produce the global optimal solution if such a solution exists\cite{kalaMotionPlanningAutonomous2013}
 
-        \item It is a class of algorithm that has seen relatively minimal research in my the specific sub-area 
+        \item It is a class of algorithm that has seen relatively minimal research in my specific sub-area 
     \end{enumerate}
 \end{frame}
 
-\begin{frame}{Literature Review II}
+\begin{frame}
 
     \note{
         \begin{itemize}
@@ -158,33 +163,55 @@
         \item Further control points \textit{bend} the line into a curve.
         \item The curve does not necessarily pass through all intermediate control points but it is determined by them.
         \item Bézier curves are smooth $\implies$ good for representing vehicle routes
+        \item Trivially, they are also continuous so will represent an entire route from $A \rightarrow B$ 
     \end{itemize}
 \end{frame}
+
+\begin{frame}
+    \begin{itemize}
+        \item By their definition, Bézier curves are parametric. This lends themselves nicely to an parametric optimisation techniques such as GAs.
+        \item We can represent the control points as genes in the genome of each candidate.
+        \item We can represent a curve's fitness as its length within feasible space.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \begin{figure}[htpb]
+        \centering
+        \includegraphics[width=0.8\linewidth]{bezierdemo.png}
+        \caption{Example of Bézier curve of degree 4 in road coordinate space, my implementation}%
+        \label{fig:bezierdemo}
+    \end{figure}
+\end{frame}
+
 \section{Methods}
 
 \begin{frame}{Methods}
-    \note{
-        \begin{itemize}
-            \item My project is more research focused rather than focused on producing a usable product.
-            \item However, if a system such as the one I am proposing was ever implemented it would need to adhere to strict requirements to guarantee safety, performance and reliability
-            \begin{itemize}
-                \item It would need to be robust, by this I mean it would need to be well tested, written in a strongly typed language where it's actions can be reasoned about. A language such as Rust or OCaml have very strong compilers to the point where if they compile it is very rare for programs written in them to crash at runtime.
-            \end{itemize}
-        \end{itemize}
 
-    }
-    \begin{itemize}
-        \item My Project is more researched based, will not yield a saleable \textit{product}
-        \item If my proposed system were to be implemented, it would need to fit the following criteria
-        \begin{itemize}
-            \item Robust
-            \item Secure
-            \item Performant
-            \item Run on relatively low-end hardware
-            \item Written in a language with good support now and in the future 
-            \item Able to compile to a binary to protect source code 
-        \end{itemize}
-    \end{itemize}
+I have started by reading and collating papers, books and articles surrounding GAs and their applications on routing problems.I have found substantial research into GAs but only a few papers on my sub-area, mainly by Rahul Kala from the Indian Institute of Information Technology.
+
+I have begun implementing various utility functions and types in Julia\cite{JuliaProgrammingLanguage}, including:
+
+\begin{itemize}
+    \item Bézier curve functions
+    \item Road, Individual, Phenotype and Genotype types
+    \item plotting utilities for Roads and candidate solutions
+    \item Population initialisation functions
+\end{itemize}
+
+Still to implement: 
+
+\begin{itemize}
+    \item Genetic operators
+    \item Cooperative route planning wrapper
+\end{itemize}
+
+\end{frame}
+\begin{frame}
+Once a basic GA has been implemented, the stage of variable and operator refinement can begin.
+
+Here I will tweak variable values as well as implement and test various genetic operators, such as different forms of crossover 
+
 \end{frame}
 
 \section{Bibliography}
