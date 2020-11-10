@@ -1,12 +1,11 @@
-
 \documentclass{beamer}
 \usepackage{pgfpages}
 \setbeamertemplate{bibliography item}{\insertbiblabel}
 \vfuzz 10pt
 % UNCOMMENT FOR FINAL COMPILATION WITH SPEAKER NOTES
 
-\setbeameroption{show notes on second screen=right} % Both
-\setbeamertemplate{note page}{\pagecolor{yellow!5}\insertnote}\usepackage{palatino}
+%\setbeameroption{show notes on second screen=right} % Both
+%\setbeamertemplate{note page}{\pagecolor{yellow!5}\insertnote}\usepackage{palatino}
 
 
 \usepackage{graphicx}
@@ -68,6 +67,12 @@
 
         \end{itemize}
     }
+    \begin{figure}[htpb]
+        \centering
+        \includegraphics[width=0.3\linewidth]{ProjectTopology.png}
+        \caption{Abstract Project Topology}%
+        \label{fig:ProjectTopology}
+    \end{figure}
     \begin{itemize}
         \item From a technical perspective, there are many things that need to be implemented to make such a system possible. 
             \begin{itemize}
@@ -83,10 +88,18 @@
 
 \begin{frame}{My Goal}
 
+    \note{
+        \begin{itemize}
+            \item My goal with this project is to investigate the viability of a fully autonomous road network using GAs for route planning 
+            \item I will implement an experimental version in a programming language. This system will be implemented in a vacuum, meaning it will not interface beyond the scope of the abstract route planning. It will be assumed to have all required information including positions and sensor data from all nearby agents.
+        \end{itemize}
+    }
+
     My goal with this project is to investigate the feasibility of such a system. 
 
-    To do so I will implement experimental version in a vacuum, making various assumptions about the data available to it. 
-    With my system I hope to be able to run various simulations to determine it's performance against real-world scenarios and conclude as to whether the use of GAs have merit in this area. 
+    To do so I will \textit{programatically} implement an experimental version, making various assumptions about the data available to it.
+
+    With my system I hope to be able to run various simulations to determine it's performance in real-world scenarios and conclude as to whether the use of GAs have merit in this area. 
 
     Currently the research yields no such results. The feasibility of similar systems have been discussed\cite{kalaOnroadIntelligentVehicles2016} but never experimentally investigated.
     
@@ -105,7 +118,7 @@
 
     }
 
-
+   \textbf{CUT??} 
     \begin{itemize}
         \item Huge undertaking to overhaul the existing motorway network even with a relatively small network such as that of the UK
         \item Such a system would require a government mandate projecting decades into the future
