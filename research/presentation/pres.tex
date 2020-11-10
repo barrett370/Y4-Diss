@@ -22,7 +22,7 @@
 
 \begin{document}
 
-\begin{frame}
+implemented\begin{frame}
 \titlepage
 \end{frame}
 
@@ -55,10 +55,53 @@
 \end{frame}
 
 \begin{frame}
+    \note{ 
+        On a theoretical level, there are a few distinct systems and algorithms that need to be implemented to create such a system:
+
+        \begin{itemize}
+
+            \item A function that takes a route as a list of points and maps it to our genome, i.e. unpacks it into a string of Real values. 
+            \item A function to facilitate the reverse, converting the string of real values back into a usable route of points.
+            \item I will need to devise and implement a fitness function. This function will be the objective function of the GA and so needs to reward good solutions without causing early convergence. It also needs to be able to identify and sufficiently penalise infeasible solutions. Such as routes that leave the road space or intersect with obstacles or other routes.
+            \item It will also require the implementation of various genetic operators including Selection, crossover and mutation
+            \item finally we will require a utility function to verify that all newly generated individuals are valid and repair those who are not.
+
+        \end{itemize}
+    }
+    \begin{itemize}
+        \item From a technical perspective, there are many things that need to be implemented to make such a system possible. 
+            \begin{itemize}
+                \item The encoding of routes into a real-valued string of genes
+                \item The decoding of a real-valued string of genes to a route which a vehicle can take
+                \item The implementation of a function to determine the fitness of an individual route. 
+                \item Implementation of genetic operators: Selection, crossover and mutation.
+                \item Cleanup operators to make certain any new individuals are valid
+            \end{itemize}
+    \end{itemize}
+
+\end{frame}
+
+\begin{frame}{My Goal}
+
+    My goal with this project is to investigate the feasibility of such a system. 
+
+    To do so I will implement experimental version in a vacuum, making various assumptions about the data available to it. 
+    With my system I hope to be able to run various simulations to determine it's performance against real-world scenarios and conclude as to whether the use of GAs have merit in this area. 
+
+    Currently the research yields no such results. The feasibility of similar systems have been discussed\cite{kalaOnroadIntelligentVehicles2016} but never experimentally investigated.
+    
+\end{frame}
+
+\begin{frame}
     
     \note{
-        
-        For such a system as I am proposing to exist, it would require extensive government support. They would be required to mandate that all vehicles registered on the road after a certain date be compatible with a standard routing protocol.
+        \begin{itemize}
+            \item From a more practical perspective: 
+            \item For such a system as I am proposing to exist, it would require extensive government support. 
+            \item They would be required to mandate that all vehicles registered on the road after a certain date be compatible with a standard routing protocol.
+            \item All routing systems must also be connected to a central routing system, allowing for high level route plans to be distributed to all agents in the network.
+
+        \end{itemize}
 
     }
 
@@ -76,20 +119,6 @@
             \end{itemize}
     \end{itemize}
 \end{frame}
-\begin{frame}
-    \begin{itemize}
-        \item From a technical perspective, there are many things that need to be implemented to make such a system possible. 
-            \begin{itemize}
-                \item The encoding of routes into a real-valued string of genes
-                \item The decoding of a real-valued string of genes to a route which a vehicle can take
-                \item The implementation of a function to determine the fitness of an individual route. 
-                \item Implementation of genetic operators: Selection, crossover and mutation.
-                \item Cleanup operators to make certain any new individuals are valid
-            \end{itemize}
-    \end{itemize}
-
-\end{frame}
-
 \section{Literature}
 \begin{frame}
 
@@ -111,7 +140,7 @@
     }
 
     \frametitle{Literature Review}
-    I am currently intending to pursue my research assuming the absence of classical speed lanes as described by Kala and Warwick in \cite{kalaMotionPlanningAutonomous2013}. 
+    I am currently intending to pursue my research assuming the absence of classical speed lanes as described by Kala and Warwick in \cite{kalaMotionPlanningAutonomous2015}. 
 
     I have chosen to focus on the applications of Genetic Algorithms on the field for 3 reasons: 
     \begin{enumerate}

@@ -4,6 +4,7 @@
 
 ## Report
 
+- [ ] Finish Presentation
 - [ ] Finish Background
 - [ ] Start Introduction
 - [ ] Write up Literature Review
