@@ -2,11 +2,11 @@
 \documentclass{beamer}
 \usepackage{pgfpages}
 \setbeamertemplate{bibliography item}{\insertbiblabel}
-
+\vfuzz 10pt
 % UNCOMMENT FOR FINAL COMPILATION WITH SPEAKER NOTES
 
-%\setbeameroption{show notes on second screen=right} % Both
-%\setbeamertemplate{note page}{\pagecolor{yellow!5}\insertnote}\usepackage{palatino}
+\setbeameroption{show notes on second screen=right} % Both
+\setbeamertemplate{note page}{\pagecolor{yellow!5}\insertnote}\usepackage{palatino}
 
 
 \usepackage{graphicx}
@@ -25,7 +25,6 @@
 \begin{frame}
 \titlepage
 \end{frame}
-
 
 \section{My Topic}
 \begin{frame}{My Topic}
@@ -56,6 +55,13 @@
 \end{frame}
 
 \begin{frame}
+    
+    \note{
+        
+        For such a system as I am proposing to exist, it would require extensive government support. They would be required to mandate that all vehicles registered on the road after a certain date be compatible with a standard routing protocol.
+
+    }
+
 
     \begin{itemize}
         \item Huge undertaking to overhaul the existing motorway network even with a relatively small network such as that of the UK
@@ -88,8 +94,7 @@
 \begin{frame}
 
     \note{
-
-        \begin{itemize}
+       \begin{itemize}
             \item As previously mentioned most current research into Genetic Algorithm \textit{(GA)} applications within the vehicle industry has a very broad scope. 
             \item Designing possible solutions that would fit into the current road networks easily. 
             \item I am intending to focus on a much more aspirational system, specifically looking at theoretical autonomous Motorways. 
@@ -144,12 +149,19 @@
 \begin{frame}
 
     \note{
-    
-        here you can see a possible implementation as described by Kala in his book. You can see the control points determine the shape of the curve and allow the individual to avoid obstacles between two graph nodes.
+        
+        \begin{itemize}
 
-        Below you can see the formal definition for a Bezier curve with $n$ control points where $C_j$ is the $j$th control point
+            \item here you can see a possible implementation as described by Kala in his book. 
 
+            \item A Bezier curve is said to have a degree of $n-1$ where $n$ is the number of control points including the start and end points
+
+            \item You can see the control points determine the shape of the curve and allow the individual to avoid obstacles between two graph nodes.
+
+            \item Bezier curves encapsulate vehicle routes well as they are continuous. They can also be smooth when drawn with enough granularity. As they are defined as a parametric curve the resolution of the parameter $t$ is the determining factor to their smoothness.
+        \end{itemize}
     }
+
     \begin{figure}[KalaBezier]
         \centering
         \includegraphics[width=0.8\linewidth]{kalaBezier.png}
@@ -195,7 +207,7 @@ I have begun implementing various utility functions and types in Julia\cite{Juli
 \begin{itemize}
     \item Bézier curve functions
     \item Road, Individual, Phenotype and Genotype types
-    \item plotting utilities for Roads and candidate solutions
+    \item Plotting utilities for Roads and candidate solutions
     \item Population initialisation functions
 \end{itemize}
 
