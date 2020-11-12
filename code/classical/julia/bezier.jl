@@ -2,15 +2,10 @@ import Base.*
 import Base.+
 using Plots
 using MLStyle
+include("utils.jl")
 
-struct ControlPoint
-    x::Float64
-    y::Float64
-end
-
-struct BezierCurve
-    control_points::Array{ControlPoint}
-end
+const ControlPoint = Point
+const BezierCurve = Array{ControlPoint}
 
 function (*)(a::Real, b::ControlPoint)
     ControlPoint(b.x * a, b.y * a)
@@ -23,11 +18,11 @@ function (+)(a::ControlPoint, b::ControlPoint)
 end
 
 function (curve::BezierCurve)(t::Real)::ControlPoint
-    @match curve.control_points begin
+    @match curve begin
         [p] => p;
         _ => begin
-            b1::BezierCurve = BezierCurve(curve.control_points[1:end-1])
-            b2::BezierCurve = BezierCurve(curve.control_points[2:end])
+            b1::BezierCurve = BezierCurve(curve[1:end-1])
+            b2::BezierCurve = BezierCurve(curve[2:end])
             return ((1 - t) * b1(t)) + (t * b2(t))
         end
     end

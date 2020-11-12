@@ -2,16 +2,15 @@ include("GAUtils.jl")
 
 
 function chord_length(curve::BezierCurve)
-    first = curve.control_points[1]
-    last = curve.control_points[end]
+    first = curve[1]
+    last = curve[end]
     √((first.x - last.x)^2 + (first.y - last.y)^2)
 end
 
 function polygon_length(curve::BezierCurve)
     l = 0
-    ps = curve.control_points
     for i = 1:length(ps)-1
-        l += √((ps[i].x - ps[i+1].x)^2 + (ps[i].y - ps[i+1].y)^2)
+        l += √((curve[i].x - curve[i+1].x)^2 + (curve[i].y - curve[i+1].y)^2)
     end
     l
 end
@@ -20,7 +19,7 @@ end
 function Fitness(i::Individual)
     α = 0
     β = 0
-    n = length(i.phenotype.genotype.control_points)
+    n = length(i.phenotype.genotype)
     l =
         (
             2 * chord_length(i.phenotype.genotype) +

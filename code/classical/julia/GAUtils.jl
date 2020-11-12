@@ -1,11 +1,8 @@
 include("bezier.jl")
 include("roadNetwork.jl")
+include("utils.jl")
 
 
-struct Point
-    x::Real
-    y::Real
-end
 
 struct Phenotype
     source::Point
@@ -23,7 +20,7 @@ end
 
 function getGenotypeString(genotype::BezierCurve)::Array{Real}
     genotype_str = []
-    for point in genotype.control_points
+    for point in genotype
         append!(genotype_str, point.x)
         append!(genotype_str, point.y)
     end
@@ -62,7 +59,7 @@ function generatePopulation(n::Integer,start::Point,goal::Point,r::Road) :: Arra
     y_distance = abs(start.y-goal.y)
     P = []
     for i in 1:n
-        ps = [ControlPoint(start.x,start.y)]
+        ps = [start]
         for i in 1:rand(1:MAX_P)
             new_x = ps[end].x + rand(0.2:.1:x_distance/n)
             if new_x > goal.x
@@ -86,7 +83,7 @@ function generatePopulation(n::Integer,start::Point,goal::Point,r::Road) :: Arra
                 break
             end
         end
-        append!(ps,[ControlPoint(goal.x,goal.y)])
+        append!(ps,[goal])
         append!(P,[Individual(Phenotype(start,[],BezierCurve(ps),goal),0)])
     end
     P
