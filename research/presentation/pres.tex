@@ -4,8 +4,8 @@
 \vfuzz 10pt
 % UNCOMMENT FOR FINAL COMPILATION WITH SPEAKER NOTES
 
-%\setbeameroption{show notes on second screen=right} % Both
-%\setbeamertemplate{note page}{\pagecolor{yellow!5}\insertnote}\usepackage{palatino}
+\setbeameroption{show notes on second screen=right} % Both
+\setbeamertemplate{note page}{\pagecolor{yellow!5}\insertnote}\usepackage{palatino}
 
 
 \usepackage{graphicx}
@@ -99,39 +99,12 @@
 
     To do so I will \textit{programatically} implement an experimental version, making various assumptions about the data available to it.
 
-    With my system I hope to be able to run various simulations to determine it's performance in real-world scenarios and conclude as to whether the use of GAs have merit in this area. 
+    With my system I hope to be able to run various simulations to determine it's performance in quasi real-world scenarios and conclude as to whether the use of GAs have merit in this area. 
 
     Currently the research yields no such results. The feasibility of similar systems have been discussed\cite{kalaOnroadIntelligentVehicles2016} but never experimentally investigated.
     
 \end{frame}
 
-\begin{frame}
-    
-    \note{
-        \begin{itemize}
-            \item From a more practical perspective: 
-            \item For such a system as I am proposing to exist, it would require extensive government support. 
-            \item They would be required to mandate that all vehicles registered on the road after a certain date be compatible with a standard routing protocol.
-            \item All routing systems must also be connected to a central routing system, allowing for high level route plans to be distributed to all agents in the network.
-
-        \end{itemize}
-
-    }
-
-   \textbf{CUT??} 
-    \begin{itemize}
-        \item Huge undertaking to overhaul the existing motorway network even with a relatively small network such as that of the UK
-        \item Such a system would require a government mandate projecting decades into the future
-            \begin{itemize}
-                \item e.g. All vehicles produced by 2035 will need to adhere to a universal routing standard.
-                \item All car manufacturers would need to have the ability to produce fully autonomous vehicles \& have a standard sensor array.
-            \end{itemize}
-        \item Other problems that would need to be addressed include:
-            \begin{itemize}
-                \item Integrating priority-based routing to allow for emergency services to have a higher preference when routing vehicles
-            \end{itemize}
-    \end{itemize}
-\end{frame}
 \section{Literature}
 \begin{frame}
 
@@ -181,7 +154,7 @@
 
 
     \begin{itemize}
-        \item Other approaches involve \textit{black box approaches}, such as the use of Reinforcement and deep inverse reinforcement learning by You et al.\cite{youAdvancedPlanningAutonomous2019}
+        \item Other approaches involve \textit{black box} methodologies, such as the use of Reinforcement and deep inverse reinforcement learning by You et al.\cite{youAdvancedPlanningAutonomous2019}
         \item The downside of such an approach is that it is very difficult to reason and predict the actions of the system with a high degree of certainty. The ability to assure safety of such a critical system is very important and so GAs offer a much more predictable result
         \item Kala and Warwick \cite{kalaMotionPlanningAutonomous2013} proposed a system of two coordinate systems to safely represent points on the road within Cartesian space.
         \item In a book by Kala \cite{kalaOnroadIntelligentVehicles2016} he proposes GAs optimise Bézier curves representing the movement arc of a vehicle
@@ -222,6 +195,17 @@
 \end{frame}
 
 \begin{frame}
+
+    \note{
+
+        \begin{itemize}
+            \item Bézier curves are parametric in nature, so therefore work well with parameter based optimisation techniques such as Genetic Algorithms. 
+            \item We can represent the control points as genes in each genome
+            \item We can map the fitness of a curve to its length in feasible space.
+        \end{itemize}
+
+    }
+
     \begin{itemize}
         \item By their definition, Bézier curves are parametric. This lends themselves nicely to an parametric optimisation techniques such as GAs.
         \item We can represent the control points as genes in the genome of each candidate.
@@ -230,6 +214,11 @@
 \end{frame}
 
 \begin{frame}
+    \note{
+
+        Here you can see my implementation of bezier curves as routes being drawn in an implementation of the road coordinate system mentioned earlier.
+
+    }
     \begin{figure}[htpb]
         \centering
         \includegraphics[width=0.8\linewidth]{bezierdemo.png}
@@ -242,30 +231,61 @@
 
 \begin{frame}{Methods}
 
-I have started by reading and collating papers, books and articles surrounding GAs and their applications on routing problems.I have found substantial research into GAs but only a few papers on my sub-area, mainly by Rahul Kala from the Indian Institute of Information Technology.
+    \note{
 
-I have begun implementing various utility functions and types in Julia\cite{JuliaProgrammingLanguage}, including:
+        \begin{itemize}
+            \item I have begun my project by looking into the current research. I have read and collated paper surrounding the subject of GAs and vehicle routing problems.
+            \item In doing so, I have found substantial research into GAs generally, but relatively little on their applications on fully autonomous road networks; with the bulk of the available research being from Rahul Kala from the Indian Institute of Information Technology.
+            \item I have also started the implementation phase of my project.
+            \item Using the programming language Julia, I have implemented the Bézier curve function, types for various GA structures, plotting utilities for visualising the problem and the basic initialisation function for the GA
+            \item These are likely not the final versions but seem to perform well.
+        \end{itemize}
 
-\begin{itemize}
-    \item Bézier curve functions
-    \item Road, Individual, Phenotype and Genotype types
-    \item Plotting utilities for Roads and candidate solutions
-    \item Population initialisation functions
-\end{itemize}
+    }
 
-Still to implement: 
+    I have started by reading and collating papers, books and articles surrounding GAs and their applications on routing problems.
 
-\begin{itemize}
-    \item Genetic operators
-    \item Cooperative route planning wrapper
-\end{itemize}
+    I have found substantial research into GAs but only a few papers on my sub-area, mainly by Rahul Kala from the Indian Institute of Information Technology.
+
+    I have begun implementing various utility functions and types in Julia\cite{JuliaProgrammingLanguage}, including:
+
+    \begin{itemize}
+        \item Bézier curve functions
+        \item Road, Individual, Phenotype and Genotype types
+        \item Plotting utilities for Roads and candidate solutions
+        \item Population initialisation functions
+    \end{itemize}
+
+    Still to implement: 
+
+    \begin{itemize}
+        \item Genetic operators
+        \item Cooperative route planning wrapper
+    \end{itemize}
 
 \end{frame}
 \begin{frame}
-Once a basic GA has been implemented, the stage of variable and operator refinement can begin.
 
-Here I will tweak variable values as well as implement and test various genetic operators, such as different forms of crossover 
+    \note{
+    
+        \begin{itemize}
+            \item Once the basic shape of the GA is implemented, the main focus of my project can begin. 
+            \item Here I will begin to experiment with a variety of variable and parameter values, as well as different genetic operators such as different point crossover techniques and stochastic sampling. 
+            \item In my report I will evaluate these different approaches and attempt to conclude which perform best 
+            \item Genetic algorithms can also have heuristics baked into them similar to the process of converting Djikstra's algorithm to $A^*$ 
+        \end{itemize}
 
+    }
+
+    Once a basic GA has been implemented, the stage of variable and operator refinement can begin.
+\\~\
+
+    There are many oppertunities for improvement of GAs with a wide variety of crossover and mutation techniques being discussed in literature, each performing differently depending on the search space.
+\\~\
+
+    One aim of my report will be to assess and collate the effectiveness of a wide variety of such operators, with the hope of concluding which are best for the task. 
+
+    GAs can also be augmented via the use of domain-specific heuristics and as such I will investigate this area also
 \end{frame}
 
 \section{Bibliography}
