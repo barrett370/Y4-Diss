@@ -1,11 +1,10 @@
-\documentclass{beamer}
-\usepackage{pgfpages}
-\setbeamertemplate{bibliography item}{\insertbiblabel}
+\documentclass{beamer} \usepackage{pgfpages} \setbeamertemplate{bibliography item}{\insertbiblabel}
 \vfuzz 10pt
+\usepackage{hyperref}
 % UNCOMMENT FOR FINAL COMPILATION WITH SPEAKER NOTES
 
-\setbeameroption{show notes on second screen=right} % Both
-\setbeamertemplate{note page}{\pagecolor{yellow!5}\insertnote}\usepackage{palatino}
+%\setbeameroption{show notes on second screen=right} % Both
+%\setbeamertemplate{note page}{\pagecolor{yellow!5}\insertnote}\usepackage{palatino}
 
 
 \usepackage{graphicx}
@@ -14,7 +13,7 @@
 
 \author{Sam Barrett, 1803086}
 \title{{Applications of genetic algorithms on fully-autonomous road networks} \\ \texorpdfstring
-        {\includegraphics[scale=0.1]{uobcrest.jpg}}
+        {\includegraphics[scale=0.09]{uobcrest.jpg}} \\\\ \href{https://youtu.be/2QAttxzLam0}{$\rightarrow$Video Link$\leftarrow$}
     }
 \institute{{University of Birmingham}}
 \date{\today}
@@ -58,7 +57,7 @@
         On a theoretical level, there are a few distinct systems and algorithms that need to be implemented to create such a system:
 
         \begin{itemize}
-
+            \item I will require a method of representing vehicle routes in a coordinate space, beyond a list of coordinate points. 
             \item A function that takes a route as a list of points and maps it to our genome, i.e. unpacks it into a string of Real values. 
             \item A function to facilitate the reverse, converting the string of real values back into a usable route of points.
             \item I will need to devise and implement a fitness function. This function will be the objective function of the GA and so needs to reward good solutions without causing early convergence. It also needs to be able to identify and sufficiently penalise infeasible solutions. Such as routes that leave the road space or intersect with obstacles or other routes.
@@ -76,6 +75,7 @@
     \begin{itemize}
         \item From a technical perspective, there are many things that need to be implemented to make such a system possible. 
             \begin{itemize}
+                \item The functional representation of vehicle trajectories
                 \item The encoding of routes into a real-valued string of genes
                 \item The decoding of a real-valued string of genes to a route which a vehicle can take
                 \item The implementation of a function to determine the fitness of an individual route. 

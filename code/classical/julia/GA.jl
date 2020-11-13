@@ -9,16 +9,16 @@ end
 
 function polygon_length(curve::BezierCurve)
     l = 0
-    for i = 1:length(ps)-1
-        l += √((curve[i].x - curve[i+1].x)^2 + (curve[i].y - curve[i+1].y)^2)
+    for i = 1:length(ps) - 1
+        l += √((curve[i].x - curve[i + 1].x)^2 + (curve[i].y - curve[i + 1].y)^2)
     end
     l
 end
 
 
 function Fitness(i::Individual)
-    α = 0
-    β = 0
+    α = 0 # Infeasible path Penalty weight
+    β = 0 # Min safe distance break penalty weight
     n = length(i.phenotype.genotype)
     l =
         (
@@ -33,20 +33,12 @@ end
 𝓕 = Fitness # function alias
 
 
-function GA()
-    # Initialise population
-    n = 10 # Population size
-    start = Point(0, 0)
-    goal = Point(12, 5)
-
-    boundary1(x) = sin(0.3 * x)
-    boundary2(x) = sin(0.35 * x) + 4
-    road = Road(boundary1, boundary2)
-
+function GA(start::Point, goal::Point, road::Road, n::Real=10)
+    # Initialise population 
     P = generatePopulation(n, start, goal, road)
 
     while true # Replace with stopping criteria
-        map(p -> p.fitness =  p |> 𝓕, P) # Calculate fitness for population
+        map(p -> p.fitness = p |> 𝓕, P) # Calculate fitness for population, map 𝓕 over all Individuals
         # Selection
 
         # Genetic Operators

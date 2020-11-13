@@ -2,8 +2,6 @@ include("bezier.jl")
 include("roadNetwork.jl")
 include("utils.jl")
 
-
-
 struct Phenotype
     source::Point
     direction_maintenance_points::Array{Real}
@@ -16,8 +14,6 @@ mutable struct Individual
 end
 
 
-
-
 function getGenotypeString(genotype::BezierCurve)::Array{Real}
     genotype_str = []
     for point in genotype
@@ -27,46 +23,22 @@ function getGenotypeString(genotype::BezierCurve)::Array{Real}
     genotype_str
 end
 
-function plotIndividual(p::Individual,n=100)
-    plot_curve(p.phenotype.genotype,n)
-end
-
-function plotIndividual!(plt,p::Individual,road::Road,n=100)
-    plot_road_curve!(plt,1,p.phenotype.genotype,n,road)
-end
-
-
-function plotGeneration(P::Array{Individual},n=100)
-    plt = plot()
-    for i in 1:length(P)
-        plot_curve!(plt,i,P[i].phenotype.genotype,n)
-    end
-    display(plt)
-end
-
-function plotGeneration!(plt,P::Array{Individual},road::Road,n=100)
-    for i in 1:length(P)
-        plot_road_curve!(plt,i,P[i].phenotype.genotype,n,road)
-    end
-    display(plt)
-end
-
 MAX_P = 4
 
 
-function generatePopulation(n::Integer,start::Point,goal::Point,r::Road) :: Array{Individual}
-    x_distance = abs(start.x-goal.x)
-    y_distance = abs(start.y-goal.y)
+function generatePopulation(n::Integer, start::Point, goal::Point, r::Road)::Array{Individual}
+    x_distance = abs(start.x - goal.x)
+    y_distance = abs(start.y - goal.y)
     P = []
     for i in 1:n
         ps = [start]
         for i in 1:rand(1:MAX_P)
-            new_x = ps[end].x + rand(0.2:.1:x_distance/n)
+            new_x = ps[end].x + rand(0.2:.1:x_distance / n)
             if new_x > goal.x
                 new_x = goal.x
             end
-            new_y = ps[end].y + rand(-(y_distance/n):0.5:(y_distance/n))
-            if r.Ỹ(new_x,new_y) > 1
+            new_y = ps[end].y + rand(-(y_distance / n):0.5:(y_distance / n))
+            if r.Ỹ(new_x, new_y) > 1
                 new_y = r.boundary_2(new_x)
             end
             if new_y > goal.y
@@ -78,13 +50,11 @@ function generatePopulation(n::Integer,start::Point,goal::Point,r::Road) :: Arra
                     new_y
             )])
             if new_x  >= goal.x && new_y >= goal.y
-                println("Breaking")
-                @show new_x
                 break
             end
         end
-        append!(ps,[goal])
-        append!(P,[Individual(Phenotype(start,[],BezierCurve(ps),goal),0)])
+        append!(ps, [goal])
+        append!(P, [Individual(Phenotype(start, [], BezierCurve(ps), goal), 0)])
     end
     P
 end
