@@ -48,8 +48,8 @@ function plot_curve(c::BezierCurve, n::Integer)
     ps_x, ps_y = [], []
     for x in range(0, 1, step=1 / n)
         C = c(x)
-        append!(ps_x, C[1])
-        append!(ps_y, C[2])
+        append!(ps_x, C.x)
+        append!(ps_y, C.y)
     end
     plot(ps_x, ps_y)
 end

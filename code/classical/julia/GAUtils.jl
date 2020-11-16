@@ -2,7 +2,7 @@ include("bezier.jl")
 include("roadNetwork.jl")
 include("utils.jl")
 
-struct Phenotype
+mutable struct Phenotype
     source::Point
     direction_maintenance_points::Array{Real}
     genotype::BezierCurve

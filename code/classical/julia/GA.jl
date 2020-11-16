@@ -1,3 +1,5 @@
+using Distributions
+using StatsBase
 include("GAUtils.jl")
 
 
@@ -66,36 +68,69 @@ function simple_crossover(P::Array{Individual})
         p2 = P[p2_i]
         deleteat!(P, p2_i)
         n = n - 1
-        
+
         p1 = p1 |> p -> p.phenotype.genotype |> getGenotypeString 
         p2 = p2 |> p -> p.phenotype.genotype |> getGenotypeString 
-        i = rand(1:2:length(p1))
+        n1, n2 = length(p1), length(p2)
+        if n1 < n2
+            i = rand(1:2:n1)
+        else
+            i = rand(1:2:n2)
+        end
         o1 = append!(p1[1:i], p2[i + 1,end])
+        @show o1
         o2 = append!(p2[1:i], p1[i + 1,end])
         
         append!(offspring, [Individual(Phenotype(start, [], o1 |> getGenotype, goal), 0)])
         append!(offspring, [Individual(Phenotype(start, [], o2 |> getGenotype, goal), 0)])
     end
     map(p -> p.fitness = p |> 𝓕, offspring) # Calculate fitness for new offspring
+    @show map(p -> p.fitness, offspring)
     offspring
+end
+
+function isValid(i::Individual)::Bool
+
+    sort(i.phenotype.genotype, by=g -> g.x) == i.phenotype.genotype && length(i.phenotype.genotype) >= 2 && i.phenotype.genotype[1] == i.phenotype.source && i.phenotype.genotype[end] == i.phenotype.goal
+
+end
+
+function repair(i::Individual)::Individual
+    sort!(i.phenotype.genotype, by=g -> g.x) 
+    return i
+end
+
+function mutation(P::Array{Individual})::Array{Individual}
+    μ = 0.1
+    for i in P
+        if sample([true,false], Weights([1-μ,μ]))
+            x_rng = sort([i.phenotype.source.x,i.phenotype.goal.x])
+            y_rng = sort([i.phenotype.source.y,i.phenotype.goal.y])
+            i.phenotype.genotype[rand(1:length(i.phenotype.genotype))] = ControlPoint(rand(Uniform(x_rng[1],x_rng[2])),
+                                rand(Uniform(y_rng[1],y_rng[2]))) # TODO Consider allowing mutation to go above or below start or end points
+        end
+    end
+    P 
 end
 
 
 function GA(start::Point, goal::Point, road::Road, n_gens::Real=1, n::Real=10)
     # Initialise population 
-    @show P = generatePopulation(n, start, goal, road)
+    P = generatePopulation(n, start, goal, road)
 
     while true && n_gens > 0 # Replace with stopping criteria
         map(p -> p.fitness = p |> 𝓕, P) # Calculate fitness for population, map 𝓕 over all Individuals
         # Selection
-        new_pop = P |> roulette_selection
+        @show (P = P 
+            |> roulette_selection |> simple_crossover |>  new_pop -> append!(P, new_pop) |> mutation
+            |> P -> sort(P, by=p -> p.fitness)   |> P -> map(repair, P) 
+            |> P -> filter(isValid, P) )
         # Genetic Operators
-        ## Crossover
-        @show offspring = new_pop |> simple_crossover
 
         
 
         ## Mutation
+
 
         n_gens = n_gens - 1 
     end
