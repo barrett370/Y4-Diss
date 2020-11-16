@@ -11,7 +11,7 @@ road = Road(
 )
 
 start_point = Point(0,10)
-goal_point = Point(19,10)
+goal_point = Point(19,9)
 
 
 # Draw Road

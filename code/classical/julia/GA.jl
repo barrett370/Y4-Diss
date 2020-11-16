@@ -9,7 +9,7 @@ end
 
 function polygon_length(curve::BezierCurve)
     l = 0
-    for i = 1:length(ps) - 1
+    for i = 1:length(curve) - 1
         l += √((curve[i].x - curve[i + 1].x)^2 + (curve[i].y - curve[i + 1].y)^2)
     end
     l
@@ -35,15 +35,32 @@ end
 
 function GA(start::Point, goal::Point, road::Road, n::Real=10)
     # Initialise population 
-    P = generatePopulation(n, start, goal, road)
+    @show P = generatePopulation(n, start, goal, road)
 
     while true # Replace with stopping criteria
         map(p -> p.fitness = p |> 𝓕, P) # Calculate fitness for population, map 𝓕 over all Individuals
         # Selection
+        new_pop::Array{Individual}  = []
+        Sum_𝓕 = reduce(+, map(p -> p.fitness, P))
+        partial = rand(0:0.01:Sum_𝓕)
+        sort!(P, by=p -> p.fitness)
+        while length(new_pop) < n # Steady state population (for now)
+            for i in P
+                if partial + i.fitness >= Sum_𝓕
+                    append!(new_pop, [i])
+                    partial = rand(0:0.01:Sum_𝓕)
+                else
+                    partial = partial + i.fitness
+                end
+            end
+        end
+        @show new_pop
 
         # Genetic Operators
         ## Crossover
         ## Mutation
+
+        break # Remove once all is implemented
     end
 
 end
