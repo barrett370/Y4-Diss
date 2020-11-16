@@ -25,7 +25,7 @@ function plotGeneration!(plt, P::Array{Individual}, road::Road, n=100)
     for i in 1:length(P)
         plot_road_curve!(plt, i, P[i].phenotype.genotype, n, road)
     end
-    display(plt)
+    plt
 end
 
 function plot_road_curve!(plt, i::Integer, c::BezierCurve, n::Integer, r::Road)
@@ -61,5 +61,5 @@ function plot_curve!(plt, i::Integer, c::BezierCurve, n::Integer)
         append!(ps_x, C.x)
         append!(ps_y, C.y)
     end
-    (plot!(plt, ps_x, ps_y, label=string("Individual-", i)))
+    plot!(plt, ps_x, ps_y, label=string("Individual-", i))
 end

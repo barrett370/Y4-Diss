@@ -107,7 +107,7 @@ function uniform_mutation(P::Array{Individual})::Array{Individual}
             x_rng = sort([i.phenotype.source.x,i.phenotype.goal.x])
             y_rng = sort([i.phenotype.source.y,i.phenotype.goal.y])
             i.phenotype.genotype[rand(1:length(i.phenotype.genotype))] = ControlPoint(rand(Uniform(x_rng[1],x_rng[2])),
-                                rand(Uniform(y_rng[1],y_rng[2]))) # TODO Consider allowing mutation to go above or below start or end points
+                                rand(Uniform(0,2*y_rng[2]))) # TODO Consider allowing mutation to go above or below start or end points
         end
     end
     P 
@@ -117,22 +117,23 @@ end
 function GA(start::Point, goal::Point, road::Road, n_gens::Real=1, n::Real=10)
     # Initialise population 
     P = generatePopulation(n, start, goal, road)
-
-    while true && n_gens > 0 # Replace with stopping criteria
+    while true && n_gens > 0 && length(P) > 0# Replace with stopping criteria
         map(p -> p.fitness = p |> 𝓕, P) # Calculate fitness for population, map 𝓕 over all Individuals
         # Selection
-        @show (P = P 
+        P = (P 
             |> roulette_selection |> simple_crossover |>  new_pop -> append!(P, new_pop) |> uniform_mutation
             |> P -> map(repair, P) |> P -> sort(P, by=p -> p.fitness)
             |> P -> filter(isValid, P) )
         # Genetic Operators
 
         
+        road_graph = draw_road(road,0,20)
+        plotGeneration!(road_graph,P,road)
 
         ## Mutation
 
 
         n_gens = n_gens - 1 
     end
-
+    P[1]
 end
