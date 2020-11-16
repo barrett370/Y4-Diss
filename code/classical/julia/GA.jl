@@ -100,7 +100,7 @@ function repair(i::Individual)::Individual
     return i
 end
 
-function mutation(P::Array{Individual})::Array{Individual}
+function uniform_mutation(P::Array{Individual})::Array{Individual}
     μ = 0.1
     for i in P
         if sample([true,false], Weights([1-μ,μ]))
@@ -122,8 +122,8 @@ function GA(start::Point, goal::Point, road::Road, n_gens::Real=1, n::Real=10)
         map(p -> p.fitness = p |> 𝓕, P) # Calculate fitness for population, map 𝓕 over all Individuals
         # Selection
         @show (P = P 
-            |> roulette_selection |> simple_crossover |>  new_pop -> append!(P, new_pop) |> mutation
-            |> P -> sort(P, by=p -> p.fitness)   |> P -> map(repair, P) 
+            |> roulette_selection |> simple_crossover |>  new_pop -> append!(P, new_pop) |> uniform_mutation
+            |> P -> map(repair, P) |> P -> sort(P, by=p -> p.fitness)
             |> P -> filter(isValid, P) )
         # Genetic Operators
 
