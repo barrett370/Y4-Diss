@@ -34,9 +34,9 @@ end
 
 𝓕 = Fitness # function alias
 
-function PopFitness(P::Array{Individual}) :: Array{Individual}
-   map(p -> p.fitness = Fitness(p), P) 
-   P
+function PopFitness(P::Array{Individual})::Array{Individual}
+    map(p -> p.fitness = Fitness(p), P) 
+    P
 end
 
 function roulette_selection(P::Array{Individual})
@@ -156,7 +156,7 @@ function GA(start::Point, goal::Point, road::Road, n_gens::Real=1, n::Real=10)
             |> P -> sort(P, by=p -> p.fitness) # Sort my fitness
             |> P -> filter(isValid, P) # remove invalid solutions
             |> P -> P[1:n] # take top n 
-            )
+        )
         n_gens = n_gens - 1 
     end
     P
