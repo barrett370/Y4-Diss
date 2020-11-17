@@ -17,14 +17,34 @@ function polygon_length(curve::BezierCurve)
     l
 end
 
-# function infeasible_poly_lenght(road::Road,curve::BezierCurve)
-#     l = 0
-#     for i =1:length(curve)-1
-#         if curve[i].x
-# end
+function infeasible_distance(road::Road,curve::BezierCurve)
+    l = 0
+    curve_values = get_curve(curve)
+    for obstacle in road.obstacles
+        obstacle_values = []
+        if typeof(obstacle) == Circle
+            obstacle_values = get_circle(obstacle)
+        end
+        intersects = []
+        for i in 1:length(curve_values[1])
+            x = curve_values[1][i]
+            y = curve_values[2][i]
+            potential_circle_intersect_is = findall(cx -> round(cx,digits=1)==round(x,digits=1),obstacle_values[1])
+            for j in potential_circle_intersect_is
+                if round(y,digits=1) == round(obstacle_values[2][j],digits=1)
+                    append!(intersects,[(x,y)])
+                end
+            end
+        end
+        if length(intersects) > 0
+            l = l +√((intersects[1][1]-intersects[end][1])^2 + (intersects[1][2] - intersects[end][2])^2) # TODO replace with new bezier curve and find length of that, this is a cheap fix
+        end
+    end
+    l
+end
 
 function Fitness(r::Road, i::Individual)
-    α = 0 # Infeasible path Penalty weight
+    α = 5 # Infeasible path Penalty weight
     β = 0 # Min safe distance break penalty weight
     n = length(i.phenotype.genotype)
     l =
@@ -32,8 +52,7 @@ function Fitness(r::Road, i::Individual)
             2 * chord_length(i.phenotype.genotype) +
             (n - 1) * polygon_length(i.phenotype.genotype)
         ) / (n + 1)
-    l1 = 0 # length of infeasible segment
-
+    l1 = infeasible_distance(r,i.phenotype.genotype)
     l2 = 0 # length of path in which min safe distance is broken
     l + α * l1 + β * l2
 end
