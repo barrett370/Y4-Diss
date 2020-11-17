@@ -14,3 +14,11 @@ And the most and least fit solutions after 4 generations
 ![4 Generations min max](./images/4gen.png)
 
 Whilst in isolation this is not particularly impressive, in fact is under performs a simple Pythagorean distance calculation, it can be generalised and extended to avoid obstacles and to not intersect with other routes.
+
+I went on to implement road space obstacles in the form of circles. I have implemented the abstract type of `Obstacle` of which `Circle` is a member allowing me to extend my program. 
+
+By calculating infeasible route sections as the distance between 2 intersects between an individual and a obstacle, I can penalise solutions where such a distance is non-zero.
+
+The results can be seen in Figure 3. These results are seen after just a single generation with the best soluton having approximately 8% lower fitness than the pythagorian route.
+
+![Obstacle avoidance](./images/obstacleavoidance.png)
