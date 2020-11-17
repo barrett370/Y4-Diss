@@ -11,14 +11,19 @@ end
 
 function polygon_length(curve::BezierCurve)
     l = 0
-    for i = 1:length(curve) - 1
-        l += √((curve[i].x - curve[i + 1].x)^2 + (curve[i].y - curve[i + 1].y)^2)
+    for i = 1:length(curve)-1
+        l += √((curve[i].x - curve[i+1].x)^2 + (curve[i].y - curve[i+1].y)^2)
     end
     l
 end
 
+# function infeasible_poly_lenght(road::Road,curve::BezierCurve)
+#     l = 0
+#     for i =1:length(curve)-1
+#         if curve[i].x
+# end
 
-function Fitness(r::Road,i::Individual)
+function Fitness(r::Road, i::Individual)
     α = 0 # Infeasible path Penalty weight
     β = 0 # Min safe distance break penalty weight
     n = length(i.phenotype.genotype)
@@ -35,10 +40,10 @@ end
 
 function roulette_selection(P::Array{Individual})
     n = length(P)
-    new_pop::Array{Individual}  = []
+    new_pop::Array{Individual} = []
     Sum_𝓕 = reduce(+, map(p -> p.fitness, P))
     partial = rand(0:0.01:Sum_𝓕)
-    sort!(P, by=p -> p.fitness)
+    sort!(P, by = p -> p.fitness)
     while length(new_pop) < n # Steady state population (for now)
         for i in P
             if partial + i.fitness >= Sum_𝓕
@@ -75,8 +80,8 @@ function simple_crossover(P::Array{Individual})
         else
             i = rand(1:2:n2)
         end
-        o1 = append!(p1[1:i], p2[i + 1:end])
-        o2 = append!(p2[1:i], p1[i + 1:end])
+        o1 = append!(p1[1:i], p2[i+1:end])
+        o2 = append!(p2[1:i], p1[i+1:end])
 
         append!(offspring, [Individual(Phenotype(start, [], o1 |> getGenotype, goal), 0)])
         append!(offspring, [Individual(Phenotype(start, [], o2 |> getGenotype, goal), 0)])
@@ -92,7 +97,7 @@ end
 
 function debugIsValid(i::Individual)
 
-    if sort(i.phenotype.genotype, by=g -> g.x) != i.phenotype.genotype
+    if sort(i.phenotype.genotype, by = g -> g.x) != i.phenotype.genotype
         println("control points not in order")
     elseif length(i.phenotype.genotype) < 2
         println("too few control points")
@@ -105,12 +110,15 @@ end
 
 function isValid(i::Individual)::Bool
 
-    sort(i.phenotype.genotype, by=g -> g.x) == i.phenotype.genotype && length(i.phenotype.genotype) >= 2 && i.phenotype.genotype[1] == i.phenotype.source && i.phenotype.genotype[end] == i.phenotype.goal
+    sort(i.phenotype.genotype, by = g -> g.x) == i.phenotype.genotype &&
+        length(i.phenotype.genotype) >= 2 &&
+        i.phenotype.genotype[1] == i.phenotype.source &&
+        i.phenotype.genotype[end] == i.phenotype.goal
 
 end
 
 function repair(i::Individual)::Individual
-    sort!(i.phenotype.genotype, by=g -> g.x)
+    sort!(i.phenotype.genotype, by = g -> g.x)
     return i
 end
 
@@ -118,11 +126,13 @@ function uniform_mutation(P::Array{Individual})::Array{Individual}
     μ = 0.1
     for i in P
         if length(i.phenotype.genotype) > 2
-            if sample([true,false], Weights([1 - μ,μ]))
-                x_rng = sort([i.phenotype.source.x,i.phenotype.goal.x])
-                y_rng = sort([i.phenotype.source.y,i.phenotype.goal.y])
-                i.phenotype.genotype[rand(2:length(i.phenotype.genotype) - 1)] = ControlPoint(rand(Uniform(x_rng[1], x_rng[2])),
-                                rand(Uniform(0, 2 * y_rng[2]))) # TODO Consider allowing mutation to go above or below start or end points
+            if sample([true, false], Weights([1 - μ, μ]))
+                x_rng = sort([i.phenotype.source.x, i.phenotype.goal.x])
+                y_rng = sort([i.phenotype.source.y, i.phenotype.goal.y])
+                i.phenotype.genotype[rand(2:length(i.phenotype.genotype)-1)] = ControlPoint(
+                    rand(Uniform(x_rng[1], x_rng[2])),
+                    rand(Uniform(0, 2 * y_rng[2])),
+                ) # TODO Consider allowing mutation to go above or below start or end points
             end
         end
         # if length(filter(!isValid, P)) > 0

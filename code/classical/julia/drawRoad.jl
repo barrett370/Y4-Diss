@@ -6,7 +6,7 @@ include("roadNetwork.jl")
 boundary1(x) = 0
 boundary2(x) = 4
 
-o1 = circleShape(2.5,3,1)
+o1 = Circle(1,Point(5,10))
 start_point = Point(0, 10)
 goal_point = Point(19, 9)
 obstacles = [o1]
