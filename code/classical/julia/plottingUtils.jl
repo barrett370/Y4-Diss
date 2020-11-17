@@ -42,6 +42,10 @@ end
 function draw_road(r::Road, s::Real, e::Real)
     rg = plot(r.boundary_1, s, e, linewidth=3, linecolor=:black, legend=false)
     plot!(rg, r.boundary_2, s, e, linewidth=3, linecolor=:black)
+    for o in r.obstacles
+        plot!(rg,o,seriestype=[:shape], lw=0.5, c=:red, linecolor =:black,legend=false)
+    end
+    rg
 end
 
 function plot_curve(c::BezierCurve, n::Integer)
