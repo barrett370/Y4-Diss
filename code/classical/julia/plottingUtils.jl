@@ -24,7 +24,11 @@ end
 
 function plotGeneration!(plt, P::Array{Individual}, road::Road, n = 100, g = -1)
     for i = 1:length(P)
-        plt = plot_road_curve!(plt, i, P[i].phenotype.genotype, n, road)
+        if road != nothing
+            plt = plot_road_curve!(plt, i, P[i].phenotype.genotype, n, road)
+        else
+            plt = plot_curve!(plt, i, P[i].phenotype.genotype, n)
+        end
     end
     if g != -1
         plt = plot!(plt, title = string("Generation-", g))
@@ -32,16 +36,29 @@ function plotGeneration!(plt, P::Array{Individual}, road::Road, n = 100, g = -1)
     plt
 end
 
+
+function plotGeneration!(plt, P::Array{Individual}, n = 100, g = -1)
+    for i = 1:length(P)
+        plt = plot_curve!(plt, i, P[i].phenotype.genotype, n)
+    end
+    if g != -1
+        plt = plot!(plt, title = string("Generation-", g))
+    end
+    plt
+end
 function plot_road_curve!(plt, i::Integer, c::BezierCurve, n::Integer, r::Road)
     ps_x = []
     ps_y = []
     for x in range(0, 1, step = 1 / n)
         C = c(x)
+        # rs_cords = r.Ỹ(C.x, C.y)
+        # append!(ps_x, rs_cords[1])
+        # append!(ps_y, rs_cords[2])
         append!(ps_x, C.x)
-        append!(ps_y, r.Ỹ(C.x, C.y))
+        append!(ps_y, C.y)
     end
-    if i == 1
-
+    if i == 1 # If fittest individual
+        plot_control_points!(plt, c)
         plot!(plt, ps_x, ps_y, label = string("Individual-", i), lw = 3)
     else
         plot!(plt, ps_x, ps_y, label = string("Individual-", i))
@@ -59,14 +76,18 @@ function draw_road(r::Road, s::Real, e::Real)
         # end
         if typeof(o) == Circle
             points = get_circle(o)
-            for i = 1:length(points[1])
-                points[2][i] = r.Ỹ(points[1][i], points[2][i])
-            end
-        elseif typeof(o) == Rectangle
-            points = get_rectangle(o)
-            for i = 1:length(points.x)
-                points.y[i] = r.Ỹ(points.x[i], points.y[i])
-            end
+            # for i = 1:length(points[1])
+            #     # rs_cords = r.Ỹ(points[1][i], points[2][i])
+            #     points[1][i] = rs_cords[1]
+            #     points[2][i] = rs_cords[2]
+            # end
+            # elseif typeof(o) == Rectangle
+            #     points = get_rectangle(o)
+            #     for i = 1:length(points.x)
+            #         rs_coords = r.Ỹ(points.x[i], points.y[i])
+            #         points.x[i] = rs_coords[1]
+            #         points.y[i] = rs_coords[2]
+            #     end
         end
 
         plot!(
@@ -124,4 +145,10 @@ function plot_curve!(plt, i::Integer, c::BezierCurve, n::Integer)
         append!(ps_y, C.y)
     end
     plot!(plt, ps_x, ps_y, label = string("Individual-", i))
+end
+
+function plot_control_points!(plt, c::BezierCurve)
+    for p in c
+        plot!(plt, (p.x,p.y), seriestype = :scatter, legend = false)
+    end
 end

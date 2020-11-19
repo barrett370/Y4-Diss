@@ -27,14 +27,18 @@ end
 struct Road
     boundary_1 :: Function
     boundary_2 :: Function
-    Ỹ :: Function
+    # Ỹ :: Function
     obstacles :: Array{Obstacle}
     function Road(b1,b2,obs)
-        Y = function Y(x,y)
-            y_b1 = b1(x)
-            y_b2 = b2(x)
-            y_b1 + √((y-y_b1)^2) / √((y_b1-y_b2)^2)
-        end
-        new(b1,b2,Y,obs)
+        # Y = function Y(x,y)
+        #
+        #     b1_x = b1(x)
+        #     b2_x = b2(x)
+        #
+        #     y = (√(y-b1_x)^2)/(√(b2_x-b1_x)^2)
+        #     (x,y)
+        # end
+        # new(b1,b2,Y,obs)
+        new(b1,b2,obs)
     end
 end
