@@ -12,6 +12,13 @@ struct Circle <: Obstacle
     centre :: Point
 end
 
+struct Rectangle <: Obstacle
+    h :: Real
+    w :: Real
+    origin :: Point
+end
+
+
 function (c::Circle)(θ::Real)
     c.centre.x + c.r * cos(θ) , c.centre.y + c.r * sin(θ)
 end

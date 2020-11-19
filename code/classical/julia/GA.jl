@@ -1,6 +1,8 @@
 using Distributions
 using StatsBase
 include("GAUtils.jl")
+include("plottingUtils.jl")
+
 
 
 function chord_length(curve::BezierCurve)
@@ -24,6 +26,9 @@ function infeasible_distance(road::Road,curve::BezierCurve)
         obstacle_values = []
         if typeof(obstacle) == Circle
             obstacle_values = get_circle(obstacle)
+        elseif typeof(obstacle) == Rectangle
+            # obstacle_values = get_rectangle(obstacle)
+            obstacle_values = []
         end
         intersects = []
         for i in 1:length(curve_values[1])
@@ -143,7 +148,8 @@ end
 
 function uniform_mutation(P::Array{Individual})::Array{Individual}
     μ = 0.1
-    for i in P
+    # for i in P
+    for i in P[2:end] # Leave most fit individual alone TODO consider if this is desirable behaviour
         if length(i.phenotype.genotype) > 2
             if sample([true, false], Weights([1 - μ, μ]))
                 x_rng = sort([i.phenotype.source.x, i.phenotype.goal.x])
@@ -180,6 +186,7 @@ function GA(start::Point, goal::Point, road::Road, n_gens::Real=1, n::Real=10)
             |> P -> filter(isValid, P) # remove invalid solutions
             |> P -> P[1:n] # take top n
         )
+        # savefig(plotGeneration!(draw_road(road,0,20),P,road,100,10-n_gens),string("gen-",10-n_gens))
         n_gens = n_gens - 1
     end
     P
