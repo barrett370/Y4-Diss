@@ -19,6 +19,8 @@ I went on to implement road space obstacles in the form of circles. I have imple
 
 By calculating infeasible route sections as the distance between 2 intersects between an individual and a obstacle, I can penalise solutions where such a distance is non-zero.
 
-The results can be seen in Figure 3. These results are seen after just a single generation with the best soluton having approximately 8% lower fitness than the pythagorian route.
+The results can be seen in Figure 3. These results are seen after just a single generation with the best solution having approximately 8% lower fitness than the Pythagorean route.
 
 ![Obstacle avoidance](./images/obstacleavoidance.png)
+
+I have now moved on to initial parameter tweaking in order to get the best performance from these basic operators. I have been testing different weightings for infeasible and high proximity routes, I need to make sure they are never the best solution but not penalise them too much so that solutions near them in the search space are never explored; the optimal solution could very well be close to an infeasible one.
