@@ -5,6 +5,11 @@ include("roadNetwork.jl")
 include("utils.jl")
 include("GAUtils.jl")
 
+
+# What a bloody messs TODO Cleanup this mess
+
+
+
 function plotIndividual(p::Individual, n = 100)
     plot_curve(p.phenotype.genotype, n)
 end
@@ -24,11 +29,7 @@ end
 
 function plotGeneration!(plt, P::Array{Individual}, road::Road, n = 100, g = -1)
     for i = 1:length(P)
-        if road != nothing
-            plt = plot_road_curve!(plt, i, P[i].phenotype.genotype, n, road)
-        else
-            plt = plot_curve!(plt, i, P[i].phenotype.genotype, n)
-        end
+        plt = plot_road_curve!(plt, i, P[i].phenotype.genotype, n, road)
     end
     if g != -1
         plt = plot!(plt, title = string("Generation-", g))

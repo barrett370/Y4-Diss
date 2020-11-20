@@ -24,3 +24,6 @@ The results can be seen in Figure 3. These results are seen after just a single 
 ![Obstacle avoidance](./images/obstacleavoidance.png)
 
 I have now moved on to initial parameter tweaking in order to get the best performance from these basic operators. I have been testing different weightings for infeasible and high proximity routes, I need to make sure they are never the best solution but not penalise them too much so that solutions near them in the search space are never explored; the optimal solution could very well be close to an infeasible one.
+
+
+You can find a gif of the algorithm over the course of 100 generations [here](https://sambarrett.online/Y4-Diss/100gens-3.gif). The bold line is the fittest and the control points for the best curve are shown. Obstacles are shown in red.
