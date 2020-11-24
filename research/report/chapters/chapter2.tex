@@ -2,7 +2,7 @@
 
 \subsection{History}
 
-Genetic algorithms are optimisation techniques that employ the same rationale as classical Evolution as seen in nature.
+Genetic algorithms are optimisation techniques that employ the same rationale as classical Evolution seen in nature.
 
 Genetic Algorithms can trace their origins back to the late 1960s when they were first proposed by John Holland, though he then referred to them as \textit{Genetic Plans}\footnote{This distinction was made to emphasise the \textit{"centrality of computation in defining and implementing the plans"}\cite{hollandAdaptationNaturalArtificial1992a}}. Holland went on to write the first book on the subject titled \textit{Adaptation in Natural and Artificial Systems}\cite{hollandAdaptationNaturalArtificial1992a} in 1975. The field did not find much reception with Holland stating in the preface to the 1992 rerun:
 
@@ -97,15 +97,37 @@ Here the next generation of individuals is constructed. There are multiple poten
 
 In this stage various heuristics or alternative strategies can be implemented to speed up or slow down the convergence rate. Whilst their fitness may be low, having a diverse population allows for more of the search space to be explored. If the algorithm converges too quickly it may get \textit{stuck} in local minima. 
 
+
+\subsection{Bézier Curves}
+
+In my implementation, I utilise Bézier curves to encode complex route arcs between a series of points. Here I will briefly outline their construction and mathematical basis.
+
+Bézier curves were developed by and named after French auto-body designer Pierre Bézier and are commonly found in computer graphics today. They are parametric curves made up of a series of \textit{control points} which contort the shape of a line to produce a curve of nearly any shape.
+
+A Bézier curve is said to have a degree of $n-1$ where $n$ is the number of control points including the start and end point of the curve.
+
+\subsubsection{Formal Definition} 
+
+Bézier curves can be simply explicitly defined for degrees of 1 through 4, however, the general case of $n$ points is more useful to us. In their general form they can be defined recursively or explicitly. I implement the recursive version as it is much more readable for a programming language that supports recursion.
+
+They are defined recursively as follows:
+
+\begin{equation}
+    \textbf{B}_{P_0}(t) = P_0
+\end{equation}
+
+\begin{equation}
+    \textbf{B}_{P_0,P_1,\ldots,P_n}(t) = (1-t)\textbf{B}_{P_0,P_1,\ldots,P_{n-1}}(t) + t\textbf{B}_{P_1,P_2,\ldots,P_n}(t)
+\end{equation}
+
+Where the parameter $t$ is in the range of $[0,1]$. Therefore, the smoothness of the curve is determined by the granularity of the parameter when unpacking the function into a curve.
+
 \section{Fully Autonomous Road Networks}
 
-Fully autonomous road networks are by no means a novel concept. They have appeared in fiction since the mid 20th century and have been a real possibility for the past decade. In a fully autonomous road network \textit{(FARN)}, all vehicles are self-operating with their routing either being \textit{self-serving} or determined by a larger system managing routes for all nearby agents. 
+Fully autonomous road networks are by no means a novel concept. They have appeared in fiction since the mid 20th century and have been a real possibility for the past decade. In a fully autonomous road networks \textit{(FARN)}s, all vehicles are self-operating with their routing either being determined on a vehicle-by-vehicle \textit{selfish} basis or by a larger system managing routes for all nearby agents. 
 
-\textit{FARN}s have the possibility of improving travel in a number of different areas. 
+In the latter system protocols that promote the net increase in efficiency can be implemented. However, this sort of system will require a form of government mandate as a universal routing protocol would need to be established; this is no small undertaking.
 
-They have the potential of greatly reducing travel times by efficiently routing all vehicles with the goal of reducing the net travel time. Such a system would also be able to respond much faster than human drivers, allowing for large increases in permissible vehicle velocities thus, further increasing efficiency.
-
-By extension of their higher efficiency, \textit{FARN}s will also have a marked effect on vehicular energy consumption. The potential effects are summarised nicely by Vahidi and Sciarretta\cite{vahidiEnergySavingPotentials2018} where they show the use of vehicle automation could cause anywhere from a halving of "energy use and greenhouse gas emission" in an "optimistic scenario" to doubling them depending on the effects that present themselves. The increase in highway speed whilst increasing travel efficiency is predicted by Brown et al.\cite{brownAnalysisPossibleEnergy2014} and Wadud et al.\cite{wadudHelpHindranceTravel2016} as increasing energy use by anywhere from 5\% to 30\%
 
 \section{Quantum Genetic Algorithms}
 

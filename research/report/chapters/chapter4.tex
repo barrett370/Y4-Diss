@@ -1,9 +1,24 @@
 
-
 \section{Approach}
 
+The general shape of a GA as seen in Algorithm~\ref{alg:GenericGA} is the same for almost all problems. 
+
+As such, I first had to implement a method to generate an initial population. In order to do this, I first had to define my programmatic representations of the Phenotypes and genotypes of my individuals. I decided to base my genotype structure on  the one described by Kala\cite{kalaOnroadIntelligentVehicles2016}
+
 \section{Implementation}
+
+My for my initial implementation, I focused on simply getting a working system. I therefore, started by implementing the simplest form of each genetic operator. Namely, roulette wheel (Monte Carlo\cite{metropolis1987beginning}) selection, simple crossover and uniform mutation. 
+
 \subsection{Language Choice}
 
+I have chosen to implement my classical approach using the Julia language project\cite{JuliaProgrammingLanguage}.
+
+Julia is a relatively new language first developed in 2012 by Jeff Bezanson, Stefan Karpinski and Viral Shah. It is a multi-paradigm language allowing for functional, object oriented and meta programming approaches to problems. I will mainly be using it for it's functional and OO capabilities. 
+
+Julia operates using multiple dispatch similar to languages such as Haskell. It interoperates with C and Fortran codebases without the need of middle-man bloat. This fact allows it to utilise the extensive high performance C libraries for floating point operations. Julia is eagerly evaluated, uses a Just in time compiler and has a garbage collector.
+
+Julia features a syntax similar to both Python and Matlab with performance on par with C. As I am already very familiar with python and have studied functional programming in a number of modules; I found this language very quick and intuitive to learn and the resulting code to be clean, idiomatic and fast.
+
+A real-world implementation of a system based on my research would undoubtedly be required to run on small, relatively low performance, embedded systems and as such Julia may not be appropriate here. A language such as C or Rust may be used instead.
 \section{Results}
 
