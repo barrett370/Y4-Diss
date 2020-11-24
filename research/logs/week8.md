@@ -15,7 +15,7 @@ And the most and least fit solutions after 4 generations
 
 Whilst in isolation this is not particularly impressive, in fact is under performs a simple Pythagorean distance calculation, it can be generalised and extended to avoid obstacles and to not intersect with other routes.
 
-I went on to implement road space obstacles in the form of circles. I have implemented the abstract type of `Obstacle` of which `Circle` is a member allowing me to extend my program. 
+I went on to implement road space obstacles in the form of circles. I have implemented the abstract type of `Obstacle` of which `Circle` is a member allowing me to extend my program.
 
 By calculating infeasible route sections as the distance between 2 intersects between an individual and a obstacle, I can penalise solutions where such a distance is non-zero.
 
@@ -26,4 +26,7 @@ The results can be seen in Figure 3. These results are seen after just a single 
 I have now moved on to initial parameter tweaking in order to get the best performance from these basic operators. I have been testing different weightings for infeasible and high proximity routes, I need to make sure they are never the best solution but not penalise them too much so that solutions near them in the search space are never explored; the optimal solution could very well be close to an infeasible one.
 
 
-You can find a gif of the algorithm over the course of 100 generations [here](https://sambarrett.online/Y4-Diss/100gens-3.gif). The bold line is the fittest and the control points for the best curve are shown. Obstacles are shown in red.
+You can find a gif of the algorithm over the course of 100 generations here [**link**](https://sambarrett.online/Y4-Diss/100gens-3.gif). The bold line is the fittest and the control points for the best curve are shown. Obstacles are shown in red.
+
+
+I have removed the road space coordinate system as it was proving too difficult and confusing to implement and use. I have instead embedded the dimensions of the road into the feasible search space. This means that routes that leave the road space are penalised in the same way that routes that interesect obstacles. Final generated route return also filters out any solutions with an infeasible distance > 0.
