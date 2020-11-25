@@ -3,7 +3,11 @@
 
 The general shape of a GA as seen in Algorithm~\ref{alg:GenericGA} is the same for almost all problems. 
 
-As such, I first had to implement a method to generate an initial population. In order to do this, I first had to define my programmatic representations of the Phenotypes and genotypes of my individuals. I decided to base my genotype structure on  the one described by Kala\cite{kalaOnroadIntelligentVehicles2016}
+As such, I first had to implement a method to generate an initial population. In order to do this, I first had to define my programmatic representations of the Phenotypes and genotypes of my individuals. I decided to base my genotypic structure on the that described by Kala\cite{kalaOnroadIntelligentVehicles2016}. 
+
+In this approach, the genotype is abstractly represented as a Bézier curve. This is more concretely translated into a real-valued string, interleaving the $x$ and $y$ coordinates of each control point.
+
+Initially my Phenotype contained no additional information. However, I still created the distinction to allow for additional properties to be encapsulated during development.
 
 \section{Implementation}
 
