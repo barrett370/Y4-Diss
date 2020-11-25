@@ -51,7 +51,11 @@ Genetic algorithms are both \textit{probabilistically optimal} and \textit{proba
 
 As you can see from Figure \ref{fig:hollandAlg} and Algorithm \ref{alg:GenericGA} the overall shape of GAs has not changed substantially over the course of the past 50 years. Being comprised of a series of operations that a starting population is piped through until criteria are met.
 
-\subsection{Selection}
+\subsection{Genetic Operators}
+
+In the following section I will outline the various genetic operations that take place in a GA, they can be seen in Algorithm~\ref{alg:GenericGA}. Any operators used and analysed in Chapter~\ref{ClassicalApproach} will have more detailed explanations of their process.
+
+\subsubsection{Selection}
 
 The selection procedure is the process by which the next generation of individuals is created from the current population. Individuals are selected relative to their fitness as determined by the Objective (fitness) function $\mathcal{F}$. 
 
@@ -71,12 +75,13 @@ Where $N$ is the size of the population $P$
 
 This is a simple approach but performs well and has very little performance overhead.  
 
-\subsection{Variation}
+\subsubsection{Variation}
 
 Variation in a GA is the process of altering the genome individuals to further explore the search space via stochastic local search.
 We perform this using two distinct sub-operations: Mutation and Crossover.
+Here we can view crossover as the \textit{breeding} process and mutation as resembling the natural tendency for DNA to mutate over the course of generations.
 
-\subsubsection{Mutation}
+\paragraph{Mutation}
 In mutation we alter each gene with a set probability $p_m$ known as the \textit{mutation rate}. A standard value for a mutation rate is $ \frac{1}{L} $ but it can fall anywhere in the range $p_m \in [ \frac{1}{L} , \frac{1}{2} ] $ where $L$ is the length of the genome.
 
 A low value for $p_m$ a new individual which can be shown to be \textit{close} to it's parents in the search space relative to their \textit{Hamming distance}\footnote{Hamming Distance: The metric for comparing two binary data strings. The Hamming distance between two strings is the number of bit position in which they differ.} if using a Binary coded GA. In real-coded GAs they can be shown to be close by the Euclidean distance between them.
@@ -88,11 +93,11 @@ In real-coded GAs mutation operators include:
     \item Non-Uniform Mutation
     \item Gaussian Mutation 
 \end{itemize}
-\paragraph{Uniform Mutation}
-In uniform mutation, we select a parent, $p$ and replace a randomly selected gene $c_i \in p$ with a uniformly random number $c_i' \in [u_i,v_i]$  where $u_i$ and $v_i$ are set bounds.
+\subparagraph{Uniform Mutation}
+In uniform mutation, we select a parent, $p$, and replace a randomly selected gene $c_i \in p$ with a uniformly random number $c_i' \in [u_i,v_i]$  where $u_i$ and $v_i$ are set bounds.
 
 
-\subsubsection{Crossover}
+\paragraph{Crossover}
 
 Crossover is a binary operation, taking two randomly selected \textit{parents} from the population $P_t$ with a probability $p_c \in [0,1]$ 
 
@@ -110,9 +115,9 @@ For real-coded GAs you instead have a selection of Crossover operators including
 \end{itemize}
 
 
-\paragraph{Simple (one point) Crossover}
+\subparagraph{Simple (one point) Crossover}
 
-For simple crossover, randomly select a crossover point, $i \in \{1,\ldots,n \}$. All values before this point are swapped between the two parents. For 2 parents, $p_1$ and $p_2$ this can be represented as:
+For simple crossover, randomly select a crossover point, $i \in \{1,\ldots,n \}$. All values before this point are swapped between the two parents. For 2 parents, $p_1 = \left\{ x_1^{[1]},\ldots,x_n^{[1]}\right\}$ and $p_2 = \left\{ x_1^{[2]},\ldots,x_n^{[2]}\right\}$ this can be represented as:
 
 \begin{equation}
     p_1' = \left\{ x_1^{[1]},x_2^{[1]}, \ldots, x_i^{[1]}, x_{i+1}^{[2]},\ldots, x_n^{[2]} \right\} 
@@ -121,9 +126,11 @@ For simple crossover, randomly select a crossover point, $i \in \{1,\ldots,n \}$
 \begin{equation}
     p_2' = \left\{ x_1^{[2]},x_2^{[2]}, \ldots, x_i^{[2]}, x_{i+1}^{[1]},\ldots, x_n^{[1]} \right\}
 \end{equation}
-\subsection{Evaluation}
+
+\subsubsection{Evaluation}
 After developing potential new individuals, the fitness of these new individuals is calculated using the objective function, $\mathcal{F}$
-\subsection{Reproduction}
+
+\subsubsection{Reproduction}
 Here the next generation of individuals is constructed. There are multiple potential methods employed here with the simplest being to just replace the lest fit individuals with additional copies of the fitter individuals, be they pre-existing or newly generated.
 
 In this stage various heuristics or alternative strategies can be implemented to speed up or slow down the convergence rate. Whilst their fitness may be low, having a diverse population allows for more of the search space to be explored. If the algorithm converges too quickly it may get \textit{stuck} in local minima. 
