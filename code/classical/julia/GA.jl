@@ -56,15 +56,13 @@ function infeasible_distance(road::Road, curve::BezierCurve)
                 ) # TODO replace with new bezier curve and find length of that, this is a cheap fix
         end
     end
-
-    for i = 1:length(curve_values[1])-1
-        if curve_values[2][i] > road.boundary_2(curve_values[1][i])
+    for i = 1:length(curve_values[1])
+        if curve_values[2][i] >= road.boundary_2(curve_values[1][i]) || curve_values[2][i] <= road.boundary_1(curve_values[1][i])
 
             dist = √(
                 (curve_values[1][i] - curve_values[1][i+1])^2 +
                 (curve_values[2][i] - curve_values[2][i+1])^2,
             )
-            # @show string("outside of road space for ", dist)
             # @show 100*dist
             l = l + 100 * dist
         end
