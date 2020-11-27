@@ -15,5 +15,6 @@
 - [ ] Project Idea & Approach
   - Clarify the route planning process
     - is there a time dimension to the planning?
-  - Can it cope with suddenly appearing obstacles?
+  - Can it cope with suddenly appearing obstacles?'
+  - Interrupt based system  ?
 - [ ] Think more about evaluation

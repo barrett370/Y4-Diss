@@ -1,4 +1,3 @@
-
 \documentclass[a4paper,11pt]{report}
 \usepackage[T2A]{fontenc}
 \usepackage[utf8]{inputenc}
@@ -6,6 +5,8 @@
 \usepackage{graphicx}
 \usepackage{csquotes}
 \usepackage[ruled,vlined]{algorithm2e}
+\setlength {\marginparwidth}{2cm}
+\usepackage{todonotes}
 \graphicspath{ {images/} }
 \hfuzz 6pt
 \title{
@@ -18,23 +19,24 @@
 
 \begin{document}
 \maketitle
+\listoftodos
 \tableofcontents
-\chapter*{Abstract}
+\chapter*{Abstract}\label{chap:Abs}
 \input{chapters/abstract.tex}
-\chapter{Introduction}
-\input{chapters/chapter1.tex}
-\chapter{Background}
-\input{chapters/chapter2.tex}
-\chapter{Literature Review}
-\input{chapters/chapter3.tex}
-\chapter{Classical Approach}\label{ClassicalApproach}
-\input{chapters/chapter4.tex}
-\chapter{Quantum Approach}
-\input{chapters/chapter5.tex}
-\chapter{Evaluation}
-\input{chapters/chapter6.tex}
-\chapter{Conclusion}
-\input{chapters/chapter7.tex}
+\chapter{Introduction}\label{chap:Intro}
+\input{chapters/introduction.tex}
+\chapter{Background}\label{chap:Background}
+\input{chapters/background.tex}
+\chapter{Literature Review}\label{chap:LitRev}
+\input{chapters/literature_review.tex}
+\chapter{Classical Approach}\label{chap:ClassicalApproach}
+\input{chapters/classical_approach.tex}
+\chapter{Quantum Approach}\label{chap:QuantumApproach}
+\input{chapters/quantum_approach.tex}
+\chapter{Evaluation}\label{chap:Eval}
+\input{chapters/evaluation.tex}
+\chapter{Conclusion}\label{chap:Conclusion}
+\input{chapters/conclusion.tex}
 
 \bibliographystyle{unsrt}
 \bibliography{lib}
