@@ -9,6 +9,14 @@ In this approach, the genotype is abstractly represented as a Bézier curve. Thi
 
 Initially my Phenotype contained no additional information. However, I still created the distinction to allow for additional properties to be encapsulated during development.
 
+\todo{This is just a placeholder so I don't forget to include this} The foundation of my Fitness function is the length of each route, i.e. the length of a given Bézier curve. This is not a trivial calculation and the best approximation was found to be:
+
+\begin{equation}
+    L = \frac{(2L_c + (n-1)L_p)}{n+1}
+\end{equation}
+
+Where $L_c$ is chord length and $L_p$ is polygon length. This was proven by Jens Gravesen\cite{gravesenAdaptiveSubdivisionLength1997} in 1997
+
 \section{Implementation}
 
 My for my initial implementation, I focused on simply getting a working system. I therefore, started by implementing the simplest form of each genetic operator. Namely, fitness proportional selection (aka. roulette wheel selection), simple crossover and uniform mutation. 

@@ -25,7 +25,6 @@
 \section{My Topic}
 \begin{frame}{My Topic}
     \note{
-
         \begin{itemize}
             \item I am choosing to focus on the applications of Genetic Algorithms on Theoretical Fully autonomous road networks, with a view to extend into the possible applications of quantum computers on the field in the future. 
             \item  I feel the advent of fully autonomous road networks is a logical next step in making roads safer and more efficient through the use of technology.
@@ -42,14 +41,17 @@
         \item Semi-autonomous vehicles are becoming more prevalent 
         \item Roads are becoming more congested with a 78\% increase in motor traffic since 1993 \cite{HighwaysEnglandNetwork2015}
         \item Fully autonomous vehicle trials have been legal in parts of the US since 2015\cite{AutonomousVehiclesSelfDriving}, with the UK set to follow by next year (2021)\cite{unknownUKWantsFully2019}
-        \item Much of the current research into autonomous vehicle routing focuses on environments where human drivers are still present
-        \item By removing the human element and working on theoretical \textit{fully autonomous road networks} we can make many useful assumptions about the behaviour of other vehicles
-        \item The solution to road congestion is not to build bigger roads, it is to optimise the traffic flows.
-        \item Just 78.2\% of journeys on the UK Highway Agencies roads were \textit{on time} in the year ending June 2014 \cite{measures02079443095ReliabilityJourneysHighways}
 
     \end{itemize}
 \end{frame}
-
+\begin{frame}
+    \begin{itemize}
+        \item Much of the current research into autonomous vehicle routing focuses on semi-autonomous road networks
+        \item By removing the human element and working on theoretical \textit{fully autonomous road networks} we can make many useful assumptions about the behaviour of other vehicles
+        \item The solution to road congestion is not to build bigger roads, it is to optimise the traffic flows.
+        \item Just 78.2\% of journeys on the UK Highway Agencies roads were \textit{on time} in the year ending June 2014 \cite{measures02079443095ReliabilityJourneysHighways}
+    \end{itemize}
+\end{frame}
 \begin{frame}
     \note{ 
         On a theoretical level, there are a few distinct systems and algorithms that need to be implemented to create such a system:
@@ -135,7 +137,9 @@
     I have started by reading and collating papers, books and articles surrounding GAs and their applications on routing problems.
 
     I have found substantial research into GAs but only a few papers on my sub-area, mainly by Rahul Kala from the Indian Institute of Information Technology.
+\end{frame}
 
+\begin{frame}
     I have begun implementing various utility functions and types in Julia\cite{JuliaProgrammingLanguage}, including:
 
     \begin{itemize}
@@ -143,12 +147,14 @@
         \item Road, Individual, Phenotype and Genotype types
         \item Plotting utilities for Roads and candidate solutions
         \item Population initialisation functions
+        \item Genetic operators
     \end{itemize}
 
     Still to implement: 
 
     \begin{itemize}
-        \item Genetic operators
+        \item Various different operators \& performance comparisons between them
+        \item Heuristics to further optimise the algorithm
         \item Cooperative route planning wrapper
     \end{itemize}
 
