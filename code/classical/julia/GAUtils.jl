@@ -25,8 +25,8 @@ end
 
 function getGenotype(genotypeString::Array{Real})::BezierCurve
     ret::BezierCurve = []
-    for i in 1:2:length(genotypeString)
-        append!(ret, [ControlPoint(genotypeString[i], genotypeString[i + 1])])
+    for i = 1:2:length(genotypeString)
+        append!(ret, [ControlPoint(genotypeString[i], genotypeString[i+1])])
     end
     ret
 end
@@ -34,28 +34,32 @@ end
 MAX_P = 6
 
 
-function generatePopulation(n::Integer, start::Point, goal::Point, r::Road)::Array{Individual}
+function generatePopulation(
+    n::Integer,
+    start::Point,
+    goal::Point,
+    r::Road,
+)::Array{Individual}
     x_distance = abs(start.x - goal.x)
     y_distance = abs(start.y - goal.y)
     P = []
-    for i in 1:n
+    for i = 1:n
         ps = [start]
         n_control_points = rand(1:MAX_P)
-        for i in 1:n_control_points
-            new_x = ps[end].x + rand(x_distance/(n_control_points*4):0.1:x_distance/n_control_points)
+        for i = 1:n_control_points
+            new_x =
+                ps[end].x +
+                rand(x_distance/(n_control_points*4):0.1:x_distance/n_control_points)
             if new_x > goal.x
                 new_x = goal.x
             end
-            new_y = ps[end].y + rand(-(y_distance / n):1 / n:(y_distance / n))
+            new_y = ps[end].y + rand(-(y_distance / n):1/n:(y_distance/n))
             if new_y > goal.y
                 new_y = goal.y
             end
 
-            append!(ps,[ControlPoint(
-                    new_x,
-                    new_y
-            )])
-            if new_x  >= goal.x && new_y >= goal.y
+            append!(ps, [ControlPoint(new_x, new_y)])
+            if new_x >= goal.x && new_y >= goal.y
                 break
             end
         end

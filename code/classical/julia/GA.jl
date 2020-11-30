@@ -28,6 +28,6 @@ function GA(start::Point, goal::Point, road::Road, n_gens::Real=1, n::Real=10)
     end
     savefig(plotGeneration!(draw_road(road,0,20),P,road,100),string("./gen-",n_gens))
     # P = filter(isFeasible,P)
-    P = filter(i->high_proximity_distance(road,i.phenotype.genotype)==0,filter(i -> infeasible_distance(road,i.phenotype.genotype)==0,P))
+    # P = filter(i->high_proximity_distance(road,i.phenotype.genotype)==0,filter(i -> infeasible_distance(road,i.phenotype.genotype)==0,P))
     P
 end
