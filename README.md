@@ -15,3 +15,4 @@
 - [x] Implement functions to draw Bezier curves from parametric definition
 - [ ] Implement linear velocity planning
 - [ ] Implement Cooperative planning wrapper
+- [ ] Add ability to add/ remove control points during the mutation process
