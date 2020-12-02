@@ -2,10 +2,14 @@ include("bezier.jl")
 include("roadNetwork.jl")
 include("utils.jl")
 
+mutable struct Genotype
+    curve::BezierCurve
+    velocityProfile::Dict{Real,Real}
+end
+
 mutable struct Phenotype
     source::Point
-    direction_maintenance_points::Array{Real}
-    genotype::BezierCurve
+    genotype::Genotype
     goal::Point
 end
 mutable struct Individual
@@ -64,7 +68,7 @@ function generatePopulation(
             end
         end
         append!(ps, [goal])
-        append!(P, [Individual(Phenotype(start, [], BezierCurve(ps), goal), 0)])
+        append!(P, [Individual(Phenotype(start, BezierCurve(ps), goal), 0)])
     end
     P
 end
@@ -176,16 +180,24 @@ end
 
 
 function Fitness(r::Road, i::Individual)
+
+    # Curve Fitness
+
     α = 8 # Infeasible path Penalty weight
     β = 2.5 # Min safe distance break penalty weight
-    n = length(i.phenotype.genotype)
+    n = length(i.phenotype.genotype.curve)
     l =
         (
-            2 * chord_length(i.phenotype.genotype) +
-            (n - 1) * polygon_length(i.phenotype.genotype)
+            2 * chord_length(i.phenotype.genotype.curve) +
+            (n - 1) * polygon_length(i.phenotype.genotype.curve)
         ) / (n + 1)
-    l1 = infeasible_distance(r, i.phenotype.genotype)
-    l2 = high_proximity_distance(r, i.phenotype.genotype) # length of path in which min safe distance is broken
+    l1 = infeasible_distance(r, i.phenotype.genotype.curve)
+    l2 = high_proximity_distance(r, i.phenotype.genotype.curve) # length of path in which min safe distance is broken
+
+    # Velocity Fitness
+
+
+
     l + α * l1 + β * l2
 end
 
@@ -193,27 +205,27 @@ end
 
 function debugIsValid(i::Individual)
 
-    if sort(i.phenotype.genotype, by = g -> g.x) != i.phenotype.genotype
+    if sort(i.phenotype.genotype.curve, by = g -> g.x) != i.phenotype.genotype.curve
         println("control points not in order")
-    elseif length(i.phenotype.genotype) < 2
+    elseif length(i.phenotype.genotype.curve) < 2
         println("too few control points")
-    elseif i.phenotype.genotype[1] != i.phenotype.source
+    elseif i.phenotype.genotype.curve[1] != i.phenotype.source
         println("initial control point is not origin")
-    elseif i.phenotype.genotype[end] != i.phenotype.goal
+    elseif i.phenotype.genotype.curve[end] != i.phenotype.goal
         println("final control point is not goal")
     end
 end
 
 function isValid(i::Individual)::Bool
 
-    sort(i.phenotype.genotype, by = g -> g.x) == i.phenotype.genotype &&
-        length(i.phenotype.genotype) >= 2 &&
-        i.phenotype.genotype[1] == i.phenotype.source &&
-        i.phenotype.genotype[end] == i.phenotype.goal
+    sort(i.phenotype.genotype.curve, by = g -> g.x) == i.phenotype.genotype.curve &&
+        length(i.phenotype.genotype.curve) >= 2 &&
+        i.phenotype.genotype.curve[1] == i.phenotype.source &&
+        i.phenotype.genotype.curve[end] == i.phenotype.goal
 
 end
 
 function repair(i::Individual)::Individual
-    sort!(i.phenotype.genotype, by = g -> g.x)
+    sort!(i.phenotype.genotype.curve, by = g -> g.x)
     return i
 end

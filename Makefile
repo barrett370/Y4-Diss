@@ -12,4 +12,4 @@ site:
 	cd site && hugo && cd ..
 .PHONY: deploy
 deploy:
-	make site && git add * && ./utils/datecommit.sh && git push
+	make site && git add docs && ./utils/datecommit.sh && git push
