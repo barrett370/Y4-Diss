@@ -1,1 +1,34 @@
 
+\todo[inline]{Lay out different tasks \& steps of the project, identify subgoals}
+
+\section{Goals}
+
+The overarching goal of this project is to optimally route traffic in the setting of a fully-autonomous road system. This however, is an aspirational goal with many sub-requirements to be fulfilled before it can come to fruition.
+
+Formally this top-level goal can be said to be to answer the question \hyperref[prob:Spec]{Problem~\ref{prob:Spec}}.
+
+\begin{figure}[htpb]
+    \centering
+    \begin{problem}{prob:Spec}
+
+        \problemtitle{Top-level Goal}
+        \probleminput{ 
+            \begin{itemize}
+                \item A road system $\mathcal{R}$ represented as a graph $G = (V,E)$ 
+
+
+                    Where each edge $e \in E$ is a section of road defined as the space bounded by two functions $b_1(x)$ and $b_2(x)$ augmented by a set of obstacles $O$ representing infeasible sections of road space
+                \item a set of agents, $A = \left\{ a_1,\ldots,a_n \right\}$
+                \item a set of routes as vertex pairs: 
+
+                    $\mathcal{V} = \left\{ (V_1^1,V_1^2),\ldots, (V_n^1, V_n^2) \right\}, V_{i \in [1 \ldots n]}^{j \in [1,2]} \in V$ 
+
+                where the route for agent $a_i$ is from vertex $V_i^1$ to $V_i^2$
+            \end{itemize}
+        }
+        \problemquestion{ What is the set of optimal routes $\mathcal{V}_{optimal}$, where the $i^{\text{th}}$ element  is defined as a set of linked Bézier curves connecting $V_i^1$ and $V_i^2$ through feasible space}
+
+
+        \end{problem}
+\end{figure}
+
