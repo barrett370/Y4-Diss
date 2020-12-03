@@ -17,7 +17,7 @@ Formally this top-level goal can be said to be to answer the question \hyperref[
                 \item A road system $\mathcal{R}$ represented as a graph $G = (V,E)$ 
 
 
-                    Where each edge $e \in E$ is a section of road defined as the space between two vertices $V^1,V^2 \in V$ which is bounded by two functions $b_1(x)$ and $b_2(x)$ augmented by a set of obstacles $O$ representing infeasible sections of road space
+                    Where each edge $e \in E$ is a section of road defined as the space between two vertices $V^1,V^2 \in V$ which is bounded by two functions $b_1(x)$ and $b_2(x)$ and augmented by a set of obstacles $O$ representing infeasible sections of road space
                 \item a set of agents, $A = \left\{ a_1,\ldots,a_n \right\}$
                 \item a set of routes as vertex pairs: 
 
@@ -27,8 +27,36 @@ Formally this top-level goal can be said to be to answer the question \hyperref[
             \end{itemize}
         }
         \problemquestion{ What is the set of optimal routes $\mathcal{V}_{optimal}$, where the $i^{\text{th}}$ element  is defined as a set of linked Bézier curves connecting $V_i^1$ and $V_i^2$ through feasible space}
-
-
         \end{problem}
-\end{figure}
 
+\end{figure}
+We can then split this into more manageable sub-goals. The sub-problem of generating a route through a section of road is defined in Problem~\ref{prob:sub1}. This can be further decomposed into the selfish routing of a single agent through a section of road defined in Problem~\ref{prob:sub2}
+
+\begin{figure}[htpb]
+    \centering
+    \begin{problem}{prob:sub1}
+        \problemtitle{Sub-Goal: Cooperative route planning}
+        \probleminput{
+            \begin{itemize}
+                \item A start point $P_{start}$ and a goal point $P_{goal}$ 
+                \item A section of road as defined in Problem~\ref{prob:Spec}
+                \item A knowledge of all routes being planned to be executed concurrently.
+            \end{itemize}
+        }
+        \problemquestion{What is the optimal route, in the form of a Bézier curve, between these two points s.t. it does not collide with any other agents or pass through any infeasible regions in the road space?}
+    \end{problem}
+\end{figure} 
+
+\begin{figure}[htpb]
+    \centering
+    \begin{problem}{prob:sub2}
+        \problemtitle{Sub-Goal: Bézier curve generation}
+        \probleminput{
+            \begin{itemize}
+                \item A start point $P_{start}$ and a goal point $P_{goal}$ 
+                \item A section of road as defined in Problem~\ref{prob:Spec}
+            \end{itemize}
+        }
+        \problemquestion{What is the optimal route, in the form of a Bézier curve, between these two points s.t. it does not pass through any infeasible space?}
+    \end{problem}
+\end{figure} 
