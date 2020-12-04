@@ -1,7 +1,7 @@
 include("GAUtils.jl")
-nclude("geneticOperators.jl")
+include("geneticOperators.jl")
 
-function GA(start::Point, goal::Point, road::Road, n_gens::Real=1, n::Real=10) :: Array{Individuals}
+function GA(start::Point, goal::Point, road::Road, n_gens::Real=1, n::Real=10) :: Array{Individual}
     # Initialise population
     if  start.y < road.boundary_1(start.x) || start.y > road.boundary_2(start.y) || goal.y < road.boundary_1(goal.x) || goal.y > road.boundary_2(goal.x)
         println("ERROR, start of goal is outside of roadspace")
@@ -25,7 +25,7 @@ function GA(start::Point, goal::Point, road::Road, n_gens::Real=1, n::Real=10) :
         )
         n_gens = n_gens - 1
     end
-    savefig(plotGeneration!(draw_road(road,0,20),P,road,100),string("./gen-",n_gens))
+#    savefig(plotGeneration!(draw_road(road,0,20),P,road,100),string("./gen-",n_gens))
     # P = filter(i->high_proximity_distance(road,i.phenotype.genotype)==0,filter(i -> infeasible_distance(road,i.phenotype.genotype)==0,P))
     P
 end

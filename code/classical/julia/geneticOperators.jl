@@ -48,8 +48,8 @@ function simple_crossover(P::Array{Individual})
         o1 = append!(p1[1:i], p2[i+1:end])
         o2 = append!(p2[1:i], p1[i+1:end])
 
-        append!(offspring, [Individual(Phenotype(start, [], o1 |> getGenotype, goal), 0)])
-        append!(offspring, [Individual(Phenotype(start, [], o2 |> getGenotype, goal), 0)])
+        append!(offspring, [Individual(Phenotype(start, o1 |> getGenotype, goal), 0)])
+        append!(offspring, [Individual(Phenotype(start, o2 |> getGenotype, goal), 0)])
         # if length(filter(!isValid, offspring)) > 0
         #     debugIsValid(o1)
         #     debugIsValid(o2)

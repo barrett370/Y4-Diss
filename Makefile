@@ -13,3 +13,6 @@ site:
 .PHONY: deploy
 deploy:
 	make site && git add docs && ./utils/datecommit.sh && git push
+.PHONY: update-report
+update-report:
+	make report && make deploy	
