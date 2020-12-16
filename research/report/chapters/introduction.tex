@@ -1,6 +1,6 @@
 
 \todo[inline]{Lay out different tasks \& steps of the project, identify subgoals}
-
+\todo[inline]{Move formal goal definitions to Evaluation? }
 \section{Goals}
 
 The overarching goal of this project is to optimally route traffic in the setting of a fully-autonomous road system. This however, is an aspirational goal with many sub-requirements to be fulfilled before it can come to fruition.
@@ -19,7 +19,7 @@ Formally this top-level goal can be said to be to answer the question \hyperref[
 
                     Where each edge $e \in E$ is a section of road defined as the space between two vertices $V^1,V^2 \in V$ which is bounded by two functions $b_1(x)$ and $b_2(x)$ and augmented by a set of obstacles $O$ representing infeasible sections of road space
                 \item a set of agents, $A = \left\{ a_1,\ldots,a_n \right\}$
-                \item a set of routes as vertex pairs: 
+                \item a set of vertex pairs representing start and goal points for each agent: 
 
                     $\mathcal{V} = \left\{ (V_1^1,V_1^2),\ldots, (V_n^1, V_n^2) \right\}, V_{i \in [1 \ldots n]}^{j \in [1,2]} \in V$ 
 
@@ -50,6 +50,20 @@ We can then split this into more manageable sub-goals. The sub-problem of genera
 \begin{figure}[htpb]
     \centering
     \begin{problem}{prob:sub2}
+        \problemtitle{Sub-Goal: Single agent route planning}
+        \probleminput{
+            \begin{itemize}
+                \item A start point $P_{start}$ and a goal point $P_{goal}$ 
+                \item A section of road as defined in Problem~\ref{prob:Spec}
+            \end{itemize}
+        }
+        \problemquestion{What is the optimal route, in the form of a Bézier curve, between these two points s.t. it does not pass through any infeasible regions in the road space?}
+    \end{problem}
+\end{figure} 
+
+\begin{figure}[htpb]
+    \centering
+    \begin{problem}{prob:sub3}
         \problemtitle{Sub-Goal: Bézier curve generation}
         \probleminput{
             \begin{itemize}

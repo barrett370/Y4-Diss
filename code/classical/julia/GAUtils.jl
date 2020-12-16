@@ -197,13 +197,22 @@ function Fitness(r::Road, i::Individual)
     l1 = infeasible_distance(r, i.phenotype.genotype)
     l2 = high_proximity_distance(r, i.phenotype.genotype) # length of path in which min safe distance is broken
 
-    # Velocity Fitness
-
-
 
     l + α * l1 + β * l2
 end
 
+function Fitness(r::Road, i::Individual, os::Array{Individual}) # Given knowledge of other individuals in the roadspace penalise intersections
+
+    base_fitness = Fitness(r,i)
+
+
+    for o in os
+        if bezInt(i.phenotype.genotype, o.phenotype.genotype)
+            base_fitness = base_fitness * 2
+        end
+    end
+    return base_fitness
+end
 
 
 function debugIsValid(i::Individual)
