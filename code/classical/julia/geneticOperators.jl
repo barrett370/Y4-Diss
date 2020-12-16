@@ -6,7 +6,7 @@ function uniform_mutation!(P::Array{Individual})::Array{Individual}
     # for i in P
     for i in P[2:end] # Leave most fit individual alone TODO consider if this is desirable behaviour
         if length(i.phenotype.genotype) > 2
-            if sample([true, false], Weights([1 - μ, μ]))
+            if Distributions.sample([true, false], Weights([1 - μ, μ]))
                 x_rng = sort([i.phenotype.source.x, i.phenotype.goal.x])
                 y_rng = sort([i.phenotype.source.y, i.phenotype.goal.y])
                 i.phenotype.genotype[rand(2:length(i.phenotype.genotype)-1)] = ControlPoint(

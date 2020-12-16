@@ -4,7 +4,7 @@ include("roadNetwork.jl")
 # boundary1(x) = sin(0.3*x)
 # boundary2(x) = sin(0.35*x)+4
 boundary1(x) = 0
-boundary2(x) = 4
+boundary2(x) = 12
 
 o1 = Circle(2,Point(5,10))
 o2 = Circle(0.6,Point(11,3))

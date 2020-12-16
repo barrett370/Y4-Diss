@@ -21,11 +21,11 @@ Where $L_c$ is chord length and $L_p$ is polygon length. This was proven by Jens
 
 So far we have only concerned ourselves with planning a route through a road-space for a single agent. However, in the real world, roads are seldom occupied by a single vehicle and as such we must consider how to efficiently plan a set of routes for a set of agents between between a set of coordinate pairs such that, our agents do not collide for any time $t$. 
 
-There are different approaches we can take to this problem. \todo[inline]{refer to lit rev sections discussing approaches by Kala\cite{kalaOnroadIntelligentVehicles2016} and Cai \& Peng \cite{caiCooperativeCoevolutionaryAdaptive2002}}
-
-\section{Implementation}
-
+There are different approaches we can take to this problem. \todo[inline]{refer to lit rev sections discussing approaches by Kala\cite{kalaOnroadIntelligentVehicles2016} and Cai \& Peng \cite{caiCooperativeCoevolutionaryAdaptive2002}} \section{Implementation} 
 My for my initial implementation, I focused on simply getting a working system. I therefore, started by implementing the simplest form of each genetic operator. Namely, fitness proportional selection (aka. roulette wheel selection), simple crossover and uniform mutation. 
+
+
+My first step in cooperative route planning was to implement the functionality to allow me to check if two given routes intersect. This at the least will be a useful safety function and may well form the basis of my new fitness function\todo[inline]{refer to different methods of checking for Bézier curve intersection. No complete method, only approximations.}
 
 \subsection{Language Choice}
 

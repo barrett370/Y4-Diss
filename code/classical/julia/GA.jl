@@ -5,9 +5,9 @@ function GA(start::Point, goal::Point, road::Road, n_gens::Real=1, n::Real=10) :
     # Initialise population
     if  start.y < road.boundary_1(start.x) || start.y > road.boundary_2(start.y) || goal.y < road.boundary_1(goal.x) || goal.y > road.boundary_2(goal.x)
         println("ERROR, start of goal is outside of roadspace")
-        return
+        return []
     end
-    𝓕 = curry(Fitness,road)
+    𝓕 = curry(Fitness,road) # Curry fitness function with road as this is a static attribute of the function. Allows for nicer piping of data.
     P = generatePopulation(n, start, goal, road)
     map(p -> p.fitness = p |> 𝓕, P) # Calculate fitness for initial population, map 𝓕 over all Individuals
     while true && n_gens > 0 && length(P) > 0# Replace with stopping criteria

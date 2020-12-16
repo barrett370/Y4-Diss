@@ -206,6 +206,18 @@
   howpublished = {https://julialang.org/}
 }
 
+@article{jungSafeSystemsProgramming2020,
+  title = {Safe {{Systems Programming}} in {{Rust}}: {{The Promise}} and the {{Challenge}}},
+  shorttitle = {Safe {{Systems Programming}} in {{Rust}}},
+  author = {Jung, Ralf and Jourdan, Jacques-Henri and Krebbers, Robbert and Dreyer, Derek},
+  year = {2020},
+  publisher = {{Association for Computing Machinery}},
+  abstract = {\textbullet{} Rust is the first industry-supported programming language to overcome the longstanding tradeoff between the safety guarantees of higher-level languages (like Java) and the control over resource management provided by lower-level "systems programming" languages (like C and C++). \textbullet{} It tackles this challenge using a strong type system based on the ideas of ownership and borrowing, which statically prohibits the mutation of shared state. This approach enables many common systems programming pitfalls to be detected at compile time. \textbullet{} There are a number of data types whose implementations fundamentally depend on shared mutable state and thus cannot be typechecked according to Rust's strict ownership discipline. To support such data types, Rust embraces the judicious use of unsafe code encapsulated within safe APIs. \textbullet{} The proof technique of semantic type soundness, together with advances in separation logic and machine-checked proof, has enabled us to begin building rigorous formal foundations for Rust as part of the RustBelt project.},
+  file = {/home/sam/Zotero/storage/MQN57SB4/Jung et al. - 2020 - Safe Systems Programming in Rust The Promise and .pdf},
+  journal = {Communications of the ACM},
+  keywords = {control,programming language,Rust,safety,type systems}
+}
+
 @article{kalaDynamicDistributedLanes2014,
   title = {Dynamic Distributed Lanes: Motion Planning for Multiple Autonomous Vehicles},
   shorttitle = {Dynamic Distributed Lanes},
@@ -445,6 +457,12 @@
   journal = {IEEE Transactions on Aerospace and Electronic Systems},
   keywords = {autonomous aerial vehicles,average flying altitude,dynamic environments,fast genetic algorithm path planner,fixed-wing military UAV,genetic algorithm,genetic algorithms,Genetic algorithms,GPU-based path planner,graphics processing unit,graphics processing units,Graphics processing units,military aircraft,mobile robots,Optimization,parallel architecture,parallel architectures,parallel computing,path planning,Planning,Trajectory,UAV,unmanned aerial vehicles,Unmanned aerial vehicles},
   number = {5}
+}
+
+@misc{RustBelt,
+  title = {{{RustBelt}}},
+  file = {/home/sam/Zotero/storage/GN95H9I8/rustbelt.html},
+  howpublished = {https://plv.mpi-sws.org/rustbelt/}
 }
 
 @article{shariatiPredictionConcreteStrength2020,

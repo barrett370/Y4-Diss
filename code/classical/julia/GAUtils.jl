@@ -1,3 +1,5 @@
+using LazySets
+using DataStructures
 include("bezier.jl")
 include("roadNetwork.jl")
 include("utils.jl")
@@ -229,4 +231,86 @@ end
 function repair(i::Individual)::Individual
     sort!(i.phenotype.genotype, by = g -> g.x)
     return i
+end
+
+function deCasteljau(t, coefs)
+
+    
+
+end
+
+
+function diam(X::Array{Point}) ::Real
+    @show X
+    dist(a,os) = [√((a.x - b.x)^2 + (a.y - b.y)^2) for b in os]
+    dist_matrix = [dist(a,X) for a in X]
+    dist_matrix |> Iterators.flatten |> collect |> maximum
+
+end
+
+#\cite{yapCompleteSubdivisionAlgorithms2006}
+function intersects(i1::Individual, i2::Individual)::Bool
+
+    ε  = 0.1 # TODO tune param
+    Δ  = 1 # TODO tune param
+    Q0 = Queue{Tuple{Individual,Individual}}() # Macro Queue
+    Q1 = Queue{Tuple{Individual,Individual}}() # Micro Queue
+    toRealArray = i -> [[float(p.x),float(p.y)] for p in i]
+    @show i2
+    @show i2.phenotype.genotype |> toRealArray
+    @show typeof(i2.phenotype.genotype |> toRealArray) 
+    if length(convex_hull(i1.phenotype.genotype |> toRealArray) ∪ convex_hull(i2.phenotype.genotype |> toRealArray)) != 0 # Union of the convex hulls of the control points is non-empty
+        while length(Q0) > 0 && length(Q1) > 0 || true
+            # i1 and i2 are a "candidate pair"
+            pair_diam = diam(i1.phenotype.genotype ∪ i2.phenotype.genotype)  
+            if pair_diam < ε
+                return true
+            else # subdivides the curve with the larger diameter
+
+                diam_i1 = diam(i1.phenotype.genotype)
+                diam_i2 = diam(i2.phenotype.genotype)
+                if diam_i1 > diam_i2
+                    # subdivide i1
+                    i1_1 = copy(i1)
+                    i1_2 = copy(i1)
+                    i = floor(length(i1.phenotype.genotype)/2)
+                    i1_1.phenotype.genotype = i1.phenotype.genotype[1:i]
+                    i1_2.phenotype.genotype = i1.phenotype.genotype[i+1:end]
+                    if diam(i1_1.phenotype.genotype,i2.phenotype.genotype) < Δ 
+                        enqueue!(Q0,(i1_1,i2))
+                    else
+                        enqueue!(Q1,(i1_1,i2))
+                    end
+                    if diam(i1_2.phenotype.genotype,i2.phenotype.genotype) < Δ 
+                        enqueue!(Q0,(i1_2,i2))
+                    else
+                        enqueue!(Q1,(i1_2,i2))
+                    end
+                else
+                    #subdivide i2
+                    i2_1 = copy(i2)
+                    i2_2 = copy(i2)
+                    i = Integer(floor(length(i2.phenotype.genotype)/2))
+                    i2_1.phenotype.genotype = i2.phenotype.genotype[1:i]
+                    i2_2.phenotype.genotype = i2.phenotype.genotype[i+1:end]
+                    if diam(i2_1.phenotype.genotype ∪ i1.phenotype.genotype) < Δ 
+                        enqueue!(Q0,(i1,i2_1))
+                    else
+                        enqueue!(Q1,(i1,i2_1))
+                    end
+                    if diam(i2_2.phenotype.genotype ∪ i1.phenotype.genotype) < Δ 
+                        enqueue!(Q0,(i1,i2_2))
+                    else
+                        enqueue!(Q1,(i1,i2_2))
+                    end
+                end
+            end
+        end
+    else
+        # i1 and i2 are not "candidates" therefore, cannot intersect.
+        @show "initial individuals are not candidates"
+        return false
+    end
+    @show "Default"
+    return false
 end
