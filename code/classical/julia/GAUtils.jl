@@ -208,7 +208,7 @@ function Fitness(r::Road,os::Array{Individual}, i::Individual) # Given knowledge
 
     for o in os
         if bezInt(i.phenotype.genotype, o.phenotype.genotype)
-            base_fitness = base_fitness * 2
+            base_fitness = base_fitness * 5
         end
     end
     return base_fitness

@@ -55,4 +55,6 @@ struct Road
         # new(b1,b2,Y,obs)
         new(b1, b2, obs)
     end
+
+    #TODO implement road length
 end

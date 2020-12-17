@@ -2,16 +2,25 @@ include("GAUtils.jl")
 include("geneticOperators.jl")
 
 
-function CGA(starts::Array{Point}, goals::Array{Point}, road::Road, n_gens::Real=1, n::Real=10) :: Array{Individual}
+function CGA(
+    starts::Array{Point},
+    goals::Array{Point},
+    road::Road,
+    n_gens::Real = 1,
+    n::Real = 10,
+)::Array{Individual}
 
     completed_plans::Array{Individual} = []
-    for (start,goal) in zip(starts,goals)
+    ret::Array{Individual} = []
+    for (start, goal) in zip(starts, goals)
         @show start, goal
-        P = CGA(start,goal,road,completed_plans,n_gens,n)
-        append!(completed_plans,[P[1]])
+        P = CGA(start, goal, road, completed_plans, n_gens, n)
+        append!(completed_plans, [P[1]])
+        #append!(ret,[P[1]])
     end
 
     completed_plans
+    #ret
 
 end
 
