@@ -44,6 +44,24 @@ Question Definition The question I will attempt to answer will be:
     
     <item>
       <title></title>
+      <link>/Y4-Diss/posts/week10/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/Y4-Diss/posts/week10/</guid>
+      <description>Log: Week 10 This week I have been researching cooperative genetic algorithms. I need to find a way to co-evolve multiple routes that do not collide at any given time $t$. I need to also work out the best way to implement velocity in my system. One approach would be to add it to the genotype and therefore evolve the velocity at the same time as the position of the control points.</description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>/Y4-Diss/posts/week11/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/Y4-Diss/posts/week11/</guid>
+      <description>Log: Week This week I have begun to look at the cooperative planning element of my project. The first task I undertook was to implement the functionality to detect intersects between two bezier curves. This proved to be a non-trivial task with many solutions used in computer graphics proving to be too unreliable for a system such as mine. I ended up implementing a process of recursive subdivision using De Casteljau&amp;rsquo;s algorithm for splitting Bezier curves.</description>
+    </item>
+    
+    <item>
+      <title></title>
       <link>/Y4-Diss/posts/week4/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
@@ -90,6 +108,16 @@ I have undertaken some preliminary research into language choice for the impleme
  Implemented basic/ placeholder genetic operators These allow the algorithm to accurately learn/ approximate straight line routes from $A \rightarrow B$  Below you can see the population after 1 generation:
 And the most and least fit solutions after 4 generations
 Whilst in isolation this is not particularly impressive, in fact is under performs a simple Pythagorean distance calculation, it can be generalised and extended to avoid obstacles and to not intersect with other routes.</description>
+    </item>
+    
+    <item>
+      <title>Log Week 9</title>
+      <link>/Y4-Diss/posts/week9/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/Y4-Diss/posts/week9/</guid>
+      <description>I have started keeping a copy of my WIP report here
+This week, I have been initially working on the background section of my report. I went on to work on my implmentation. I have decided to start the transition to cooperative route planning. To do this I have begun collating and reading papers on the subject. There appears to be promising research in the area of cooperative route planning so hopefully I will be able to implement a cooperative wrapper around my current code with relative ease.</description>
     </item>
     
     <item>
