@@ -37,8 +37,8 @@ function bezInt(B1::BezierCurve,B2::BezierCurve) :: Bool
 end
 
 function bezInt(B1::BezierCurve, B2::BezierCurve, rdepth::Int) :: Bool
-    if rdepth +1 > 7
-        println("recursion depth reached")
+    if rdepth +1 > 10
+        #println("recursion depth reached")
         return false
     end
     ε  = 1 # TODO tune param
@@ -51,38 +51,24 @@ function bezInt(B1::BezierCurve, B2::BezierCurve, rdepth::Int) :: Bool
         # B1 and B2 are a "candidate pair"
         if diam(B1 ∪ B2) < ε
             println("detected intersect")
-            @show rdepth
+            #@show rdepth
             return true
         else # subdivides the curve with the larger diameter
 
 
                 B1_1 = [ B1[1:i](0.5) for i in 1:length(B1) ]
-                B1_2 = [ B1[i:i](1) for i in [length(B1)-i for i in 0:length(B1)-1]]
+                B1_2 = [ B1[1:i](1) for i in [length(B1)-i for i in 0:length(B1)-1]]
                 B2_1 = [ B2[1:i](0.5) for i in 1:length(B2) ]
-                B2_2 = [ B2[i:i](1) for i in [length(B2)-i for i in 0:length(B2)-1]]
+                B2_2 = [ B2[1:i](1) for i in [length(B2)-i for i in 0:length(B2)-1]]
                 return bezInt(B1_1,B2_1,rdepth+1) || bezInt(B1_1,B2_2,rdepth+1) || bezInt(B1_2,B2_1,rdepth+1) || bezInt(B1_2,B2_2,rdepth+1)
-#            diam_B1 = diam(B1)
-#            diam_B2 = diam(B2)
-#            if diam_B1 > diam_B2
-#                # subdivide B1
-#         #       println("Subdividing B1") 
-#                B1_1 = [ B1[1:i](0.5) for i in 1:length(B1) ]
-#                B1_2 = [ B1[i:i](1) for i in [length(B1)-i for i in 0:length(B1)-1]]
-#                return bezInt(B1_1,B2) || bezInt(B1_2,B2)
-#            else
-#                #subdivide B2
-#         #       println("Subdividing B2") 
-#                B2_1 = [ B2[1:i](0.5) for i in 1:length(B2) ]
-#                B2_2 = [ B2[i:i](1) for i in [length(B2)-i for i in 0:length(B2)-1]]
-#                return bezInt(B1,B2_1) || bezInt(B1,B2_2)
-#            end
+
+
+#                return @async fetch(bezInt(B1_1,B2_1,rdepth+1)) || @async fetch(bezInt(B1_1,B2_2,rdepth+1)) || @async fetch(bezInt(B1_2,B2_1,rdepth+1)) || @async fetch(bezInt(B1_2,B2_2,rdepth+1))
+
         end
     else
         # B1 and B2 are not "candidates" therefore, cannot intersect.
-        @show "initial individuals are not candidates"
+        #@show "initial individuals are not candidates"
         return false
     end
-    @show "Default"
-    return false
-
 end
