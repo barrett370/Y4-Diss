@@ -181,6 +181,15 @@ function high_proximity_distance(road::Road, curve::BezierCurve)
     l
 end
 
+function bezLength(c::BezierCurve) :: Real
+    n = length(c)
+    l =
+        (
+            2 * chord_length(c) +
+            (n - 1) * polygon_length(c)
+        ) / (n + 1)
+    return l
+end
 
 function Fitness(r::Road, i::Individual)
 
@@ -188,12 +197,7 @@ function Fitness(r::Road, i::Individual)
 
     α = 8 # Infeasible path Penalty weight
     β = 2.5 # Min safe distance break penalty weight
-    n = length(i.phenotype.genotype)
-    l =
-        (
-            2 * chord_length(i.phenotype.genotype) +
-            (n - 1) * polygon_length(i.phenotype.genotype)
-        ) / (n + 1)
+    l = bezLength(i.phenotype.genotype)
     l1 = infeasible_distance(r, i.phenotype.genotype)
     l2 = high_proximity_distance(r, i.phenotype.genotype) # length of path in which min safe distance is broken
 
@@ -207,7 +211,12 @@ function Fitness(r::Road,os::Array{Individual}, i::Individual) # Given knowledge
 
 
     for o in os
-        if bezInt(i.phenotype.genotype, o.phenotype.genotype)
+        println("Testing fitness of $i, wrt. $o")
+        #if bezInt(i.phenotype.genotype, o.phenotype.genotype)
+        #    base_fitness = base_fitness * 5
+        #end
+        if collisionDetection(i,o)
+            println("Detected collision!")
             base_fitness = base_fitness * 5
         end
     end
@@ -242,3 +251,29 @@ function repair(i::Individual)::Individual
     return i
 end
 
+function collisionDetection(i1::Individual,i2::Individual) :: Bool
+
+    (b,ps) = bezInt(i1.phenotype.genotype,i2.phenotype.genotype)
+    if b # if they do intersect
+        i1_to_intersect = deepcopy(i1.phenotype.genotype)
+        for i in 1:length(i1.phenotype.genotype)
+            if i1.phenotype.genotype[i].x > ps[1][1].x #TODO tweak this
+                i1_to_intersect = i1_to_intersect[1:i]
+                append!(i1_to_intersect,ps[1][2:end])
+                break
+            end
+        end
+
+        i2_to_intersect = deepcopy(i2.phenotype.genotype)
+        for i in 1:length(i2.phenotype.genotype)
+            if i2.phenotype.genotype[i].x > ps[2][1].x #TODO tweak this
+                i2_to_intersect = i2_to_intersect[1:i]
+                append!(i2_to_intersect,ps[2][2:end])
+                break
+            end
+        end
+        return bezLength(i1_to_intersect) == bezLength(i2_to_intersect) #TODO add pessimistic fuzz to this comparison
+    else 
+        return false
+    end
+end

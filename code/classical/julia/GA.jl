@@ -44,7 +44,7 @@ function CGA(start::Point, goal::Point, road::Road,other_routes::Array{Individua
             |> P -> map(repair, P)  # attempt repair of invalid solutions
             |> P -> sort(P, by= p -> p.fitness) # Sort my fitness
             |> P -> filter(isValid, P) # remove invalid solutions
-            |> P -> P[1:n] # take top n
+            |> P -> P[1:minimum([n,length(P)])]# take top n
         )
         n_gens = n_gens - 1
     end
