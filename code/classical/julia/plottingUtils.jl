@@ -138,6 +138,20 @@ function plot_curve(c::BezierCurve, n::Integer)
     plot(ps_x, ps_y)
 end
 
+function plot_curve_bounds!(plt,i::Integer,c::BezierCurve,n::Integer,t_bound::Real)
+    if t_bound > 1 || t_bound < 0
+        println("Error t_bound must be in range 0<=t<=1")
+        return
+    end
+    ps_x, ps_y = [], []
+    for x in range(0, t_bound, step = 1 / n)
+        C = c(x)
+        append!(ps_x, C.x)
+        append!(ps_y, C.y)
+    end
+    plot!(plt, ps_x, ps_y, label = string("Individual-", i),legend=false)
+end
+
 function plot_curve!(plt, i::Integer, c::BezierCurve, n::Integer)
     ps_x, ps_y = [], []
     for x in range(0, 1, step = 1 / n)
