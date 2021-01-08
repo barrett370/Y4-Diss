@@ -45,7 +45,7 @@ function CGA(start::Point, goal::Point, road::Road,other_routes::Array{Individua
             |> P -> sort(P, by= p -> p.fitness) # Sort my fitness
             |> P -> filter(isValid, P) # remove invalid solutions
             |> P -> P[1:minimum([n,length(P)])]# take top n
-        )
+ )
         n_gens = n_gens - 1
     end
 #    savefig(plotGeneration!(draw_road(road,0,20),P,road,100),string("./gen-",n_gens))
