@@ -104,25 +104,6 @@ function draw_road(r::Road, s::Real, e::Real)
     rg
 end
 
-function get_curve(c::BezierCurve, n = 500)
-    ps_x, ps_y = [], []
-    for x in range(0, 1, step = 1 / n)
-        C = c(x)
-        append!(ps_x, C.x)
-        append!(ps_y, C.y)
-    end
-    ps_x, ps_y
-end
-
-function get_circle(c::Circle)
-    ps_x, ps_y = [], []
-    for t ∈ LinRange(0, 2π, 500)
-        C = c(t)
-        append!(ps_x, C[1])
-        append!(ps_y, C[2])
-    end
-    ps_x, ps_y
-end
 
 function get_rectangle(r::Rectangle)
     Shape(r.origin.x .+ [0, r.w, r.w, 0], r.origin.y .+ [0, 0, r.h, r.h])
@@ -170,4 +151,27 @@ function plot_control_points!(plt, c::BezierCurve)
     for p in c
         plot!(plt, (p.x,p.y), seriestype = :scatter, legend = false)
     end
+end
+
+function plot_generation_gif(road::Road, P::Array{Individual})
+    plt = plot()
+    plt = draw_road(road,0,20)
+    ci = 1
+    colours = [:red,:blue,:green,:yellow]
+    for i in P
+        for p in i.phenotype.genotype
+            plot!(plt,[(p.x,p.y)],seriestype=:scatter,color=colours[ci])
+        end
+        ci = ci + 1
+    end
+    ci=1
+    anim = @animate for i ∈ 0:0.1:1
+        for p in P
+            plot_curve_bounds!(plt,1,p.phenotype.genotype,100,i,colours[ci])
+            ci = ci + 1
+        end
+        ci = 1
+    end
+
+    gif(anim,"anim1.gif",fps=2)
 end

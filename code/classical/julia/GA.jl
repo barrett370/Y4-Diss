@@ -45,11 +45,12 @@ function CGA(start::Point, goal::Point, road::Road,other_routes::Array{Individua
             |> P -> sort(P, by= p -> p.fitness) # Sort my fitness
             |> P -> filter(isValid, P) # remove invalid solutions
             |> P -> P[1:minimum([n,length(P)])]# take top n
- )
+        )
         n_gens = n_gens - 1
     end
 #    savefig(plotGeneration!(draw_road(road,0,20),P,road,100),string("./gen-",n_gens))
     # P = filter(i->high_proximity_distance(road,i.phenotype.genotype)==0,filter(i -> infeasible_distance(road,i.phenotype.genotype)==0,P))
+    @everywhere GC.gc(true)
     P
 end
 
@@ -74,11 +75,12 @@ function GA(start::Point, goal::Point, road::Road, n_gens::Real=1, n::Real=10) :
             |> P -> map(repair, P)  # attempt repair of invalid solutions
             |> P -> sort(P, by= p -> p.fitness) # Sort my fitness
             |> P -> filter(isValid, P) # remove invalid solutions
-            |> P -> P[1:n] # take top n
+            |> P -> P[1:(min(n,length(P)))] # take top n
         )
         n_gens = n_gens - 1
     end
 #    savefig(plotGeneration!(draw_road(road,0,20),P,road,100),string("./gen-",n_gens))
     # P = filter(i->high_proximity_distance(road,i.phenotype.genotype)==0,filter(i -> infeasible_distance(road,i.phenotype.genotype)==0,P))
+    @everywhere GC.gc(true)
     P
 end

@@ -1,0 +1,8 @@
+#+TITLE: Semester 2, Week2 0
+
+This week I am looking into parallelising my current processes. Currently, I am plan concurrent routes for a set of agents. However, this planning happens sequentially in both generations and agents, leading to a very time consuming process.
+
+I will be looking into the possibility of:
+
+- Parallelising the individual generation generation
+- Ways to parallelise the multi-agents learning through the use of channels through which the current state of planning of each agents can be shared between threads. There is a possibility this will result in routes that collide. Depending on performance, this could still be a viable initial planning stage followed by checks and re-planning where necessary.

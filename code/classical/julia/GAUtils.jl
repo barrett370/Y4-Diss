@@ -279,3 +279,23 @@ function collisionDetection(i1::Individual,i2::Individual) :: Bool
         return false
     end
 end
+
+function get_curve(c::BezierCurve, n = 500)
+    ps_x, ps_y = [], []
+    for x in range(0, 1, step = 1 / n)
+        C = c(x)
+        append!(ps_x, C.x)
+        append!(ps_y, C.y)
+    end
+    ps_x, ps_y
+end
+
+function get_circle(c::Circle)
+    ps_x, ps_y = [], []
+    for t ∈ LinRange(0, 2π, 500)
+        C = c(t)
+        append!(ps_x, C[1])
+        append!(ps_y, C[2])
+    end
+    ps_x, ps_y
+end
