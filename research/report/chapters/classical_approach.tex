@@ -19,14 +19,16 @@ Where $L_c$ is chord length and $L_p$ is polygon length. This was proven by Jens
 
 \subsection{Co-evolution of routes for a set of agents}
 
-So far we have only concerned ourselves with planning a route through a road-space for a single agent. However, in the real world, roads are seldom occupied by a single vehicle and as such we must consider how to efficiently plan a set of routes for a set of agents between between a set of coordinate pairs such that, our agents do not collide for any time $t$. 
+So far we have only concerned ourselves with planning a route through a road-space for a single agent. However, in the real world, roads are seldom occupied by a single vehicle and as such we must consider how to efficiently plan a set of routes for a set of agents between between a set of coordinate pairs, such that, our agents do not collide for any time $t$.
 
-There are different approaches we can take to this problem. \todo[inline]{refer to lit rev sections discussing approaches by Kala\cite{kalaOnroadIntelligentVehicles2016} and Cai \& Peng \cite{caiCooperativeCoevolutionaryAdaptive2002}} \section{Implementation} 
-My for my initial implementation, I focused on simply getting a working system. I therefore, started by implementing the simplest form of each genetic operator. Namely, fitness proportional selection (aka. roulette wheel selection), simple crossover and uniform mutation. 
+There are different approaches we can take to this problem. \todo[inline]{refer to lit rev sections discussing approaches by Kala\cite{kalaOnroadIntelligentVehicles2016} and Cai \& Peng \cite{caiCooperativeCoevolutionaryAdaptive2002}}
+
+\section{Implementation} 
+My for my initial implementation, I focused on simply getting a working system. I therefore, started by implementing the simplest form of each genetic operator. Namely, fitness proportional selection (aka. roulette wheel selection\todo[inline]{check this}), simple crossover and uniform mutation. (\ref{imp:FitPropSel})
 
 \subsection{Language Choice}
 
-I have chosen to implement my classical approach using the Julia language project\cite{JuliaProgrammingLanguage}.
+I have chosen to implement my approach using the Julia language project\cite{JuliaProgrammingLanguage}.
 
 Julia is a relatively new language first developed in 2012 by Jeff Bezanson, Stefan Karpinski and Viral Shah. It is a multi-paradigm language allowing for functional, object oriented and meta programming approaches to problems. I will mainly be using it for it's functional and OO capabilities. 
 
@@ -35,6 +37,8 @@ Julia operates using multiple dispatch similar to languages such as Haskell. It 
 Julia features a syntax similar to both Python and Matlab with performance on par with C. As I am already very familiar with python and have studied functional programming in a number of modules; I found this language very quick and intuitive to learn and the resulting code to be clean, idiomatic and fast.
 
 A real-world deployment of a system based on my research would undoubtedly be required to run on small, relatively low performance, embedded systems and as such Julia may not be appropriate here. A language such as C or Rust may be used instead.
+
+Julia also has distributed computation facilities. This sort of functionality could be extremely useful in a system such as mine as it could allow for computation to be spread across the agents themselves, removing the need for a central planning center which could be a single point of failure.
 \section{Results}
 
 My results were achieved by

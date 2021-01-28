@@ -1,5 +1,8 @@
 using LazySets
 using DataStructures
+using SharedArrays
+using StaticArrays
+using Distributed
 include("bezier.jl")
 include("roadNetwork.jl")
 include("utils.jl")
@@ -20,6 +23,12 @@ mutable struct Individual
     fitness::Real
 end
 
+function toSVector(i::Individual)::SVector{6,Float64}
+    real_array = getGenotypeString(i.phenotype.genotype)
+    return SVector{6}(map(r -> Float64(r),real_array))
+end
+
+
 
 function getGenotypeString(genotype::BezierCurve)::Array{Real}
     genotype_str = []
@@ -37,6 +46,15 @@ function getGenotype(genotypeString::Array{Real})::BezierCurve
     end
     ret
 end
+
+function getGenotype(svec::SVector{6,Float64})::BezierCurve
+    ret::BezierCurve = []
+    for i = 1:2:6
+        append!(ret,[ControlPoint(svec[i], svec[i+1])])
+    end
+    ret
+end
+
 
 MAX_P = 6
 
@@ -223,6 +241,26 @@ function Fitness(r::Road,os::Array{Individual}, i::Individual) # Given knowledge
     return base_fitness
 end
 
+function Fitness(r::Road,os::SharedArray{SVector{6,Float64}}, i::Individual) # Given knowledge of other individuals in the roadspace penalise intersections
+
+    base_fitness = Fitness(r,i)
+    #if bezInt(i.phenotype.genotype, o.phenotype.genotype)
+    #    base_fitness = base_fitness * 5
+    #
+    for o in os
+        if o != SVector{6,Float64}(zeros(6))
+            println("Testing fitness of $i, wrt. $o, parallel")
+            if collisionDetection(i.phenotype.genotype,o |> getGenotype)
+                println("Detected collision!")
+                base_fitness = base_fitness * 5 #TODO tune this
+            end
+        else
+            println("other routes is empty")
+        end
+    end
+
+    return base_fitness
+end
 
 function debugIsValid(i::Individual)
 
@@ -250,6 +288,37 @@ function repair(i::Individual)::Individual
     sort!(i.phenotype.genotype, by = g -> g.x)
     return i
 end
+
+function collisionDetection(i1::BezierCurve, i2::BezierCurve) :: Bool
+    @show "Detecting Collisions parallel"
+    (b,ps) = bezInt(i1,i2)
+    if b # if they do intersect
+        println("Intersection")
+        i1_to_intersect = deepcopy(i1)
+        for i in 1:length(i1)
+            if i1[i].x > ps[1][1].x #TODO tweak this
+                i1_to_intersect = i1_to_intersect[1:i]
+                append!(i1_to_intersect,ps[1][2:end])
+                break
+            end
+        end
+
+        i2_to_intersect = deepcopy(i2)
+        for i in 1:length(i2)
+            if i2[i].x > ps[2][1].x #TODO tweak this
+                i2_to_intersect = i2_to_intersect[1:i]
+                append!(i2_to_intersect,ps[2][2:end])
+                break
+            end
+        end
+        @show abs(bezLength(i1_to_intersect) - bezLength(i2_to_intersect))
+        return abs(bezLength(i1_to_intersect) - bezLength(i2_to_intersect)) < 4 #TODO tweak pessimistic fuzz to this comparison
+    else
+        return false
+    end
+
+end
+
 
 function collisionDetection(i1::Individual,i2::Individual) :: Bool
 

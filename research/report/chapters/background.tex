@@ -61,7 +61,7 @@ The selection procedure is the process by which the next generation of individua
 
 Some methods select only the best solutions by fitness. Others employ a more stochastic approach, such as roulette wheel selection, to increase diversity and reduce complexity.
 
-\paragraph{Fitness Proportional Selection}
+\paragraph{Fitness Proportional Selection}\label{imp:FitPropSel}
 
 Fitness proportional or Roulette wheel selection is a popular selection operator. It uses fitness to assign selection probability to each individual in a population.
 
@@ -115,7 +115,7 @@ For real-coded GAs you instead have a selection of Crossover operators including
 \end{itemize}
 
 
-\subparagraph{Simple (one point) Crossover}
+\subparagraph{Simple (one point) Crossover}\label{imp:SimpCross}
 
 For simple crossover, randomly select a crossover point, $i \in \{1,\ldots,n \}$. All values before this point are swapped between the two parents. For 2 parents, $p_1 = \left\{ x_1^{[1]},\ldots,x_n^{[1]}\right\}$ and $p_2 = \left\{ x_1^{[2]},\ldots,x_n^{[2]}\right\}$ this can be represented as:
 

@@ -4,8 +4,7 @@ using Distributed
 
 function uniform_mutation!(P::Array{Individual})::Array{Individual}
     μ = 0.1
-    addprocs()
-    @distributed for i in P[2:end] # Leave most fit individual alone TODO consider if this is desirable behaviour
+    for i in P[2:end] # Leave most fit individual alone TODO consider if this is desirable behaviour
         if length(i.phenotype.genotype) > 2
             if Distributions.sample([true, false], Weights([1 - μ, μ]))
                 x_rng = sort([i.phenotype.source.x, i.phenotype.goal.x])
@@ -26,7 +25,6 @@ function uniform_mutation!(P::Array{Individual})::Array{Individual}
             end
         end
     end
-    @everywhere GC.gc(true)
     P
 end
 

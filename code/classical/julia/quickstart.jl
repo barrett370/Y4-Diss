@@ -15,5 +15,5 @@ road = Road(
         obstacles
 )
 
-starts = [Point(10,4),Point(0,6)]
-goals =  [Point(15,4.8),Point(15.1,4)]
+starts = [Point(10,4),Point(0,6), Point(0,1)]
+goals =  [Point(15,4.8),Point(15.1,4),Point(12,10)]

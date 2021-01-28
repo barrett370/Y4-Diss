@@ -37,8 +37,7 @@ function CGA(start::Point, goal::Point, road::Road,other_routes::Array{Individua
         # savefig(plotGeneration!(draw_road(road,0,20),P,road,100,100-n_gens),string("./gifgen/gen-",100-n_gens))
         P = (P
             |> roulette_selection  # Selection operator
-            |> simple_crossover # Crossover operator
-            |> new_pop -> append!(P, new_pop)  # Add newly generated individuals to population
+            |> simple_crossover |> new_pop -> append!(P, new_pop)  ## Crossover operator & Add newly generated individuals to population
             |> uniform_mutation! # apply mutation operator
             |> P -> begin map(p -> p.fitness = p |> 𝓕, P); P end # recalculate fitness of population after mutation
             |> P -> map(repair, P)  # attempt repair of invalid solutions
@@ -50,7 +49,6 @@ function CGA(start::Point, goal::Point, road::Road,other_routes::Array{Individua
     end
 #    savefig(plotGeneration!(draw_road(road,0,20),P,road,100),string("./gen-",n_gens))
     # P = filter(i->high_proximity_distance(road,i.phenotype.genotype)==0,filter(i -> infeasible_distance(road,i.phenotype.genotype)==0,P))
-    @everywhere GC.gc(true)
     P
 end
 
@@ -81,6 +79,5 @@ function GA(start::Point, goal::Point, road::Road, n_gens::Real=1, n::Real=10) :
     end
 #    savefig(plotGeneration!(draw_road(road,0,20),P,road,100),string("./gen-",n_gens))
     # P = filter(i->high_proximity_distance(road,i.phenotype.genotype)==0,filter(i -> infeasible_distance(road,i.phenotype.genotype)==0,P))
-    @everywhere GC.gc(true)
     P
 end
