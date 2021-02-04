@@ -49,53 +49,9 @@
 
 \begin{document}
 
-\message{ !name(chapters/classical_approach.tex) !offset(-52) }
-
-\section{Approach}
-
-The general shape of a GA as seen in Algorithm~\ref{alg:GenericGA} is the same for almost all problems. 
-
-As such, I first had to implement a method to generate an initial population. In order to do this, I first had to define my programmatic representations of the Phenotypes and genotypes of my individuals. I decided to base my genotypic structure on the that described by Kala\cite{kalaOnroadIntelligentVehicles2016}. 
-
-In this approach, the genotype is abstractly represented as a Bézier curve. This is more concretely translated into a real-valued string, interleaving the $x$ and $y$ coordinates of each control point.
-
-Initially my Phenotype contained no additional information. However, I still created the distinction to allow for additional properties to be encapsulated during development.
-
-\todo{This is just a placeholder so I don't forget to include this} The foundation of my Fitness function is the length of each route, i.e. the length of a given Bézier curve. This is not a trivial calculation and the best approximation was found to be:
-
-\begin{equation}
-    L = \frac{(2L_c + (n-1)L_p)}{n+1}
-\end{equation}
-
-Where $L_c$ is chord length and $L_p$ is polygon length. This was proven by Jens Gravesen\cite{gravesenAdaptiveSubdivisionLength1997} in 1997
-
-\subsection{Co-evolution of routes for a set of agents}
-
-So far we have only concerned ourselves with planning a route through a road-space for a single agent. However, in the real world, roads are seldom occupied by a single vehicle and as such we must consider how to efficiently plan a set of routes for a set of agents between between a set of coordinate pairs such that, our agents do not collide for any time $t$. 
-
-There are different approaches we can take to this problem. \todo[inline]{refer to lit rev sections discussing approaches by Kala\cite{kalaOnroadIntelligentVehicles2016} and Cai \& Peng \cite{caiCooperativeCoevolutionaryAdaptive2002}} \section{Implementation} 
-My for my initial implementation, I focused on simply getting a working system. I therefore, started by implementing the simplest form of each genetic operator. Namely, fitness proportional selection (aka. roulette wheel selection), simple crossover and uniform mutation. 
-
-\subsection{Language Choice}
-
-I have chosen to implement my classical approach using the Julia language project\cite{JuliaProgrammingLanguage}.
-
-Julia is a relatively new language first developed in 2012 by Jeff Bezanson, Stefan Karpinski and Viral Shah. It is a multi-paradigm language allowing for functional, object oriented and meta programming approaches to problems. I will mainly be using it for it's functional and OO capabilities. 
-
-Julia operates using multiple dispatch similar to languages such as Haskell. It interoperates with C and Fortran codebases without the need of middle-man bloat. This fact allows it to utilise the extensive high performance C libraries for floating point operations. Julia is eagerly evaluated, uses a Just in time compiler and has a garbage collector.
-
-Julia features a syntax similar to both Python and Matlab with performance on par with C. As I am already very familiar with python and have studied functional programming in a number of modules; I found this language very quick and intuitive to learn and the resulting code to be clean, idiomatic and fast.
-
-A real-world deployment of a system based on my research would undoubtedly be required to run on small, relatively low performance, embedded systems and as such Julia may not be appropriate here. A language such as C or Rust may be used instead.
-\section{Results}
-
-My results were achieved by
-
-%%% Local Variables:
-%%% TeX-master: "../report"
-%%% End:
-
-\message{ !name(../report.tex) !offset(-30) }
+\message{ !name(chapters/classical_approach.tex) !offset(-6) }
+%%% TeX-master: "../report
+\message{ !name(../report.tex) !offset(14) }
 
 \end{document}
 

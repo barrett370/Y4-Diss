@@ -1,7 +1,6 @@
 default:
     @just --list
 
-
 logs:
 	cp ./research/logs/*.md ./site/content/posts/
 
@@ -16,4 +15,3 @@ site:
 
 deploy: 
     just site && git add docs && ./utils/datecommit.sh && git push
-    

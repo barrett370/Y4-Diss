@@ -73,7 +73,16 @@ We can then split this into more manageable sub-goals. The sub-problem of genera
         }
         \problemquestion{What is the optimal route, in the form of a Bézier curve, between these two points s.t. it does not pass through any infeasible space?}
     \end{problem}
-\end{figure} 
+  \end{figure}
+
+\subsection{Requirements}
+\label{subsec:requirements}
+
+The goal of this project was not to produce a production-ready system, but instead, to investigate the plausibility of GAs on the real future possibility of completely autonomous road networks. As such I feel it useful to outline the theoretical requirements of a production grade system. To do this formally I will employ Propositional and Temporal logic.
+
+\begin{enumerate}
+\item The system should never return a set of routes such that, for any time $t \in T, \forall i \in n, \forall j \in n, j \neq n, I_{i}(t) = I_{j}(t)$. I.e. for any time, no routes should inhabit the same point, meaning there are no collisions in the planned routes.
+\end{enumerate}
 
 %%% Local Variables:
 %%% TeX-master: "../report"
