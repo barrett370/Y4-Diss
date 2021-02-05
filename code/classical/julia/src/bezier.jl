@@ -33,87 +33,70 @@ function diam(X::Array{Point}) ::Real
 
 end
 
-#function bezInt(B1::BezierCurve,B2::BezierCurve) :: Bool
-#    bezInt(B1,B2,1)[1]
-#end
-
 function bezInt(B1::BezierCurve,B2::BezierCurve) :: Bool
-    n = 10
-    c = Channel(4^(n-1))
-    @async bezInt(B1,B2,1,n,c)
-    false_count = 0
-    while isopen(c)
-        if take!(c)
-            close(c)
-            return true
-        else
-            false_count = false_count + 1
-            if false_count == 4^(n-1)
-                return false
-            end
-        end
-    end
-    println("no intersect detected")
-    return false
+    bezInt(B1,B2,1)[1]
 end
 
-function bezInt(B1::BezierCurve, B2::BezierCurve, rdepth::Int,rdepth_max,ret_channel::Channel)
+function bezInt(B1::BezierCurve,B2::BezierCurve) :: Tuple{Bool,Tuple{BezierCurve,BezierCurve}}
+    bezInt(B1,B2,1)
+end
+
+function bezInt(B1::BezierCurve, B2::BezierCurve, rdepth::Int) :: Tuple{Bool,Tuple{BezierCurve,BezierCurve}}
 #function bezInt(B1::BezierCurve, B2::BezierCurve, rdepth::Int) :: Bool
-    #println("recurse started")
-#    @show rdepth
-    if rdepth +1 > rdepth_max
-#        println("recursion depth reached")
-        put!(ret_channel,false)
-        return
+    if rdepth +1 > 10
+        #println("recursion depth reached")
+        return (false,([],[]))
     end
     ε  = 0.7 # TODO tune param
     toRealArray = i -> [[float(p.x),float(p.y)] for p in i]
     if length(B1) < 2|| length(B2) < 2 
         @show "error not enough control points"
-        #put!(ret_channel,(false,([],[])))
-        return
+        return (false,([],[]))
     end
     if length(convex_hull(B1 |> toRealArray) ∪ convex_hull(B2 |> toRealArray)) != 0 # Union of the convex hulls of the control points is non-empty
         # B1 and B2 are a "candidate pair"
         if diam(B1 ∪ B2) < ε
-            println("detected intersect between $B1 and $B2")
+            #println("detected intersect between $B1 and $B2")
             #@show rdepth
-            put!(ret_channel,true)
-            return
+            return (true,(B1,B2))
         else # subdivides the curve with the larger diameter
-#            println("subdividing")
 
-            B1_1 = [ B1[1:i](0.5) for i in 1:length(B1) ]
-            B1_2 = [ B1[1:i](1) for i in [length(B1)-i for i in 0:length(B1)-1]]
-            B2_1 = [ B2[1:i](0.5) for i in 1:length(B2) ]
-            B2_2 = [ B2[1:i](1) for i in [length(B2)-i for i in 0:length(B2)-1]]
-            #t1_channel = Channel(1)
-            #t2_channel = Channel(1)
-            #t3_channel = Channel(1)
-            #t4_channel = Channel(1)
-            #println("creating async tasks")
-            t1 = @task bezInt(B1_1,B2_1,rdepth+1,rdepth_max, ret_channel)
-            t2 = @task bezInt(B1_1,B2_2,rdepth+1,rdepth_max, ret_channel)
-            t3 = @task bezInt(B1_2,B2_1,rdepth+1,rdepth_max, ret_channel)
-            t4 = @task bezInt(B1_2,B2_2,rdepth+1,rdepth_max, ret_channel)
-               #return bezInt(B1_1,B2_1,rdepth+1) || bezInt(B1_1,B2_2,rdepth+1) || bezInt(B1_2,B2_1,rdepth+1) || bezInt(B1_2,B2_2,rdepth+1)
 
-            tasks = [t1,t2,t3,t4]
-#            println("spawning subprocesses")
-            for task in tasks
-                schedule(task)
-            end
-            return
+                B1_1 = [ B1[1:i](0.5) for i in 1:length(B1) ]
+                B1_2 = [ B1[1:i](1) for i in [length(B1)-i for i in 0:length(B1)-1]]
+                B2_1 = [ B2[1:i](0.5) for i in 1:length(B2) ]
+                B2_2 = [ B2[1:i](1) for i in [length(B2)-i for i in 0:length(B2)-1]]
+                branch1 = bezInt(B1_1,B2_1,rdepth+1) 
+                if branch1[1]
+                    return branch1
+                end
+
+                branch2 = bezInt(B1_1,B2_2,rdepth+1) 
+                if branch2[1]
+                    return branch2
+                end
+
+                branch3 = bezInt(B1_2,B2_1,rdepth+1) 
+                if branch3[1]
+                    return branch3
+                end
+
+                branch4 = bezInt(B1_2,B2_2,rdepth+1) 
+                if branch4[1]
+                    return branch4
+                end
+                #return bezInt(B1_1,B2_1,rdepth+1) || bezInt(B1_1,B2_2,rdepth+1) || bezInt(B1_2,B2_1,rdepth+1) || bezInt(B1_2,B2_2,rdepth+1)
+
+
+#                return @async fetch(bezInt(B1_1,B2_1,rdepth+1)) || @async fetch(bezInt(B1_1,B2_2,rdepth+1)) || @async fetch(bezInt(B1_2,B2_1,rdepth+1)) || @async fetch(bezInt(B1_2,B2_2,rdepth+1))
+
         end
     else
-        println("B1 and B2 are not candidates therefore, cannot intersect.")
+        # B1 and B2 are not "candidates" therefore, cannot intersect.
         #@show "initial individuals are not candidates"
-        #put!(ret_channel,(false,([],[])))
-        return
+        return (false,([],[]))
     end
-    println("End")
-    return
-    #put!(ret_channel,(false,([],[])))
+    return (false,([],[]))
 end
 
 #function bezInt(B1::BezierCurve, B2::BezierCurve, rdepth::Int) :: Tuple{Bool,Tuple{BezierCurve,BezierCurve}}
