@@ -1,4 +1,5 @@
-#+TITLE: Log: Week 1
+* Log: Week 1
+
 #+OPTIONS: toc:nil
 This week I have:
 
