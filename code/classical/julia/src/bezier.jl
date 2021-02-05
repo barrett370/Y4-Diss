@@ -40,12 +40,14 @@ end
 function bezInt(B1::BezierCurve,B2::BezierCurve) :: Tuple{Bool,Tuple{BezierCurve,BezierCurve}}
     n = 10
     c = Channel(4^(n-1))
-    @async bezInt(B1,B2,1,n,c)
+    main = @async bezInt(B1,B2,1,n,c)
     false_count = 0
     while isopen(c)
         res = take!(c)
         if res[1]
+            println("Found intersection")
             close(c)
+            @async Base.throwto(main,InterruptException())
             return res
         else
             false_count = false_count + 1
@@ -77,7 +79,7 @@ function bezInt(B1::BezierCurve, B2::BezierCurve, rdepth::Int,rdepth_max,ret_cha
     if length(convex_hull(B1 |> toRealArray) ∪ convex_hull(B2 |> toRealArray)) != 0 # Union of the convex hulls of the control points is non-empty
         # B1 and B2 are a "candidate pair"
         if diam(B1 ∪ B2) < ε
-            println("detected intersect between $B1 and $B2")
+            #println("detected intersect between $B1 and $B2")
             #@show rdepth
             put!(ret_channel,(true,(B1,B2)))
             return
