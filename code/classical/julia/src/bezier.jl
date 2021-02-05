@@ -37,19 +37,20 @@ end
 #    bezInt(B1,B2,1)[1]
 #end
 
-function bezInt(B1::BezierCurve,B2::BezierCurve) :: Bool
+function bezInt(B1::BezierCurve,B2::BezierCurve) :: Tuple{Bool,Tuple{BezierCurve,BezierCurve}}
     n = 10
     c = Channel(4^(n-1))
     @async bezInt(B1,B2,1,n,c)
     false_count = 0
     while isopen(c)
-        if take!(c)
+        res = take!(c)
+        if res[1]
             close(c)
-            return true
+            return res
         else
             false_count = false_count + 1
             if false_count == 4^(n-1)
-                return false
+                return (false,([],[]))
             end
         end
     end
@@ -78,7 +79,7 @@ function bezInt(B1::BezierCurve, B2::BezierCurve, rdepth::Int,rdepth_max,ret_cha
         if diam(B1 ∪ B2) < ε
             println("detected intersect between $B1 and $B2")
             #@show rdepth
-            put!(ret_channel,true)
+            put!(ret_channel,(true,(B1,B2)))
             return
         else # subdivides the curve with the larger diameter
 #            println("subdividing")
