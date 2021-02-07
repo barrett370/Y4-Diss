@@ -3,6 +3,6 @@
 #+OPTIONS: toc:nil
 This week I have:
 
-- Re-familiarised myself with my codebase & what I have achieved up to now
+- Re-familiarised myself with my code base & what I have implemented up until to now
 - Implemented a linear ranked selection function of the same shape as the existing roulette wheel (fitness proportional) selection.
-  + I have also reworked the ~GA~ and ~CGA~ function types to allow for specification of selection operator.
+  + I have also reworked the ~GA~ and ~CGA~ function types to allow for specification of selection operator and ranking function of ~ranked_selection~ .

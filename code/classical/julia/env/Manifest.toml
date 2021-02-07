@@ -15,6 +15,12 @@ git-tree-sha1 = "9e62e66db34540a0c919d72172cc2f642ac71260"
 uuid = "6e4b80f9-dd63-53aa-95a3-0cdb28fa8baf"
 version = "0.5.0"
 
+[[CSTParser]]
+deps = ["Tokenize"]
+git-tree-sha1 = "60e9121d9ea044c30a04397e59b00c5d9eb826ee"
+uuid = "00ebfdb7-1f24-5e51-bd34-a7502290713f"
+version = "2.5.0"
+
 [[ChainRulesCore]]
 deps = ["Compat", "LinearAlgebra", "SparseArrays"]
 git-tree-sha1 = "53fed426c9af1eb68e63b3999e96454c2db79757"
@@ -62,6 +68,18 @@ git-tree-sha1 = "f0e06a5b5ccda38e2fb8f59d91316e657b67047d"
 uuid = "31c24e10-a181-5473-b8eb-7969acd0382f"
 version = "0.24.12"
 
+[[DocumentFormat]]
+deps = ["CSTParser", "FilePathsBase", "Tokenize"]
+git-tree-sha1 = "55f22efc51e0935da95d905a96bb8d170294362e"
+uuid = "ffa9a821-9c82-50df-894e-fbcef3ed31cd"
+version = "3.2.0"
+
+[[FilePathsBase]]
+deps = ["Dates", "Mmap", "Printf", "Test", "UUIDs"]
+git-tree-sha1 = "d4f60ba7f2d961cd580fc91936578673c56943fd"
+uuid = "48062228-2e41-5def-b9a4-89aafe57970f"
+version = "0.9.8"
+
 [[FillArrays]]
 deps = ["LinearAlgebra", "Random", "SparseArrays"]
 git-tree-sha1 = "50eabdace27aa27b143f65b65e762bb0112a7708"
@@ -82,6 +100,18 @@ deps = ["Dates", "Mmap", "Parsers", "Unicode"]
 git-tree-sha1 = "81690084b6198a2e1da36fcfda16eeca9f9f24e4"
 uuid = "682c06a0-de6a-54ab-a142-c8b1cf79cde6"
 version = "0.21.1"
+
+[[JSONRPC]]
+deps = ["JSON", "UUIDs"]
+git-tree-sha1 = "c74b1e7bb24f82be80d27fdc2def9d449a2bce9c"
+uuid = "b9b8584e-8fd3-41f9-ad0c-7255d428e418"
+version = "1.2.0"
+
+[[LanguageServer]]
+deps = ["CSTParser", "DocumentFormat", "JSON", "JSONRPC", "Markdown", "REPL", "StaticLint", "SymbolServer", "Tokenize", "URIParser", "UUIDs"]
+git-tree-sha1 = "e0729afde30d552924b8593d9a6db4478b765d28"
+uuid = "2b0e0bc5-e4fd-59b4-8912-456d1b03d8d7"
+version = "3.2.0"
 
 [[LibGit2]]
 deps = ["Printf"]
@@ -213,6 +243,12 @@ git-tree-sha1 = "9da72ed50e94dbff92036da395275ed114e04d49"
 uuid = "90137ffa-7385-5640-81b9-e52037218182"
 version = "1.0.1"
 
+[[StaticLint]]
+deps = ["CSTParser", "Serialization", "SymbolServer"]
+git-tree-sha1 = "de08beced06a13aabeb96097a974b7da0b976643"
+uuid = "b3cc710f-9c33-5bdb-a03d-a94903873e97"
+version = "4.5.0"
+
 [[Statistics]]
 deps = ["LinearAlgebra", "SparseArrays"]
 uuid = "10745b16-79ce-11e8-11f9-7d13ad32a3b2"
@@ -233,9 +269,26 @@ version = "0.9.6"
 deps = ["Libdl", "LinearAlgebra", "Serialization", "SparseArrays"]
 uuid = "4607b0f0-06f3-5cda-b6b1-a6196a1729e9"
 
+[[SymbolServer]]
+deps = ["InteractiveUtils", "LibGit2", "Markdown", "Pkg", "REPL", "SHA", "Serialization", "Sockets", "UUIDs"]
+git-tree-sha1 = "f485c73971123676a8de2b47141876b0c0d27026"
+uuid = "cf896787-08d5-524d-9de7-132aaa0cb996"
+version = "5.1.1"
+
 [[Test]]
 deps = ["Distributed", "InteractiveUtils", "Logging", "Random"]
 uuid = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[[Tokenize]]
+git-tree-sha1 = "6c487fa179194ec02c4b9fc246563eb4afc9101c"
+uuid = "0796e94c-ce3b-5d07-9a54-7f471281c624"
+version = "0.5.12"
+
+[[URIParser]]
+deps = ["Unicode"]
+git-tree-sha1 = "53a9f49546b8d2dd2e688d216421d050c9a31d0d"
+uuid = "30578b45-9adc-5946-b283-645ec420af67"
+version = "0.4.1"
 
 [[UUIDs]]
 deps = ["Random", "SHA"]
