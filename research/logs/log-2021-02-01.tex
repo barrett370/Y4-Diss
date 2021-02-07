@@ -1,4 +1,4 @@
-% Created 2021-02-04 Thu 18:16
+% Created 2021-02-07 Sun 17:59
 % Intended LaTeX compiler: pdflatex
 \documentclass[11pt]{article}
 \usepackage[utf8]{inputenc}
@@ -16,26 +16,25 @@
 \usepackage{hyperref}
 \author{Sam Barrett}
 \date{\today}
-\title{}
+\title{Log: Week 1}
 \hypersetup{
  pdfauthor={Sam Barrett},
- pdftitle={},
+ pdftitle={Log: Week 1},
  pdfkeywords={},
  pdfsubject={},
  pdfcreator={Emacs 27.1 (Org mode 9.5)}, 
  pdflang={English}}
 \begin{document}
 
-\section{Log: Week 1}
-\label{sec:org43de7ab}
-
+\maketitle
 This week I have:
 
 \begin{itemize}
-\item Re-familiarised myself with my codebase \& what I have achieved up to now
+\item Re-familiarised myself with my code base \& what I have implemented up until to now
 \item Implemented a linear ranked selection function of the same shape as the existing roulette wheel (fitness proportional) selection.
 \begin{itemize}
-\item I have also reworked the \texttt{GA} and \texttt{CGA} function types to allow for specification of selection operator.
+\item I have also reworked the \texttt{GA} and \texttt{CGA} function types to allow for specification of selection operator and ranking function of \texttt{ranked\_selection}.
 \end{itemize}
+\item Working on parellelising \texttt{bezInt} function, currently runs \texttt{async} allowing for better average case runtime but running on multiple threads will increase speedup further. Currently this method alone results in a \textasciitilde{}50x slowdown!
 \end{itemize}
 \end{document}

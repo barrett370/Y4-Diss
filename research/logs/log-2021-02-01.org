@@ -1,8 +1,9 @@
-* Log: Week 1
-
+#+TITLE: Log: Week 1
 #+OPTIONS: toc:nil
+
 This week I have:
 
 - Re-familiarised myself with my code base & what I have implemented up until to now
 - Implemented a linear ranked selection function of the same shape as the existing roulette wheel (fitness proportional) selection.
-  + I have also reworked the ~GA~ and ~CGA~ function types to allow for specification of selection operator and ranking function of ~ranked_selection~ .
+  + I have also reworked the ~GA~ and ~CGA~ function types to allow for specification of selection operator and ranking function of ~ranked_selection~.
+- Working on parellelising ~bezInt~ function, currently runs ~async~ allowing for better average case runtime but running on multiple threads will increase speedup further. Currently this method alone results in a ~50x slowdown!
