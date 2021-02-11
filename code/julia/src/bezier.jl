@@ -1,6 +1,5 @@
 import Base.*
-    import Base.+
-    import Base.kill
+import Base.+
 using DataStructures
 using Distributed
 using MLStyle
@@ -41,8 +40,8 @@ end
 #    bezInt(B1,B2,1)[1]
 #end
 
-function bezInt(B1::BezierCurve,B2::BezierCurve, ret::Channel)
-    n = 10
+function bezInt(B1::BezierCurve,B2::BezierCurve) :: Tuple{Bool,Tuple{BezierCurve,BezierCurve}}
+    n = 10 
     c = Channel(4^(n-1))
     main = @async bezInt(B1,B2,1,n,c)
     false_count = 0
@@ -50,12 +49,13 @@ function bezInt(B1::BezierCurve,B2::BezierCurve, ret::Channel)
         res = take!(c)
         if res[1]
             println("Found intersection $res")
-            put!(ret,res)
+            println("closed")
+            return res
         else
             false_count = false_count + 1
             if false_count == 4^(n-1)
                 println("no intersect detected")
-                put!(ret,(false,([],[])))
+                return (false,([],[]))
             end
         end
     end
@@ -88,18 +88,18 @@ function bezInt(B1::BezierCurve, B2::BezierCurve, rdepth::Int,rdepth_max,ret_cha
                     #@show "splitting B1"
                     B1_1 = [ B1[1:i](0.5) for i in 1:length(B1) ]
                     B1_2 = [ B1[1:i](1) for i in [length(B1)-i for i in 0:length(B1)-1]]
-                    #@async bezInt(B1_1,B2,rdepth+1,rdepth_max, ret_channel)
-                    #@async bezInt(B1_2,B2,rdepth+1,rdepth_max, ret_channel)
-                    @spawnat :any bezInt(B1_1,deepcopy(B2),deepcopy(rdepth+1),rdepth_max, ret_channel)
-                    @spawnat :any bezInt(B1_2,deepcopy(B2),deepcopy(rdepth+1),rdepth_max, ret_channel)
+                    @async bezInt(B1_1,B2,rdepth+1,rdepth_max, ret_channel)
+                    @async bezInt(B1_2,B2,rdepth+1,rdepth_max, ret_channel)
+                    #@spawnat :any bezInt(B1_1,deepcopy(B2),deepcopy(rdepth+1),rdepth_max, ret_channel)
+                    #@spawnat :any bezInt(B1_2,deepcopy(B2),deepcopy(rdepth+1),rdepth_max, ret_channel)
                 else
                     #@show "splitting B2"
                     B2_1 = [ B2[1:i](0.5) for i in 1:length(B2) ]
                     B2_2 = [ B2[1:i](1) for i in [length(B2)-i for i in 0:length(B2)-1]]
-                    #@async bezInt(B1,B2_1,rdepth+1,rdepth_max, ret_channel)
-                    #@async bezInt(B1,B2_2,rdepth+1,rdepth_max, ret_channel)
-                    @spawnat :any bezInt(deepcopy(B1),B2_1,deepcopy(rdepth+1),rdepth_max, ret_channel)
-                    @spawnat :any bezInt(deepcopy(B1),B2_2,deepcopy(rdepth+1),rdepth_max, ret_channel)
+                    @async bezInt(B1,B2_1,rdepth+1,rdepth_max, ret_channel)
+                    @async bezInt(B1,B2_2,rdepth+1,rdepth_max, ret_channel)
+                    #@spawnat :any bezInt(deepcopy(B1),B2_1,deepcopy(rdepth+1),rdepth_max, ret_channel)
+                    #@spawnat :any bezInt(deepcopy(B1),B2_2,deepcopy(rdepth+1),rdepth_max, ret_channel)
                 end
                 #@show "created tasks"
 
