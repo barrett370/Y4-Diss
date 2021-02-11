@@ -325,7 +325,10 @@ end
 
 function collisionDetection(i1::Individual, i2::Individual)::Bool
 
-    (b, ps) = bezInt(i1.phenotype.genotype, i2.phenotype.genotype)
+    println("Detecting Collisions")
+    res = Channel(1)
+    @async bezInt(i1.phenotype.genotype, i2.phenotype.genotype, res)
+    (b, ps) = fetch(res)
     if b # if they do intersect
         println("Intersection")
         i1_to_intersect = i1.phenotype.genotype
