@@ -1,1 +1,3 @@
 * Inbox
+** TODO Read through and maybe implement changComputationMinimumDistance2011
+SCHEDULED: <2021-02-12 Fri>
