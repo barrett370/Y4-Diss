@@ -5,10 +5,6 @@
     <link>/Y4-Diss/categories/</link>
     <description>Recent content in Categories on Final Year Project Blog</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language>
-    
-	<atom:link href="/Y4-Diss/categories/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <language>en-us</language><atom:link href="/Y4-Diss/categories/index.xml" rel="self" type="application/rss+xml" />
   </channel>
 </rss>
