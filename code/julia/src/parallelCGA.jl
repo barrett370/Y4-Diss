@@ -4,7 +4,7 @@ include("geneticOperators.jl")
 using Distributed
 using SharedArrays
 using StaticArrays
-import Base.Threads.@spawn
+import Base.Threads
 
 function PCGA(
     starts::Array{Point},
@@ -24,7 +24,7 @@ function PCGA(
     for (start, goal) in zip(starts, goals)
         @show start, goal, c
         append!(tasks,
-                [@spawn PCGA(start,goal,road,current_plans,c,
+                [Threads.@spawn PCGA(start,goal,road,current_plans,c,
                              n_gens=n_gens,n=n,selection_method=selection_method)])
         c = c + 1
     end

@@ -1,10 +1,11 @@
 import Base.*
 import Base.+
+import Base.Threads
 using DataStructures
 using Distributed
 using MLStyle
-
 import LazySets.convex_hull
+
 include("utils.jl")
 
 const ControlPoint = Point
@@ -44,13 +45,12 @@ function bezInt(B1::BezierCurve,B2::BezierCurve) :: Tuple{Bool,Tuple{BezierCurve
     #println("bezInt called")
     n = 7
     c = Channel(4^(n-1))
-    main = @spawn bezInt(B1,B2,1,n,c)
+    main = Threads.@spawn bezInt(B1,B2,1,n,c)
     false_count = 0
     while isopen(c)
         res = take!(c)
         if res[1]
             println("Found intersection $res")
-            println("closed")
             return res
         else
             false_count = false_count + 1
@@ -90,18 +90,18 @@ function bezInt(B1::BezierCurve, B2::BezierCurve, rdepth::Int,rdepth_max,ret_cha
                     #@show "splitting B1"
                     B1_1 = [ B1[1:i](0.5) for i in 1:length(B1) ]
                     B1_2 = [ B1[1:i](1) for i in [length(B1)-i for i in 0:length(B1)-1]]
-                    @spawn bezInt(B1_1,B2,rdepth+1,rdepth_max, ret_channel)
-                    @spawn bezInt(B1_2,B2,rdepth+1,rdepth_max, ret_channel)
-                    #@spawnat :any bezInt(B1_1,deepcopy(B2),deepcopy(rdepth+1),rdepth_max, ret_channel)
-                    #@spawnat :any bezInt(B1_2,deepcopy(B2),deepcopy(rdepth+1),rdepth_max, ret_channel)
+                    Threads.@spawn bezInt(B1_1,B2,rdepth+1,rdepth_max, ret_channel)
+                    Threads.@spawn bezInt(B1_2,B2,rdepth+1,rdepth_max, ret_channel)
+                    #Threads.@spawnat :any bezInt(B1_1,deepcopy(B2),deepcopy(rdepth+1),rdepth_max, ret_channel)
+                    #Threads.@spawnat :any bezInt(B1_2,deepcopy(B2),deepcopy(rdepth+1),rdepth_max, ret_channel)
                 else
                     #@show "splitting B2"
                     B2_1 = [ B2[1:i](0.5) for i in 1:length(B2) ]
                     B2_2 = [ B2[1:i](1) for i in [length(B2)-i for i in 0:length(B2)-1]]
-                    @spawn bezInt(B1,B2_1,rdepth+1,rdepth_max, ret_channel)
-                    @spawn bezInt(B1,B2_2,rdepth+1,rdepth_max, ret_channel)
-                    #@spawnat :any bezInt(deepcopy(B1),B2_1,deepcopy(rdepth+1),rdepth_max, ret_channel)
-                    #@spawnat :any bezInt(deepcopy(B1),B2_2,deepcopy(rdepth+1),rdepth_max, ret_channel)
+                    Threads.@spawn bezInt(B1,B2_1,rdepth+1,rdepth_max, ret_channel)
+                    Threads.@spawn bezInt(B1,B2_2,rdepth+1,rdepth_max, ret_channel)
+                    #Threads.@spawnat :any bezInt(deepcopy(B1),B2_1,deepcopy(rdepth+1),rdepth_max, ret_channel)
+                    #Threads.@spawnat :any bezInt(deepcopy(B1),B2_2,deepcopy(rdepth+1),rdepth_max, ret_channel)
                 end
                 #@show "created tasks"
 
