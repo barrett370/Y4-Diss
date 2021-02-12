@@ -41,7 +41,8 @@ end
 #end
 
 function bezInt(B1::BezierCurve,B2::BezierCurve) :: Tuple{Bool,Tuple{BezierCurve,BezierCurve}}
-    n = 10 
+    println("bezInt called")
+    n = 7
     c = Channel(4^(n-1))
     main = @async bezInt(B1,B2,1,n,c)
     false_count = 0
@@ -54,12 +55,12 @@ function bezInt(B1::BezierCurve,B2::BezierCurve) :: Tuple{Bool,Tuple{BezierCurve
         else
             false_count = false_count + 1
             if false_count == 4^(n-1)
-                println("no intersect detected")
+                println("no intersect detected, all false, $false_count")
                 return (false,([],[]))
             end
         end
     end
-    println("no intersect detected")
+    println("no intersect detected, c closed")
     return false
 end
 
@@ -69,9 +70,10 @@ function bezInt(B1::BezierCurve, B2::BezierCurve, rdepth::Int,rdepth_max,ret_cha
    # @show rdepth
     #@show "starting"
     if rdepth +1 > rdepth_max
+        #"rdepth reached" |> println
         put!(ret_channel,false)
     end
-    ε  = 0.7 # TODO tune param
+    ε  = 2.5 # TODO tune param
     toRealArray = i -> [[float(p.x),float(p.y)] for p in i]
     if length(B1) < 2 || length(B2) < 2
         @show "error not enough control points"

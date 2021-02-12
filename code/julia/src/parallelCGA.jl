@@ -4,6 +4,7 @@ include("geneticOperators.jl")
 using Distributed
 using SharedArrays
 using StaticArrays
+import Base.Threads.@spawn
 
 function PCGA(
     starts::Array{Point},
@@ -14,38 +15,44 @@ function PCGA(
 )
 
 
-    current_plans = SharedArray{SVector{6,Float64}}(n)
+    current_plans = SharedArray{SVector{12,Float64}}(n) #Length of 12 as this is the max number of control points *2
     ret::Array{Individual} = []
     # Build tasks
-    tasks::Array{Task} = []
-    i = 1
+    tasks::Array = []
+    c = 1
     for (start, goal) in zip(starts, goals)
-        @show start, goal
-        append!(tasks, [@task begin; PCGA(start,goal,road,current_plans,n_gens,n,i); end])
-        i = i+1
+        @show start, goal, c
+        append!(tasks,[@spawn PCGA(start,goal,road,current_plans,c,n_gens,n)])
+        c=c+1
     end
+    println("fetching results")
     for task in tasks
-        schedule(task)
+        append!(ret,[fetch(task)[1]])
     end
 
-    while ! istaskdone(tasks[end])
-        wait()
-    end
-
-   current_plans
-
-
-
-    #ret
-
+    ret
 end
 
-function PCGA(start::Point, goal::Point, road::Road, other_routes::SharedArray{SVector{6,Float64}},i::Integer, n_gens::Real=1, n::Real=10) :: Array{Individual}
+function FinalCheck(route::Individual,os::SharedArray,i::Integer)::Bool
+    for j in 1:length(os)
+        if j != i
+            if collisionDetection(route.phenotype.genotype ,os[j] |> getGenotype)
+                return true
+            end
+        end
+    end
+    return false
+end
+
+
+function PCGA(start::Point, goal::Point, road::Road, other_routes::SharedArray, i::Integer, n_gens::Real=1, n::Real=10) :: Array{Individual}
     # Initialise population
     if  start.y < road.boundary_1(start.x) || start.y > road.boundary_2(start.y) || goal.y < road.boundary_1(goal.x) || goal.y > road.boundary_2(goal.x)
         println("ERROR, start of goal is outside of roadspace")
         return []
     end
+
+
     𝓕 = curry(curry(Fitness,road),other_routes) # Curry fitness function with road as this is a static attribute of the function. Allows for nicer piping of data.
     P = generatePopulation(n, start, goal, road)
     map(p -> p.fitness = p |> 𝓕, P) # Calculate fitness for initial population, map 𝓕 over all Individuals
@@ -62,9 +69,17 @@ function PCGA(start::Point, goal::Point, road::Road, other_routes::SharedArray{S
             |> P -> P[1:minimum([n,length(P)])]# take top n
         )
         n_gens = n_gens - 1
+        "accessing routes at $i" |> println
         other_routes[i] = P[1] |> toSVector
     end
 #    savefig(plotGeneration!(draw_road(road,0,20),P,road,100),string("./gen-",n_gens))
-    # P = filter(i->high_proximity_distance(road,i.phenotype.genotype)==0,filter(i -> infeasible_distance(road,i.phenotype.genotype)==0,P))
-    yeild()
+    P = filter(i->high_proximity_distance(road,i.phenotype.genotype)==0,filter(i -> infeasible_distance(road,i.phenotype.genotype)==0,P))
+    P = filter(c -> FinalCheck(c,other_routes,i), P)
+    @show "Final solution $(P[1])"
+    try
+        return [P[1]]
+    catch
+        "no non-colliding routes found" |> println
+    end
+
 end
