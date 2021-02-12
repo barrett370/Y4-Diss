@@ -41,7 +41,7 @@ end
 #end
 
 function bezInt(B1::BezierCurve,B2::BezierCurve) :: Tuple{Bool,Tuple{BezierCurve,BezierCurve}}
-    println("bezInt called")
+    #println("bezInt called")
     n = 7
     c = Channel(4^(n-1))
     main = @async bezInt(B1,B2,1,n,c)
@@ -55,12 +55,12 @@ function bezInt(B1::BezierCurve,B2::BezierCurve) :: Tuple{Bool,Tuple{BezierCurve
         else
             false_count = false_count + 1
             if false_count == 4^(n-1)
-                println("no intersect detected, all false, $false_count")
+                #println("no intersect detected, all false, $false_count")
                 return (false,([],[]))
             end
         end
     end
-    println("no intersect detected, c closed")
+    #println("no intersect detected, c closed")
     return false
 end
 

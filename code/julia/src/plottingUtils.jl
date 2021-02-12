@@ -165,9 +165,9 @@ function plot_generation_gif(road::Road, P::Array{Individual})
         ci = ci + 1
     end
     ci=1
-    anim = @animate for i ∈ 0:0.01:1
+    anim = @animate for i ∈ 0:0.08:1
         for p in P
-            plot_curve_bounds!(plt,1,p.phenotype.genotype,700,i,colours[ci])
+            plot_curve_bounds!(plt,1,p.phenotype.genotype,300,i,colours[ci])
             ci = ci + 1
         end
         ci = 1

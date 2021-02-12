@@ -9,62 +9,69 @@ import Base.Threads.@spawn
 function PCGA(
     starts::Array{Point},
     goals::Array{Point},
-    road::Road,
-    n_gens::Real = 1,
-    n::Real = 10,
+    road::Road;
+    n_gens::Real=1,
+    n::Real=10,
+    selection_method="roulette"
 )
 
 
-    current_plans = SharedArray{SVector{12,Float64}}(n) #Length of 12 as this is the max number of control points *2
+    current_plans = SharedArray{SVector{12,Float64}}(n) # Length of 12 as this is the max number of control points *2
     ret::Array{Individual} = []
     # Build tasks
     tasks::Array = []
     c = 1
     for (start, goal) in zip(starts, goals)
         @show start, goal, c
-        append!(tasks,[@spawn PCGA(start,goal,road,current_plans,c,n_gens,n)])
-        c=c+1
+        append!(tasks,
+                [@spawn PCGA(start,goal,road,current_plans,c,
+                             n_gens=n_gens,n=n,selection_method=selection_method)])
+        c = c + 1
     end
     println("fetching results")
     for task in tasks
-        append!(ret,[fetch(task)[1]])
+        append!(ret, [fetch(task)[1]])
     end
 
     ret
 end
 
-function FinalCheck(route::Individual,os::SharedArray,i::Integer)::Bool
+function FinalCheck(route::Individual, os::SharedArray, i::Integer)::Bool
     for j in 1:length(os)
         if j != i
-            if collisionDetection(route.phenotype.genotype ,os[j] |> getGenotype)
-                return true
+            if collisionDetection(route.phenotype.genotype, os[j] |> getGenotype)
+                return false
             end
         end
     end
-    return false
+    return true
 end
 
 
-function PCGA(start::Point, goal::Point, road::Road, other_routes::SharedArray, i::Integer, n_gens::Real=1, n::Real=10) :: Array{Individual}
+function PCGA(start::Point,
+              goal::Point,
+              road::Road,
+              other_routes::SharedArray, i::Integer;
+              n_gens::Real=1, n::Real=10, selection_method="roulette")::Array{Individual}
     # Initialise population
-    if  start.y < road.boundary_1(start.x) || start.y > road.boundary_2(start.y) || goal.y < road.boundary_1(goal.x) || goal.y > road.boundary_2(goal.x)
+    if start.y < road.boundary_1(start.x) || start.y > road.boundary_2(start.y) || goal.y < road.boundary_1(goal.x) || goal.y > road.boundary_2(goal.x)
         println("ERROR, start of goal is outside of roadspace")
         return []
     end
 
-
-    𝓕 = curry(curry(Fitness,road),other_routes) # Curry fitness function with road as this is a static attribute of the function. Allows for nicer piping of data.
+    ngens_copy = deepcopy(n_gens)
+    𝓕 = curry(curry(Fitness, road), other_routes) # Curry fitness function with road as this is a static attribute of the function. Allows for nicer piping of data.
     P = generatePopulation(n, start, goal, road)
     map(p -> p.fitness = p |> 𝓕, P) # Calculate fitness for initial population, map 𝓕 over all Individuals
     while n_gens > 0 && length(P) > 0# Replace with stopping criteria
         # savefig(plotGeneration!(draw_road(road,0,20),P,road,100,100-n_gens),string("./gifgen/gen-",100-n_gens))
         P = (P
-            |> roulette_selection  # Selection operator
+            |> P -> selection(P, method=selection_method)  # Selection operator
             |> simple_crossover |> new_pop -> append!(P, new_pop)  ## Crossover operator & Add newly generated individuals to population
             |> uniform_mutation! # apply mutation operator
             |> P -> begin map(p -> p.fitness = p |> 𝓕, P); P end # recalculate fitness of population after mutation
             |> P -> map(repair, P)  # attempt repair of invalid solutions
-            |> P -> sort(P, by= p -> p.fitness) # Sort my fitness
+            |> P -> sort(P, by=p -> p.fitness) # Sort my fitness
             |> P -> filter(isValid, P) # remove invalid solutions
             |> P -> P[1:minimum([n,length(P)])]# take top n
         )
@@ -73,13 +80,19 @@ function PCGA(start::Point, goal::Point, road::Road, other_routes::SharedArray, 
         other_routes[i] = P[1] |> toSVector
     end
 #    savefig(plotGeneration!(draw_road(road,0,20),P,road,100),string("./gen-",n_gens))
-    P = filter(i->high_proximity_distance(road,i.phenotype.genotype)==0,filter(i -> infeasible_distance(road,i.phenotype.genotype)==0,P))
-    P = filter(c -> FinalCheck(c,other_routes,i), P)
-    @show "Final solution $(P[1])"
-    try
-        return [P[1]]
-    catch
+    P_filtered = filter(i -> high_proximity_distance(road, i.phenotype.genotype) == 0, filter(i -> infeasible_distance(road, i.phenotype.genotype) == 0, P))
+    P_filtered = filter(c -> FinalCheck(c, other_routes, i), P_filtered)
+    # if length(P) == 0
+    #    return PCGA(start,goal,road,other_routes, i, ngens_copy,n)
+    # end
+
+    if P_filtered |> length  != 0
+        @show "Final solution $(P_filtered[1])"
+        return [P_filtered[1]]
+    else
+
         "no non-colliding routes found" |> println
+        return [P[1]]
     end
 
 end
