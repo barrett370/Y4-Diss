@@ -6,9 +6,14 @@ Classical Genetic algorithms have seen research and applications in a number of 
 There is a substantial and growing body of research specifically looking at the applications of GAs in route planning for autonomous agents, however, many are focusing on either abstract robotic agent planning or \todo{wording?} military focused applications such as autonomous drones\cite{robergeFastGeneticAlgorithm2018}.
 
 
-\subsection{Classical GAs for route generation}
+\subsection{GAs for route generation}
 
 \todo[inline]{Kala's book \& papers}
+
+\subsubsection{GAs for cooperative route generation}
+
+In his book, Kala \cite{kalaOptimizationBasedPlanning2016} proposes the use of a GA approach as an embedded component of a larger planning system which also relied on Djiksra's algorithm for macro-level route planning along with the classical autonomous vehicle real-time collision avoidance toolbox (camera, sensors, etc.). In order to achieve a system capable of planning for multiple agents concurrently, Kala proposed the use of these real-time collision avoidance tools along with embedding \textit{traffic rules} as heuristics into the Djiksta-based component. These traffic rules included ``driving on the left'' and ``overtaking on the right'' etc.
+
 
 \section{Bézier curves for route generation}
 
