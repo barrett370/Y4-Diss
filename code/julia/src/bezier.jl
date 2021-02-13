@@ -5,6 +5,7 @@ using DataStructures
 using Distributed
 using MLStyle
 import LazySets.convex_hull
+using GPUArrays
 
 include("utils.jl")
 
@@ -92,6 +93,10 @@ function bezInt(B1::BezierCurve, B2::BezierCurve, rdepth::Int,rdepth_max,ret_cha
                     B1_2 = [ B1[1:i](1) for i in [length(B1)-i for i in 0:length(B1)-1]]
                     Threads.@spawn bezInt(B1_1,B2,rdepth+1,rdepth_max, ret_channel)
                     Threads.@spawn bezInt(B1_2,B2,rdepth+1,rdepth_max, ret_channel)
+                    #GPUArrays.syncronize([
+                    #    bezInt(B1_1,B2,rdepth+1,rdepth_max, ret_channel),
+                    #    bezInt(B1_2,B2,rdepth+1,rdepth_max, ret_channel)
+                    #])
                     #Threads.@spawnat :any bezInt(B1_1,deepcopy(B2),deepcopy(rdepth+1),rdepth_max, ret_channel)
                     #Threads.@spawnat :any bezInt(B1_2,deepcopy(B2),deepcopy(rdepth+1),rdepth_max, ret_channel)
                 else
@@ -100,6 +105,9 @@ function bezInt(B1::BezierCurve, B2::BezierCurve, rdepth::Int,rdepth_max,ret_cha
                     B2_2 = [ B2[1:i](1) for i in [length(B2)-i for i in 0:length(B2)-1]]
                     Threads.@spawn bezInt(B1,B2_1,rdepth+1,rdepth_max, ret_channel)
                     Threads.@spawn bezInt(B1,B2_2,rdepth+1,rdepth_max, ret_channel)
+                    #GPUArrays.syncronize([
+                    #    bezInt(B1,B2_1,rdepth+1,rdepth_max, ret_channel),
+                    #bezInt(B1,B2_2,rdepth+1,rdepth_max, ret_channel)])
                     #Threads.@spawnat :any bezInt(deepcopy(B1),B2_1,deepcopy(rdepth+1),rdepth_max, ret_channel)
                     #Threads.@spawnat :any bezInt(deepcopy(B1),B2_2,deepcopy(rdepth+1),rdepth_max, ret_channel)
                 end

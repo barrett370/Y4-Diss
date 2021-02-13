@@ -1,0 +1,17 @@
+#+TITLE: Log Week 2
+#+OPTIONS: toc:nil
+
+ This week I have:
+
+ - Re-read some papers, appreciating their approaches more now having attempted my own. Via different methods I have come to the same conclusions as a few of them.
+ - Made my cooperative planning wrapper multi-threaded, increasing performance by ~16x, it now pins all 16 cores to 100% usage for the majority of the runtime. Scenarios which previously took upwards of 10minutes now take less than 1. This is useful from a research-viability standpoint but also allows me to run many more tests in the same space of time, increasing my productivity.
+ - Tuned various parameters surrounding intersection and collision detection, reducing complexity whilst preserving effectiveness. More tuning is still required
+
+Next week I intend to:
+
+ - Implement other genetic operators, specifically focusing on mutation to allow better exploration of challenging search spaces such as the one seen below, where an agent starting behind the vertical obstacle must explore far beyond the /straight line optimal route/ to find a route that does not pass through infeasible space.
+ - Work on writing up my approach so far into my report.
+
+
+
+[[./road_graph.png]]

@@ -12,7 +12,8 @@ function PCGA(
     road::Road;
     n_gens::Real=1,
     n::Real=10,
-    selection_method="roulette"
+    selection_method="roulette",
+    mutation_method="uniform"
 )
 
 
@@ -25,7 +26,7 @@ function PCGA(
         @show start, goal, c
         append!(tasks,
                 [Threads.@spawn PCGA(start,goal,road,current_plans,c,
-                             n_gens=n_gens,n=n,selection_method=selection_method)])
+                             n_gens=n_gens,n=n,selection_method=selection_method,mutation_method=mutation_method)])
         c = c + 1
     end
     println("fetching results")
@@ -52,7 +53,9 @@ function PCGA(start::Point,
               goal::Point,
               road::Road,
               other_routes::SharedArray, i::Integer;
-              n_gens::Real=1, n::Real=10, selection_method="roulette")::Array{Individual}
+              n_gens::Real=1, n::Real=10,
+              selection_method="roulette",
+              mutation_method="uniform")::Array{Individual}
     # Initialise population
     if start.y < road.boundary_1(start.x) || start.y > road.boundary_2(start.y) || goal.y < road.boundary_1(goal.x) || goal.y > road.boundary_2(goal.x)
         println("ERROR, start of goal is outside of roadspace")
@@ -68,7 +71,9 @@ function PCGA(start::Point,
         P = (P
             |> P -> selection(P, method=selection_method)  # Selection operator
             |> simple_crossover |> new_pop -> append!(P, new_pop)  ## Crossover operator & Add newly generated individuals to population
-            |> uniform_mutation! # apply mutation operator
+            #|> uniform_mutation! # apply mutation operator
+            |> P -> gaussian_mutation!(P,road) # apply mutation operator
+            |> P -> mutation!(P,road,method=mutation_method) # apply mutation operator
             |> P -> begin map(p -> p.fitness = p |> 𝓕, P); P end # recalculate fitness of population after mutation
             |> P -> map(repair, P)  # attempt repair of invalid solutions
             |> P -> sort(P, by=p -> p.fitness) # Sort my fitness

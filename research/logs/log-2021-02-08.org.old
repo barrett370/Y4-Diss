@@ -1,0 +1,7 @@
+#+TITLE: Log Week 2
+#+OPTIONS: toc:nil
+
+ This week I have:
+
+ - Re-read some papers, appreciating their approaches more now having attempted my own. Via different methods I have come to the same conclusions as a few of them.
+ - Made my cooperative planning wrapper multi-threaded, increasing performance by ~16x, it now pins all 16 cores to 100% usage for the majority of the runtime. Scenarios which previously took upwards of 10minutes now take less than 1. This is useful from a research-viability standpoint but also allows me to run many more tests in the same space of time, increasing my productivity.

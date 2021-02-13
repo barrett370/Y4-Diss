@@ -4,6 +4,22 @@ using Distributed
 using MLStyle
 include("GAUtils.jl")
 
+function mutation!(P::Array{Individual}, road::Road; method="uniform")::Array{Individual}
+
+    @match method begin
+        "uniform" => uniform_mutation!(P)
+        "gaussian" => gaussian_mutation!(P,road)
+        _ => begin
+            "MUST ENTER A VALID MUTATION METHOD" |> println
+            P
+        end
+
+
+    end
+
+end
+
+
 function uniform_mutation!(P::Array{Individual})::Array{Individual}
     μ = 0.1
     for i in P[2:end] # Leave most fit individual alone TODO consider if this is desirable behaviour
@@ -25,6 +41,43 @@ function uniform_mutation!(P::Array{Individual})::Array{Individual}
                 i.phenotype.genotype[rand(2:(length(i.phenotype.genotype) - 1))] =
                     ControlPoint(x_r, y_r) # TODO Consider allowing mutation to go above or below start or end points
             end
+        end
+    end
+    P
+end
+
+function gaussian_mutation!(P::Array{Individual},road::Road)::Array{Individual}
+    # Interval bounds
+
+    μ = 0.05 # TODO tweak
+    for i in P
+        if Distributions.sample([true, false], Weights([1 - μ, μ])) # Do we mutate this candidate ?
+            c_index =rand(1:length(i.phenotype.genotype))
+            cᵢ = i.phenotype.genotype[c_index] # randomly selected gene
+            x_bound = sort([i.phenotype.source.x, i.phenotype.goal.x])
+            y_bound = [
+                ((road.boundary_1(x_bound[1]) + road.boundary_1(x_bound[2]))/2) * 1.5 # TODO tweak, y can be from the average y of the road bottom *1.5 to :
+                ((road.boundary_2(x_bound[1]) + road.boundary_2(x_bound[2]))/2) * 1.5 # TODO tweak, average yo fo road top * 1.5
+            ]
+
+
+
+            # standard deviation
+            σᵢ_x = abs(x_bound[1]-x_bound[2])# TODO make sure this is correct
+            σᵢ_y = abs(y_bound[1]-y_bound[2])# TODO make sure this is correct
+
+            cᵢ′ =Point(
+                min(max(rand(Distributions.Gaussian(cᵢ.x,σᵢ_x)),x_bound[1]),x_bound[2]),
+                min(max(rand(Distributions.Gaussian(cᵢ.y,σᵢ_y)),y_bound[1]),y_bound[2])
+            )
+
+
+            #@show cᵢ′ == cᵢ
+            i.phenotype.genotype[c_index] = cᵢ′
+
+
+
+
         end
     end
     P
