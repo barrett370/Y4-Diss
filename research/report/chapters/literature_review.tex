@@ -1,18 +1,18 @@
 
-\section{Classical GAs}
 
 Classical Genetic algorithms have seen research and applications in a number of fields over the past 40 years ranging from Heart disease diagnosis\cite{reddyHybridGeneticAlgorithm2020} to predicting the strength of concrete under various conditions\cite{shariatiPredictionConcreteStrength2020}.
 
-There is a substantial and growing body of research specifically looking at the applications of GAs in route planning for autonomous agents, however, many are focusing on either abstract robotic agent planning or \todo{wording?} military focused applications such as autonomous drones\cite{robergeFastGeneticAlgorithm2018}.
+There is a substantial and growing body of research specifically looking at the applications of GAs in route planning for autonomous agents, however, many are focusing on either abstract robotic agent planning in discrete search spaces or failing to take into account the wider environment of multiple agents.
 
-
-\subsection{GAs for route generation}
+\section{GAs for route generation}
 
 \todo[inline]{Kala's book \& papers}
 
-\subsubsection{GAs for cooperative route generation}
+\subsection{GAs for cooperative route generation}
 
-In his book, Kala \cite{kalaOptimizationBasedPlanning2016} proposes the use of a GA approach as an embedded component of a larger planning system which also relied on Djiksra's algorithm for macro-level route planning along with the classical autonomous vehicle real-time collision avoidance toolbox (camera, sensors, etc.). In order to achieve a system capable of planning for multiple agents concurrently, Kala proposed the use of these real-time collision avoidance tools along with embedding \textit{traffic rules} as heuristics into the Djiksta-based component. These traffic rules included ``driving on the left'' and ``overtaking on the right'' etc.
+In his book, Kala \cite{kalaOptimizationBasedPlanning2016} proposes the use of a GA approach as an embedded component of a larger planning system which also relies on Djiksra's algorithm for macro-level route planning along with the classical autonomous vehicle real-time collision avoidance toolbox (radarr, sonarr, etc.). In order to achieve a system capable of planning for multiple agents concurrently, Kala proposed the use of these real-time collision avoidance tools along with embedding \textit{traffic rules} as heuristics into the Djiksta-based component. These traffic rules included ``driving on the left'' and ``overtaking on the right'' etc. This proposed system, while similar to mine, differs in scope. I propose a system for planning routes for a set of autonomous agents within a fully-autonomous road system, meaning agents will not (in theory) interact or encounter any other vehicles which are not a part of the planning network.
+
+\todo[inline]{be sure to mention the work done by Cruz-Piris et al.\cite{cruz-pirisAutomatedOptimizationIntersections2019}}
 
 
 \section{Bézier curves for route generation}

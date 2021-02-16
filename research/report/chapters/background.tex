@@ -161,6 +161,23 @@ They are defined recursively as follows:
 
 Where the parameter $t$ is in the range of $[0,1]$. Therefore, the smoothness of the curve is determined by the granularity of the parameter when realising the curve.
 
+\subsubsection{Subdivision of $n$-degree Bézier curves}
+
+Subdivision of Bézier curves is a key stage in the process of finding any intersections between two Bézier curves. The process of subdivision is performed using De Casteljau's algorithm for splitting a Bézier curve into two separate curves. This algorithm was developed by Paul de Casteljau while working at Citroen in 1959 to work with the family of curves that would later be formalised into Bézier curves by Pierre Bézier\footnote{Bézier curves have also been called de Casteljau curves as much of his work preceded that of Pierre Bézier's}.
+
+It is a simple procedure, given a Bézier curve $B$, it can be split at any arbitrary point $t \in [0,1]$ into two curves with control points of the form:
+
+\begin{align}
+  \beta_{1} &= B_{P_{0}}(t), B_{P_1}(t), \ldots, B_{P_{n}}(t) \\
+  \beta_{2} &= B_{P_{n}}(1), B_{P_{n-1}}(1), \ldots, B_{P_{0}}(1)
+\end{align}
+
+
+
+
+% [ B[1:i](t) for i in 1:length(B) ]
+% [ B[1:i](1) for i in [length(B)-i for i in 0:length(B)-1]]
+
 \section{Fully Autonomous Road Networks}
 
 Fully autonomous road networks are by no means a novel concept. They have appeared in fiction since the mid 20th century and have been a real possibility for the past decade. In a fully autonomous road networks \textit{(FARN)}s, all vehicles are self-operating with their routing either being determined on a vehicle-by-vehicle \textit{selfish} basis or by a larger system managing routes for all nearby agents. 

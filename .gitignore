@@ -336,4 +336,4 @@ geckodriver.log
 *.code-workspace
 .history
 .vscode
-
+*.prv/

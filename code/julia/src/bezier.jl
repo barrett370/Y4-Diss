@@ -31,6 +31,10 @@ function (curve::BezierCurve)(t::Real)::ControlPoint
     end
 end
 
+function Bezier2Bernstein(B::BezierCurve)
+
+end
+
 function diam(X::Array{Point}) ::Real
     dist(a,os) = [√((a.x - b.x)^2 + (a.y - b.y)^2) for b in os]
     dist_matrix = [dist(a,X) for a in X]
@@ -65,6 +69,10 @@ function bezInt(B1::BezierCurve,B2::BezierCurve) :: Tuple{Bool,Tuple{BezierCurve
     return false
 end
 
+function deCasteljau(B::BezierCurve,t::Real)::Tuple{BezierCurve,BezierCurve}
+    ([ B[1:i](t) for i in 1:length(B) ],[ B[i:length(B)](1-t) for i in length(B):-1:1])
+end
+
 function bezInt(B1::BezierCurve, B2::BezierCurve, rdepth::Int,rdepth_max,ret_channel::Channel)
 #function bezInt(B1::BezierCurve, B2::BezierCurve, rdepth::Int) :: Bool
     #println("recurse started")
@@ -89,8 +97,9 @@ function bezInt(B1::BezierCurve, B2::BezierCurve, rdepth::Int,rdepth_max,ret_cha
     #            println("subdividing")
                 if diam(B1) >= diam(B2)
                     #@show "splitting B1"
-                    B1_1 = [ B1[1:i](0.5) for i in 1:length(B1) ]
-                    B1_2 = [ B1[1:i](1) for i in [length(B1)-i for i in 0:length(B1)-1]]
+                    #B1_1 = [ B1[1:i](0.5) for i in 1:length(B1) ]
+                    #B1_2 = [ B1[1:i](1) for i in [length(B1)-i for i in 0:length(B1)-1]]
+                    (B1_1,B1_2) = deCasteljau(B1,0.5)
                     Threads.@spawn bezInt(B1_1,B2,rdepth+1,rdepth_max, ret_channel)
                     Threads.@spawn bezInt(B1_2,B2,rdepth+1,rdepth_max, ret_channel)
                     #GPUArrays.syncronize([
@@ -101,8 +110,9 @@ function bezInt(B1::BezierCurve, B2::BezierCurve, rdepth::Int,rdepth_max,ret_cha
                     #Threads.@spawnat :any bezInt(B1_2,deepcopy(B2),deepcopy(rdepth+1),rdepth_max, ret_channel)
                 else
                     #@show "splitting B2"
-                    B2_1 = [ B2[1:i](0.5) for i in 1:length(B2) ]
-                    B2_2 = [ B2[1:i](1) for i in [length(B2)-i for i in 0:length(B2)-1]]
+                    #B2_1 = [ B2[1:i](0.5) for i in 1:length(B2) ]
+                    #B2_2 = [ B2[1:i](1) for i in [length(B2)-i for i in 0:length(B2)-1]]
+                    (B2_1,B2_2) = deCasteljau(B2,0.5)
                     Threads.@spawn bezInt(B1,B2_1,rdepth+1,rdepth_max, ret_channel)
                     Threads.@spawn bezInt(B1,B2_2,rdepth+1,rdepth_max, ret_channel)
                     #GPUArrays.syncronize([
