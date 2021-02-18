@@ -31,9 +31,30 @@ function (curve::BezierCurve)(t::Real)::ControlPoint
     end
 end
 
-function Bezier2Bernstein(B::BezierCurve)
-
+function chord_length(curve::BezierCurve)
+    first = curve[1]
+    last = curve[end]
+    √((first.x - last.x)^2 + (first.y - last.y)^2)
 end
+
+function polygon_length(curve::BezierCurve)
+    l = 0
+    for i = 1:length(curve) - 1
+        l += √((curve[i].x - curve[i + 1].x)^2 + (curve[i].y - curve[i + 1].y)^2)
+    end
+    l
+end
+
+function bezLength(c::BezierCurve)::Real
+    n = length(c)
+    l =
+        (
+            2 * chord_length(c) +
+            (n - 1) * polygon_length(c)
+        ) / (n + 1)
+    return l
+end
+
 
 function diam(X::Array{Point}) ::Real
     dist(a,os) = [√((a.x - b.x)^2 + (a.y - b.y)^2) for b in os]

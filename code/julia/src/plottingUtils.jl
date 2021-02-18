@@ -88,18 +88,31 @@ function draw_road(r::Road, s::Real, e::Real)
             #         rs_coords = r.Ỹ(points.x[i], points.y[i])
             #         points.x[i] = rs_coords[1]
             #         points.y[i] = rs_coords[2]
+            #
             #     end
+            plot!(
+                rg,
+                points,
+                seriestype = [:shape],
+                lw = 0.5,
+                c = :red,
+                linecolor = :black,
+                legend = false,
+            )
+        elseif typeof(o) == Rectangle
+            rectangle(w, h, x, y) = Shape(x .+ [0,w,w,0], y .+ [0,0,h,h])
+
+            plot!(
+                rg,
+                rectangle(o.w,o.h,o.origin.x,o.origin.y),
+                seriestype = [:shape],
+                lw = 0.5,
+                c = :red,
+                linecolor = :black,
+                legend = false,
+            )
         end
 
-        plot!(
-            rg,
-            points,
-            seriestype = [:shape],
-            lw = 0.5,
-            c = :red,
-            linecolor = :black,
-            legend = false,
-        )
     end
     rg
 end

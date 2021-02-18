@@ -50,7 +50,7 @@ function gaussian_mutation!(P::Array{Individual},road::Road)::Array{Individual}
     # Interval bounds
 
     μ = 0.05 # TODO tweak
-    for i in P
+    for i in P[2:end]
         if Distributions.sample([true, false], Weights([1 - μ, μ])) # Do we mutate this candidate ?
             c_index =rand(1:length(i.phenotype.genotype))
             cᵢ = i.phenotype.genotype[c_index] # randomly selected gene

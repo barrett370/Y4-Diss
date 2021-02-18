@@ -1,0 +1,8 @@
+#+TITLE: Log Week 3
+#+OPTIONS: toc:nil
+
+ This week I have been working on:
+
+ - The background section of my report, updating the genetic operators section to include my newly implemented operators.
+   Also, upon adding the equations for de Casteljau's algorithm, I realised my implementation was incorrect and spent a few hours working out where I went wrong and correcting it.
+ - The literature review section of my report. I am unsure as to how much detail to include when critically evaluating papers, I would appreciate some feedback on section 3.1.1 of [[https://sambarrett.online/Y4-Diss/report.pdf][my report]].

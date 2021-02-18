@@ -11,7 +11,6 @@ mutable struct Genotype
     # velocityProfile::Dict{Real,Real}
 end
 
-
 mutable struct Phenotype
     source::Point
     genotype::BezierCurve
@@ -102,50 +101,39 @@ function generatePopulation(
     P
 end
 
-function chord_length(curve::BezierCurve)
-    first = curve[1]
-    last = curve[end]
-    √((first.x - last.x)^2 + (first.y - last.y)^2)
-end
-
-function polygon_length(curve::BezierCurve)
-    l = 0
-    for i = 1:length(curve) - 1
-        l += √((curve[i].x - curve[i + 1].x)^2 + (curve[i].y - curve[i + 1].y)^2)
-    end
-    l
-end
-
 function infeasible_distance(road::Road, curve::BezierCurve)
     l = 0
     curve_values = get_curve(curve)
     for obstacle in road.obstacles
-        obstacle_values = []
+        intersects = []
         if typeof(obstacle) == Circle
             obstacle_values = get_circle(obstacle)
-        elseif typeof(obstacle) == Rectangle
-            # obstacle_values = get_rectangle(obstacle)
-            obstacle_values = []
-        end
-        intersects = []
-        for i = 1:length(curve_values[1])
-            x = curve_values[1][i]
-            y = curve_values[2][i]
-            potential_circle_intersect_is = findall(
-                cx -> round(cx, digits=1) == round(x, digits=1),
-                obstacle_values[1],
-            )
-            for j in potential_circle_intersect_is
-                if round(y, digits=1) == round(obstacle_values[2][j], digits=1)
-                    append!(intersects, [(x, y)])
+            for i = 1:length(curve_values[1])
+                x = curve_values[1][i]
+                y = curve_values[2][i]
+                potential_circle_intersect_is = findall(
+                    cx -> round(cx, digits=1) == round(x, digits=1),
+                    obstacle_values[1],
+                )
+                for j in potential_circle_intersect_is
+                    if round(y, digits=1) == round(obstacle_values[2][j], digits=1)
+                        append!(intersects, [(x, y)])
+                    end
                 end
             end
+        elseif typeof(obstacle) == Rectangle
+            # obstacle_values = get_rectangle(obstacle)
+            for i = 1:length(curve_values[1])
+                x = curve_values[1][i]
+                y = curve_values[2][i]
+
+                if (x > obstacle.origin.x && x < obstacle.origin.x + obstacle.w) && (y > obstacle.origin.y && y < obstacle.origin.y + obstacle.h) # TODO assumes I define rectangles with origin at bottom left and always have positive h and w
+                    append!(intersects, [(x,y)])
+                end
+            end
+
         end
         if length(intersects) > 0
-            # @show string("Intersects for ", √(
-            #         (intersects[1][1] - intersects[end][1])^2 +
-            #         (intersects[1][2] - intersects[end][2])^2,
-            #     ) )
             l =
                 l + √(
                     (intersects[1][1] - intersects[end][1])^2 +
@@ -207,21 +195,11 @@ function high_proximity_distance(road::Road, curve::BezierCurve)
     l
 end
 
-function bezLength(c::BezierCurve)::Real
-    n = length(c)
-    l =
-        (
-            2 * chord_length(c) +
-            (n - 1) * polygon_length(c)
-        ) / (n + 1)
-    return l
-end
-
 function Fitness(r::Road, i::Individual)
 
     # Curve Fitness
 
-    α = 15 # Infeasible path Penalty weight
+    α = 30# Infeasible path Penalty weight
     β = 5 # Min safe distance break penalty weight
     l = bezLength(i.phenotype.genotype)
     l1 = infeasible_distance(r, i.phenotype.genotype)

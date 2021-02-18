@@ -4,7 +4,7 @@
 
 Genetic algorithms are a type of meta-heuristic optimisation technique that employ the same rationale as classical Evolution seen in nature.
 
-Genetic Algorithms can trace their origins back to the late 1960s when they were first proposed by John Holland, though he then referred to them as \textit{Genetic Plans}\footnote{This distinction was made to emphasise the \textit{"centrality of computation in defining and implementing the plans"}\cite{hollandAdaptationNaturalArtificial1992a}}. Holland went on to write the first book on the subject titled \textit{Adaptation in Natural and Artificial Systems}\cite{hollandAdaptationNaturalArtificial1992} in 1975. The field did not find much reception with Holland stating in the preface to the 1992 rerun:
+Genetic Algorithms can trace their origins back to the late 1960s when they were first proposed by John Holland, though he then referred to them as \textit{Genetic Plans}\footnote{This distinction was made to emphasise the \textit{"centrality of computation in defining and implementing the plans"}\cite{hollandAdaptationNaturalArtificial1992}}. Holland went on to write the first book on the subject titled \textit{Adaptation in Natural and Artificial Systems}\cite{hollandAdaptationNaturalArtificial1992} in 1975. The field did not find much reception with Holland stating in the preface to the 1992 rerun:
 
 \begin{displayquote}
 \textit{``When this book was originally published I was very optimistic, envisioning extensive reviews and a kind of 'best seller' in the realm of monographs. Alas! That did not happen.``}
@@ -45,7 +45,7 @@ Genetic algorithms are both \textit{probabilistically optimal} and \textit{proba
 \begin{figure}[htpb]
     \centering
     \includegraphics[width=\linewidth]{hollandAlg}
-    \caption{GA algorithm outlined in Holland's Original Book\cite{hollandAdaptationNaturalArtificial1992a}}
+    \caption{GA algorithm outlined in Holland's Original Book\cite{hollandAdaptationNaturalArtificial1992}}
     \label{fig:hollandAlg}
 \end{figure}
 
@@ -73,7 +73,31 @@ The probability of selection for an individual $i$ with fitness $\mathcal{F}(i)$
 
 Where $N$ is the size of the population $P$
 
-This is a simple approach but performs well and has very little performance overhead.  
+This is a simple approach but performs well and has very little performance overhead.
+
+\paragraph{Ranked Selection}\label{imp:RankSel}
+
+Ranked selection is an alternative selection method, it works on the assumption that when selecting your next generation, it works best when the individuals are closely grouped in fitness. The main difference of this method when compared to fitness proportional selection is that it ranks individuals based on relative fitness rather than absolute fitness.
+
+The procedure can be written mathematically as:
+
+Given a population $P$ of size $n$ ordered by fitness. We select the top \(\gamma\)-ranked individual, $x_{\gamma}$ with a probability $p(\gamma)$. Where \(\gamma\) is the rank and $p(\gamma)$ is the ranking function.
+
+The ranking function can take different forms including both linear and exponential ranking.\todo[inline]{extend list to include all functions used}
+
+Linear ranking is defined as:
+
+\begin{equation}
+p(\gamma)= \frac{\alpha + (\beta-\alpha) \cdot \frac{\gamma}{n-1}}{n}
+\end{equation}
+
+Where:
+
+\begin{itemize}
+  \item $\sum_{\gamma=0}^n p(\gamma) = 1$
+  \item $\alpha + \beta = 2$
+  \item $1 \leq \beta \leq 2$
+\end{itemize}
 
 \subsubsection{Variation}
 
@@ -94,10 +118,20 @@ In real-coded GAs mutation operators include:
     \item Gaussian Mutation 
 \end{itemize}
 \subparagraph{Uniform Mutation}
-In uniform mutation, we select a parent, $p$, and replace a randomly selected gene $c_i \in p$ with a uniformly random number $c_i' \in [u_i,v_i]$  where $u_i$ and $v_i$ are set bounds.
+In uniform mutation, we select a parent $p$ at random and replace a randomly selected gene $c_i \in p$ with a uniformly random number $c_i' \in [u_i,v_i]$  where $u_i$ and $v_i$ are set bounds.
+
+\paragraph{Gaussian Mutation}
+
+In Gaussian mutation, we select a parent $p$ at random and randomly select a gene $c_{i} \in p$. We replace $c_{i}$ with a new value $c_{i}'$ which is calculated as follows:
+
+\begin{equation}
+  c_{i}' = \min(\max(\mathcal{N}(c_{i},\sigma_{i}), u_{i}) v_{i})
+\end{equation}
+
+Where $\mathcal{N}(c_{i},\sigma_{i})$ is a Gaussian distribution with a standard deviation \(\sigma_{i}\) and a mean of $c_{i}$. \(\sigma_{i}\) may depend on the length of the interval bound, $l_{i} = v_{i} - u_{i}$, typically (and in my implementation) $\sigma_{i} = \frac{1}{10}l_{i}$
 
 
-\paragraph{Crossover}
+\subsubsection{Crossover}
 
 Crossover is a binary operation, taking two randomly selected \textit{parents} from the population $P_t$ with a probability $p_c \in [0,1]$ 
 

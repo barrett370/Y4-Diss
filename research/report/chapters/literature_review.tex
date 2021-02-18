@@ -1,18 +1,27 @@
 
 
+\section{Genetic algorithms for route generation}
+
+
 Classical Genetic algorithms have seen research and applications in a number of fields over the past 40 years ranging from Heart disease diagnosis\cite{reddyHybridGeneticAlgorithm2020} to predicting the strength of concrete under various conditions\cite{shariatiPredictionConcreteStrength2020}.
 
 There is a substantial and growing body of research specifically looking at the applications of GAs in route planning for autonomous agents, however, many are focusing on either abstract robotic agent planning in discrete search spaces or failing to take into account the wider environment of multiple agents.
-
-\section{GAs for route generation}
-
 \todo[inline]{Kala's book \& papers}
 
-\subsection{GAs for cooperative route generation}
+\subsection{Genetic algorithms for cooperative route generation}
 
-In his book, Kala \cite{kalaOptimizationBasedPlanning2016} proposes the use of a GA approach as an embedded component of a larger planning system which also relies on Djiksra's algorithm for macro-level route planning along with the classical autonomous vehicle real-time collision avoidance toolbox (radarr, sonarr, etc.). In order to achieve a system capable of planning for multiple agents concurrently, Kala proposed the use of these real-time collision avoidance tools along with embedding \textit{traffic rules} as heuristics into the Djiksta-based component. These traffic rules included ``driving on the left'' and ``overtaking on the right'' etc. This proposed system, while similar to mine, differs in scope. I propose a system for planning routes for a set of autonomous agents within a fully-autonomous road system, meaning agents will not (in theory) interact or encounter any other vehicles which are not a part of the planning network.
+\paragraph{Raul Kala - Optimization Based Planning 2016\cite{kalaOptimizationBasedPlanning2016}}
+In his book, Kala proposes a GA as an embedded component of a larger planning system which also relies on Djiksra's algorithm for macro-level route planning along with the classical autonomous vehicle real-time collision avoidance toolbox (radarr, sonarr, etc.). In order to achieve a system capable of planning for multiple agents concurrently, Kala proposed the use of these real-time collision avoidance tools along with embedding \textit{traffic rules} as heuristics into the Djiksta-based component. These traffic rules included ``driving on the left'' and ``overtaking on the right'' etc. This proposed system, while similar to mine, differs in scope. I propose a system for planning routes for a set of autonomous agents within a fully-autonomous road system, meaning agents will not (in theory) interact or encounter any other vehicles which are not a part of the planning network.
 
-\todo[inline]{be sure to mention the work done by Cruz-Piris et al.\cite{cruz-pirisAutomatedOptimizationIntersections2019}}
+\paragraph{Luis Cruz-Piris et al. - Automated Optimsization of Intersections Using a Genetic Algorithm\cite{cruz-pirisAutomatedOptimizationIntersections2019}}
+\todo{Pare this down?}
+A paper published by Cruz-Piris et al. investigates the applications of Genetic Algorithms on routing traffic through busy intersections. Their proposed system is shown to have improvements in traffic throughput of anywhere from 9 to 36\%.
+
+Their approach involved several assumptions, many of which my research shares. Namely, they assumed vehicles do not stop at any point and that their speed remains constant at all points in time. They modelled intersections and associated traffic flows using (Traffic) Cellular Automata as proposed by Maerivoet and De Moor\cite{maerivoetCellularAutomataModels2005}. This approach takes advantage of the fairly uniform and regular structure of large intersections, and although they work on modelling irregularly shaped intersections, this TCA model begins to fall apart when the size of each cell cannot contain a vehicle and requisite surrounding space or if input/output lanes do not lie in a regular grid pattern.
+
+To circumvent the latter issue, they propose creating ``virtual lanes based on the input and output paths'', though they do not elaborate as to how these lanes are created. With regards to the grid cell size, they also have to ensure that these new \textit{virtual lanes} fit into the grid along with vehicles, again, they do not specify a method for selecting cell size, only providing requirements and examples. This leads me to believe that these were calculated by hand through trial-and-error, not a viable method when you consider the number of unique intersections across the world or even just the Continental United States!
+
+They go on to define their GA approach to routing agents between the set of input and output points.
 
 
 \section{Bézier curves for route generation}
@@ -25,7 +34,7 @@ In his book, Kala \cite{kalaOptimizationBasedPlanning2016} proposes the use of a
 
 They have the potential of greatly reducing travel times by efficiently routing all vehicles with the goal of reducing the net travel time. Such a system would also be able to respond much faster than human drivers, allowing for large increases in permissible vehicle velocities thus, further increasing efficiency.
 
-By extension of their higher efficiency, \textit{FARN}s will also have a marked effect on vehicular energy consumption. The potential effects are summarised nicely by Vahidi and Sciarretta\cite{vahidiEnergySavingPotentials2018} where they show the use of vehicle automation could cause anywhere from a halving of "energy use and greenhouse gas emission" in an "optimistic scenario" to doubling them depending on the effects that present themselves. The increase in highway speed whilst increasing travel efficiency is predicted by Brown et al.\cite{brownAnalysisPossibleEnergy2014} and Wadud et al.\cite{wadudHelpHindranceTravel2016} as increasing energy use by anywhere from 5\% to 30\%
+By extension of their higher efficiency, \textit{FARN}s will also have a marked effect on vehicular energy consumption. The potential effects are summarised nicely by Vahidi and Sciarretta\cite{vahidiEnergySavingPotentials2018} where they show the use of vehicle automation could cause anywhere from a halving of ``energy use and greenhouse gas emission'' in an ``optimistic scenario'' to doubling them depending on the effects that present themselves. The increase in highway speed whilst increasing travel efficiency is predicted by Brown et al.\cite{brownAnalysisPossibleEnergy2014} and Wadud et al.\cite{wadudHelpHindranceTravel2016} as increasing energy use by anywhere from 5\% to 30\%
 
 
 %%% Local Variables:

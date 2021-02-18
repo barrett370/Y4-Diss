@@ -85,15 +85,20 @@ function PCGA(start::Point,
         other_routes[i] = P[1] |> toSVector
     end
 #    savefig(plotGeneration!(draw_road(road,0,20),P,road,100),string("./gen-",n_gens))
-    P_filtered = filter(i -> high_proximity_distance(road, i.phenotype.genotype) == 0, filter(i -> infeasible_distance(road, i.phenotype.genotype) == 0, P))
-    P_filtered = filter(c -> FinalCheck(c, other_routes, i), P_filtered)
+    P_filtered = filter(c -> FinalCheck(c, other_routes, i), P)
     # if length(P) == 0
     #    return PCGA(start,goal,road,other_routes, i, ngens_copy,n)
     # end
 
     if P_filtered |> length  != 0
-        @show "Final solution $(P_filtered[1])"
-        return [P_filtered[1]]
+        P_2filtered = filter(i -> high_proximity_distance(road, i.phenotype.genotype) == 0, filter(i -> infeasible_distance(road, i.phenotype.genotype) == 0, P_filtered))
+        if P_2filtered |> length  != 0
+            @show "Final solution $(P_2filtered[1])"
+            return [P_2filtered[1]]
+        else
+            @show "Final solution $(P_filtered[1])"
+            return [P_filtered[1]]
+        end
     else
 
         "no non-colliding routes found" |> println
