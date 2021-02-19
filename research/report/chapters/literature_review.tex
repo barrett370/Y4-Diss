@@ -21,8 +21,9 @@ They conclude that their approach yields good robustness and convergence as well
 
 \paragraph{Raul Kala - Optimization Based Planning 2016\cite{kalaOptimizationBasedPlanning2016}}
 In his book, Kala proposes a GA as an embedded component of a larger planning system which also relies on Djiksra's algorithm for macro-level route planning along with the classical autonomous vehicle real-time collision avoidance toolbox (radarr, sonarr, etc.). In order to achieve a system capable of planning for multiple agents concurrently, Kala proposed the use of these real-time collision avoidance tools along with embedding \textit{traffic rules} as heuristics into the Djiksta-based component. These traffic rules included ``driving on the left'' and ``overtaking on the right'' etc. This proposed system, while similar to mine, differs in scope. I propose a system for planning routes for a set of autonomous agents within a fully-autonomous road system, meaning agents will not (in theory) interact or encounter any other vehicles which are not a part of the planning network.
+\todo{Talk about Kala's road space coordinate system \& use of Bézier  curves, move to Bézier subsection? }
 
-\paragraph{Luis Cruz-Piris et al. - Automated Optimsization of Intersections Using a Genetic Algorithm\cite{cruz-pirisAutomatedOptimizationIntersections2019}}
+\paragraph{Cruz-Piris et al. - Automated Optimsization of Intersections Using a Genetic Algorithm\cite{cruz-pirisAutomatedOptimizationIntersections2019}}
 \todo{Pare this down?}
 A paper published by Cruz-Piris et al. investigates the applications of Genetic Algorithms on routing traffic through busy intersections. Their proposed system is shown to have improvements in traffic throughput of anywhere from 9\% to 36\%.
 
@@ -39,7 +40,15 @@ This approach seems to work relatively well for throughput optimisation problems
 
 \section{Bézier curves for route generation}
 
-\textbf{See annotated copy of Quartic Bézier curve based trajectory generation for autonomous vehicles with curvature and velocity constraints \cite{chenQuarticBezierCurve2014}}\todo{Expand this}
+\paragraph{Chen et al. - Quartic Bézier Curve based Trajectory Generation for Autonomous Vehicles with Curvature and Velocity Constraints}
+
+In this 2014 paper, Chen et. al research the efficacy of quartic (4-degree) Bézier curves for planning continuous routes between points for autonomous vehicles. In order to find an optimal solution they employ sequential quadratic programming.
+
+In their approach Chen et al. also take into account the orientation, change in orientation and velocity of the routes generated in order to assure all generated routes are \textit{safe} for occupied vehicles to follow.
+
+This approach appears to be extremely computationally efficient on the toy examples provided in the paper, on relatively low performance hardware 560 iterations can be computed in around 500ms!
+
+There is no mention, however, to a cooperative element. Explicitly solving quadratic programming tasks is known to be $\mathbf{NP}$-complete as shown by Vavasis in 1990\cite{VAVASIS199073} and adding onto that the requirement that all solutions interact nicely will only increase the real-world runtime of any solution. A real-world scenario with hundreds of vehicles may suffer from an incredibly high runtime, hardware requirement or both.\todo[inline]{is this even correct to say?}
 
 \section{Fully Autonomous Road Networks}
 

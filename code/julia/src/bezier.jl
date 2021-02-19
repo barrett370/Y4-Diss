@@ -20,6 +20,10 @@ function (+)(a::ControlPoint, b::ControlPoint)
     ControlPoint(b.x + a.x, b.y + a.y)
 end
 
+#function convert(::Type{BezierCurve}, i::Individual)
+#  i.phenotype.genotype
+#end
+
 function (curve::BezierCurve)(t::Real)::ControlPoint
     @match curve begin
         [p] => p
