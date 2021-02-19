@@ -1,3 +1,6 @@
 * Inbox
+** TODO Finish literature review section
+
+[[file:~/git-clones/Y4-Diss/research/report/chapters/literature_review.tex][file:~/git-clones/Y4-Diss/research/report/chapters/literature_review.tex]]
 ** TODO Read through and maybe implement changComputationMinimumDistance2011
 SCHEDULED: <2021-02-12 Fri>

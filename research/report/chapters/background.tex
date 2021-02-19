@@ -125,7 +125,7 @@ In uniform mutation, we select a parent $p$ at random and replace a randomly sel
 In Gaussian mutation, we select a parent $p$ at random and randomly select a gene $c_{i} \in p$. We replace $c_{i}$ with a new value $c_{i}'$ which is calculated as follows:
 
 \begin{equation}
-  c_{i}' = \min(\max(\mathcal{N}(c_{i},\sigma_{i}), u_{i}) v_{i})
+  c_{i}' = \min(\max(\mathcal{N}(c_{i},\sigma_{i}), u_{i}), v_{i})
 \end{equation}
 
 Where $\mathcal{N}(c_{i},\sigma_{i})$ is a Gaussian distribution with a standard deviation \(\sigma_{i}\) and a mean of $c_{i}$. \(\sigma_{i}\) may depend on the length of the interval bound, $l_{i} = v_{i} - u_{i}$, typically (and in my implementation) $\sigma_{i} = \frac{1}{10}l_{i}$

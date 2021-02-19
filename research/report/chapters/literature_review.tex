@@ -6,22 +6,35 @@
 Classical Genetic algorithms have seen research and applications in a number of fields over the past 40 years ranging from Heart disease diagnosis\cite{reddyHybridGeneticAlgorithm2020} to predicting the strength of concrete under various conditions\cite{shariatiPredictionConcreteStrength2020}.
 
 There is a substantial and growing body of research specifically looking at the applications of GAs in route planning for autonomous agents, however, many are focusing on either abstract robotic agent planning in discrete search spaces or failing to take into account the wider environment of multiple agents.
-\todo[inline]{Kala's book \& papers}
 
 \subsection{Genetic algorithms for cooperative route generation}
+
+\paragraph{Cai \& Peng - Cooperative Coevolutionary Adaptive Genetic Algorithm in Path Planning of Cooperative Multi-Mobile Robot Systems\cite{caiCooperativeCoevolutionaryAdaptive2002}}
+
+In this 2001 paper, Cai \& Peng give an example of a Cooperative Coevolutionary Adaptive Genetic Algorithm (CCAGA) for planning routes for multiple autonomous agents.
+
+Their approach features a discrete grid-based search space featuring rectangular obstacles which the routes must avoid. Their chromosomes are encoded using real-values representing the $x$ and $y$ coordinates of the search grid.
+
+Their fitness function has two stages, in the first generation the fitness of a candidate solution is purely determined by the global \textit{optimality} of the route. In all subsequent generations the fitness also takes into account the best routes from each of the other sub-populations.\todo{make reference to this method being altered for use in my solution}
+
+They conclude that their approach yields good robustness and convergence as well as being suitable for parallel execution, allowing for systems employing this GA approach to run very efficiently.
 
 \paragraph{Raul Kala - Optimization Based Planning 2016\cite{kalaOptimizationBasedPlanning2016}}
 In his book, Kala proposes a GA as an embedded component of a larger planning system which also relies on Djiksra's algorithm for macro-level route planning along with the classical autonomous vehicle real-time collision avoidance toolbox (radarr, sonarr, etc.). In order to achieve a system capable of planning for multiple agents concurrently, Kala proposed the use of these real-time collision avoidance tools along with embedding \textit{traffic rules} as heuristics into the Djiksta-based component. These traffic rules included ``driving on the left'' and ``overtaking on the right'' etc. This proposed system, while similar to mine, differs in scope. I propose a system for planning routes for a set of autonomous agents within a fully-autonomous road system, meaning agents will not (in theory) interact or encounter any other vehicles which are not a part of the planning network.
 
 \paragraph{Luis Cruz-Piris et al. - Automated Optimsization of Intersections Using a Genetic Algorithm\cite{cruz-pirisAutomatedOptimizationIntersections2019}}
 \todo{Pare this down?}
-A paper published by Cruz-Piris et al. investigates the applications of Genetic Algorithms on routing traffic through busy intersections. Their proposed system is shown to have improvements in traffic throughput of anywhere from 9 to 36\%.
+A paper published by Cruz-Piris et al. investigates the applications of Genetic Algorithms on routing traffic through busy intersections. Their proposed system is shown to have improvements in traffic throughput of anywhere from 9\% to 36\%.
 
-Their approach involved several assumptions, many of which my research shares. Namely, they assumed vehicles do not stop at any point and that their speed remains constant at all points in time. They modelled intersections and associated traffic flows using (Traffic) Cellular Automata as proposed by Maerivoet and De Moor\cite{maerivoetCellularAutomataModels2005}. This approach takes advantage of the fairly uniform and regular structure of large intersections, and although they work on modelling irregularly shaped intersections, this TCA model begins to fall apart when the size of each cell cannot contain a vehicle and requisite surrounding space or if input/output lanes do not lie in a regular grid pattern.
+Their approach involved several assumptions, many of which my research shares. Namely, they assumed vehicles do not stop at any point and that their speed remains constant at all points in time.
+
+They modelled intersections and associated traffic flows using (Traffic) Cellular Automata (TCA) as proposed by Maerivoet and De Moor\cite{maerivoetCellularAutomataModels2005}. This approach takes advantage of the fairly uniform and regular structure of large intersections, and although they work on modelling irregularly shaped intersections, this TCA model begins to fall apart when the size of each cell cannot contain a vehicle and requisite surrounding space or if input/output lanes do not lie in a regular grid pattern.
 
 To circumvent the latter issue, they propose creating ``virtual lanes based on the input and output paths'', though they do not elaborate as to how these lanes are created. With regards to the grid cell size, they also have to ensure that these new \textit{virtual lanes} fit into the grid along with vehicles, again, they do not specify a method for selecting cell size, only providing requirements and examples. This leads me to believe that these were calculated by hand through trial-and-error, not a viable method when you consider the number of unique intersections across the world or even just the Continental United States!
 
-They go on to define their GA approach to routing agents between the set of input and output points.
+They go on to define their GA approach to routing agents between the set of input and output points. They use a binary coded GA, this is possible due to their use of discretised search spaces. Their chromosomes are codified as a long bistring where each bit represents the presence of absence of a vehicle at a given grid square for each of the $n$ \textit{arms} of the junction. This is a relatively efficient encoding, with checks for vehicle presence being trivial.\todo{remove this para?}
+
+This approach seems to work relatively well for throughput optimisation problems such as junctions but does not scale well for less structured scenarios where the origins and goals cannot be known beforehand and are not necessarily the same for all subsequent runs.
 
 
 \section{Bézier curves for route generation}
