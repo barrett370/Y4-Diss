@@ -206,6 +206,7 @@ function Fitness(r::Road, i::Individual)
     l2 = high_proximity_distance(r, i.phenotype.genotype) # length of path in which min safe distance is broken
 
 
+    @show l + α * l1 + β * l2
     l + α * l1 + β * l2
 end
 
@@ -278,7 +279,6 @@ function repair(i::Individual)::Individual
 end
 
 function collisionDetection(c1::BezierCurve, c2::BezierCurve)::Bool
-    @show "Detecting Collisions parallel"
     (b, ps) = bezInt(c1, c2)
     if b # if they do intersect
         println("Intersection")

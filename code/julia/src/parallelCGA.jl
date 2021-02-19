@@ -72,7 +72,7 @@ function PCGA(start::Point,
             |> P -> selection(P, method=selection_method)  # Selection operator
             |> simple_crossover |> new_pop -> append!(P, new_pop)  ## Crossover operator & Add newly generated individuals to population
             #|> uniform_mutation! # apply mutation operator
-            |> P -> gaussian_mutation!(P,road) # apply mutation operator
+            #|> P -> gaussian_mutation!(P,road) # apply mutation operator
             |> P -> mutation!(P,road,method=mutation_method) # apply mutation operator
             |> P -> begin map(p -> p.fitness = p |> 𝓕, P); P end # recalculate fitness of population after mutation
             |> P -> map(repair, P)  # attempt repair of invalid solutions

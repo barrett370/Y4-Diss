@@ -49,12 +49,13 @@ end
 function gaussian_mutation!(P::Array{Individual},road::Road)::Array{Individual}
     # Interval bounds
 
-    μ = 0.05 # TODO tweak
-    for i in P[2:end]
-        if Distributions.sample([true, false], Weights([1 - μ, μ])) # Do we mutate this candidate ?
-            c_index =rand(1:length(i.phenotype.genotype))
-            cᵢ = i.phenotype.genotype[c_index] # randomly selected gene
-            x_bound = sort([i.phenotype.source.x, i.phenotype.goal.x])
+    μ = 0.3 # TODO tweak probability of selecting individual
+    for i in P
+        if Distributions.sample([true, false], Weights([μ, 1-μ])) # Do we mutate this candidate ?
+            new_i = deepcopy(i)
+            c_index =rand(1:length(new_i.phenotype.genotype))
+            cᵢ = new_i.phenotype.genotype[c_index] # randomly selected gene
+            x_bound = sort([new_i.phenotype.source.x, new_i.phenotype.goal.x])
             y_bound = [
                 ((road.boundary_1(x_bound[1]) + road.boundary_1(x_bound[2]))/2) * 1.5 # TODO tweak, y can be from the average y of the road bottom *1.5 to :
                 ((road.boundary_2(x_bound[1]) + road.boundary_2(x_bound[2]))/2) * 1.5 # TODO tweak, average yo fo road top * 1.5
@@ -73,10 +74,8 @@ function gaussian_mutation!(P::Array{Individual},road::Road)::Array{Individual}
 
 
             #@show cᵢ′ == cᵢ
-            i.phenotype.genotype[c_index] = cᵢ′
-
-
-
+            new_i.phenotype.genotype[c_index] = cᵢ′
+            append!(P,[new_i])
 
         end
     end
@@ -88,14 +87,15 @@ function simple_crossover(P::Array{Individual})
     start = P[1].phenotype.source
     goal = P[1].phenotype.goal
     offspring::Array{Individual} = []
+    P_copy = deepcopy(P)
     while n > 1
-        p1_i = rand(1:n)
-        p1 = P[p1_i]
-        deleteat!(P, p1_i)
+        p1_i = rand(1:n) # randomly select parent 1
+        p1 = P_copy[p1_i]
+        deleteat!(P_copy, p1_i)
         n = n - 1
-        p2_i = rand(1:n)
-        p2 = P[p2_i]
-        deleteat!(P, p2_i)
+        p2_i = rand(1:n)# randomly select parent 2
+        p2 = P_copy[p2_i]
+        deleteat!(P_copy, p2_i)
         n = n - 1
 
         p1 = p1 |> p -> p.phenotype.genotype |> getGenotypeString

@@ -10,5 +10,8 @@ struct Point
     end
 end
 
+function convert(::Type{BezierCurve}, i::Individual)
+  i.phenotype.genotype
+end
 
 curry(f,x) = (xs...) -> f(x,xs...)
