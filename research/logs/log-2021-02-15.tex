@@ -1,0 +1,41 @@
+% Created 2021-02-23 Tue 11:02
+% Intended LaTeX compiler: pdflatex
+\documentclass[11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{grffile}
+\usepackage{longtable}
+\usepackage{wrapfig}
+\usepackage{rotating}
+\usepackage[normalem]{ulem}
+\usepackage{amsmath}
+\usepackage{textcomp}
+\usepackage{amssymb}
+\usepackage{capt-of}
+\usepackage{hyperref}
+\author{Sam Barrett}
+\date{\today}
+\title{Log Week 3}
+\hypersetup{
+ pdfauthor={Sam Barrett},
+ pdftitle={Log Week 3},
+ pdfkeywords={},
+ pdfsubject={},
+ pdfcreator={Emacs 27.1 (Org mode 9.5)}, 
+ pdflang={English}}
+\begin{document}
+
+\maketitle
+This week I have been working on:
+
+\begin{itemize}
+\item The background section of my report, updating the genetic operators section to include my newly implemented operators.
+Also, upon adding the equations for de Casteljau's algorithm, I realised my implementation was incorrect and spent a \emph{few} hours working out where I went wrong and correcting it. (the second curve was being returned as the original curve.)
+\item The literature review section of my report. I am unsure as to how much detail to include when critically evaluating papers, I would appreciate some feedback on section 3.1.1 of my report (\href{https://sambarrett.online/Y4-Diss/report.pdf}{link}).
+\item I have also been generally testing and tweaking parameters, I have changed my mutation chance and also made it so that my crossover operator does not replace the parents and instead produces new candidates to be selected (or not) in the selection stage.
+\end{itemize}
+
+
+Next week I intend to continue with my literature review and begin writing my implementation section focusing on the early stages and decision I made.
+\end{document}

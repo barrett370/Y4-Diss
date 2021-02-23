@@ -1,5 +1,12 @@
 * Inbox
+** TODO Have an idea of length of each section of my report
+DEADLINE: <2021-03-09 Tue>
+
 ** TODO Finish literature review section
+:LOGBOOK:
+CLOCK: [2021-02-23 Tue 13:33]
+CLOCK: [2021-02-23 Tue 13:03]--[2021-02-23 Tue 13:28] =>  0:25
+:END:
 
 [[file:~/git-clones/Y4-Diss/research/report/chapters/literature_review.tex][file:~/git-clones/Y4-Diss/research/report/chapters/literature_review.tex]]
 ** TODO Read through and maybe implement changComputationMinimumDistance2011

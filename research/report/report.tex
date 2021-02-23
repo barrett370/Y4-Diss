@@ -14,6 +14,11 @@
 \usepackage{tabularx,lipsum,environ,amsmath,amssymb,framed}
 \usepackage{animate}
 
+\usepackage{titlesec}
+\titleformat{\chapter}
+  {\normalfont\LARGE\bfseries}{\thechapter}{1em}{}
+\titlespacing*{\chapter}{0pt}{3.5ex plus 1ex minus .2ex}{2.3ex plus .2ex}
+
 \makeatletter
 \newcounter{problemCounter}
 \newcommand{\problemtitle}[1]{\gdef\@problemtitle{#1}}% Store problem title

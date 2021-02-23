@@ -15,7 +15,7 @@ In this 2001 paper, Cai \& Peng give an example of a Cooperative Coevolutionary 
 
 Their approach features a discrete grid-based search space featuring rectangular obstacles which the routes must avoid. Their chromosomes are encoded using real-values representing the $x$ and $y$ coordinates of the search grid.
 
-Their fitness function has two stages, in the first generation the fitness of a candidate solution is purely determined by the global \textit{optimality} of the route. In all subsequent generations the fitness also takes into account the best routes from each of the other sub-populations.\todo{make reference to this method being altered for use in my solution}
+Their fitness function has two stages, in the first generation the fitness of a candidate solution is purely determined by the global \textit{optimality} of the route. In all subsequent generations the fitness also takes into account the best routes from each of the other sub-populations.\todo{make reference to this method being altered for use in my solution( in approach section? )}
 
 They conclude that their approach yields good robustness and convergence as well as being suitable for parallel execution, allowing for systems employing this GA approach to run very efficiently.
 
@@ -25,18 +25,17 @@ In his book, Kala proposes a GA as an embedded component of a larger planning sy
 
 \paragraph{Cruz-Piris et al. - Automated Optimsization of Intersections Using a Genetic Algorithm\cite{cruz-pirisAutomatedOptimizationIntersections2019}}
 \todo{Pare this down?}
-A paper published by Cruz-Piris et al. investigates the applications of Genetic Algorithms on routing traffic through busy intersections. Their proposed system is shown to have improvements in traffic throughput of anywhere from 9\% to 36\%.
+A paper published by Cruz-Piris et al. investigates the applications of (binary coded) Genetic Algorithms on routing traffic through busy intersections. Their proposed system is shown to have improvements in traffic throughput of anywhere from 9\% to 36\%.
 
 Their approach involved several assumptions, many of which my research shares. Namely, they assumed vehicles do not stop at any point and that their speed remains constant at all points in time.
 
-They modelled intersections and associated traffic flows using (Traffic) Cellular Automata (TCA) as proposed by Maerivoet and De Moor\cite{maerivoetCellularAutomataModels2005}. This approach takes advantage of the fairly uniform and regular structure of large intersections, and although they work on modelling irregularly shaped intersections, this TCA model begins to fall apart when the size of each cell cannot contain a vehicle and requisite surrounding space or if input/output lanes do not lie in a regular grid pattern.
+Their approach to modelling the solution space takes advantage of the fairly uniform and regular structure of large intersections, and although they work on modelling irregularly shaped intersections, this TCA model begins to fall apart when the size of each cell cannot contain a vehicle and requisite surrounding space or if input/output lanes do not lie in a regular grid pattern. Facilitating irregularly shaped intersections seems to be a manual process, not a particularly viable method when you consider the number of unique intersections across the world or even just the Continental United States!
 
-To circumvent the latter issue, they propose creating ``virtual lanes based on the input and output paths'', though they do not elaborate as to how these lanes are created. With regards to the grid cell size, they also have to ensure that these new \textit{virtual lanes} fit into the grid along with vehicles, again, they do not specify a method for selecting cell size, only providing requirements and examples. This leads me to believe that these were calculated by hand through trial-and-error, not a viable method when you consider the number of unique intersections across the world or even just the Continental United States!
+This approach seems to work relatively well for throughput optimisation problems such as junctions but does not scale well for less structured scenarios where all origins and goals cannot be known beforehand and are not necessarily the same for all subsequent runs.
 
-They go on to define their GA approach to routing agents between the set of input and output points. They use a binary coded GA, this is possible due to their use of discretised search spaces. Their chromosomes are codified as a long bistring where each bit represents the presence of absence of a vehicle at a given grid square for each of the $n$ \textit{arms} of the junction. This is a relatively efficient encoding, with checks for vehicle presence being trivial.\todo{remove this para?}
+\paragraph{Roberge et al. - Fast Genetic Algorithm Path Planner for Fixed-Wing Military UAV Using GPU\cite{robergeFastGeneticAlgorithm2018}}
 
-This approach seems to work relatively well for throughput optimisation problems such as junctions but does not scale well for less structured scenarios where the origins and goals cannot be known beforehand and are not necessarily the same for all subsequent runs.
-
+In this 2018 paper an interesting proposition was made, greatly increasing efficiency and viability of real-time planning via GAs through massively parallelising its core processes to run on GPUs. Their implementation shows a 290x times speedup compared with conventional sequential CPU execution. GAs lend themselves quite nicely to parallel execution as we are applying the same operators to multiple individuals of the same shape.
 
 \section{Bézier curves for route generation}
 

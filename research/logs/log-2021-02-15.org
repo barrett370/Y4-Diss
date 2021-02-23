@@ -4,5 +4,9 @@
  This week I have been working on:
 
  - The background section of my report, updating the genetic operators section to include my newly implemented operators.
-   Also, upon adding the equations for de Casteljau's algorithm, I realised my implementation was incorrect and spent a few hours working out where I went wrong and correcting it.
- - The literature review section of my report. I am unsure as to how much detail to include when critically evaluating papers, I would appreciate some feedback on section 3.1.1 of [[https://sambarrett.online/Y4-Diss/report.pdf][my report]].
+   Also, upon adding the equations for de Casteljau's algorithm, I realised my implementation was incorrect and spent a /few/ hours working out where I went wrong and correcting it. (the second curve was being returned as the original curve.)
+ - The literature review section of my report. I am unsure as to how much detail to include when critically evaluating papers, I would appreciate some feedback on section 3.1.1 of my report ([[https://sambarrett.online/Y4-Diss/report.pdf][link]]).
+ - I have also been generally testing and tweaking parameters, I have changed my mutation chance and also made it so that my crossover operator does not replace the parents and instead produces new candidates to be selected (or not) in the selection stage.
+
+
+Next week I intend to continue with my literature review and begin writing my implementation section focusing on the early stages and decision I made.
