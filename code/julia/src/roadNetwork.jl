@@ -1,7 +1,6 @@
 include("utils.jl")
-
 include("bezier.jl")
-
+import Graphs
 
 ##  A Road is defined using the Road coordinate system (X',Y') where Y' lim = width(road
 
@@ -33,4 +32,13 @@ struct Road
     end
 
     #TODO implement road length
+end
+
+struct Intersection
+    name::Char
+end
+
+struct RoadNetwork <: AbstractGraph{Char,}
+    vertices::Array{Intersection}
+    edges::Array{Tuple{Intersection,Intersection,Road}}
 end

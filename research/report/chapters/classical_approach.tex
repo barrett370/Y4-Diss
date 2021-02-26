@@ -28,8 +28,6 @@ In this approach, the genotype is abstractly represented as a Bézier curve. Thi
 
 Initially my Phenotype contained no additional information. However, I still created the distinction to allow for additional properties to be encapsulated during development.
 
-\todo{This is just a placeholder so I don't forget to include this}
-
 The foundation of my Fitness function is the length of each route, i.e. the length of a given $n$ degree Bézier curve. This calculation can be accurately approximated using Equation~\ref{eq:bezlength} as the true calculation is expensive and does not generalise nicely to $n$ degrees\cite{gravesenAdaptiveSubdivisionLength1997}.
 
 Minimising the length of a route is a good way of ensuring generated routes are direct, however, other values and heuristics are required to maintain other requirements such as to make sure changes in direction are not too severe or that a route does not pass through infeasible space (avoiding obstacles etc.).
@@ -49,7 +47,14 @@ My initial approach to a collaborative planning system was somewhat inefficient.
 
 This system was very inefficient with the final routes requiring a large number of checks to be carried out by my \texttt{bezInt} function, which itself suffered from \todo[inline]{verify this} exponential time (and space) complexity.
 
-\section{Language Choice}
+\subsection{Collision Detection}
+\label{subsec:col-detection}
+
+Collision detection is one of the core obstacles to a cooperative route planner. You must be able to certify that your resulting set of routes do not collide at any point in time.
+
+Simply detecting intersections is not enough as two routes can intersect but only collide if they pass through the same point at the same time. We therefore require some notion of time when realising our Bézier curve routes.
+
+\section{Language Choice}\todo[inline]{decide whether to remove this, I am thinking yes but last para is interesting, maybe move to evaluation}
 
 I have chosen to implement my approach using the Julia language project\cite{JuliaProgrammingLanguage}.
 
@@ -65,6 +70,8 @@ Julia also has distributed computation facilities. This sort of functionality co
 
 
 \section{Results}
+
+Due to the high dimensionality of my search space, I cannot visualise the objective function of my GA.
 
 My results were achieved by
 
