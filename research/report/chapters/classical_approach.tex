@@ -1,23 +1,44 @@
 
-\section{Approach}
+\section{Single Agent Approach}
 
 The general shape of a GA as seen in Algorithm~\ref{alg:GenericGA} is the same for almost all problems. 
 
-As such, I first had to implement a method to generate an initial population. In order to do this, I first had to define my programmatic representations of the Phenotypes and genotypes of my individuals. I decided to base my genotypic structure on the that described by Kala\cite{kalaOnroadIntelligentVehicles2016}. 
+As such, I first had to implement a method to generate an initial population. In order to do this, I had to define my programmatic representations of the phenotypes and genotypes of my individuals. I decided to base my genotypic structure on the that described by Kala\cite{kalaOnroadIntelligentVehicles2016}.
 
-In this approach, the genotype is abstractly represented as a Bézier curve. This is more concretely translated into a real-valued string, interleaving the $x$ and $y$ coordinates of each control point.
+In this approach, the genotype is abstractly represented as a Bézier curve. This is more concretely translated into a real-valued string, interleaving the $x$ and $y$ coordinates of each control point. Taking the form:
+
+  \begin{figure}[ht]
+    \centering
+    \begin{tikzpicture}[
+    block/.style={minimum height=2.2em,outer sep=0pt,draw,rectangle,node distance=0pt}]
+
+        \node [block] (A) {$P_{0_{x}}$};
+        \node [block, right = of A] (B) {$P_{0_{y}}$};
+        \node [block, right = of B] (C) {$P_{1_{x}}$};
+        \node [block, right = of C] (D) {$P_{1_{y}}$};
+        \node [block, right = of D] (E) {$\ldots$};
+        \node [block, right = of E] (F) {$P_{n_{x}}$};
+        \node [block, right = of F] (G) {$P_{n_{y}}$};
+
+    \end{tikzpicture}
+    \caption{\label{fig:GA_Genotype} Individual genotype as real-valued string }
+  \end{figure}
+
+
 
 Initially my Phenotype contained no additional information. However, I still created the distinction to allow for additional properties to be encapsulated during development.
 
-\todo{This is just a placeholder so I don't forget to include this} The foundation of my Fitness function is the length of each route, i.e. the length of a given Bézier curve. This is not a trivial calculation and the best approximation was found to be:
+\todo{This is just a placeholder so I don't forget to include this}
 
-\begin{equation}
-    L = \frac{(2L_c + (n-1)L_p)}{n+1}
-\end{equation}
+The foundation of my Fitness function is the length of each route, i.e. the length of a given $n$ degree Bézier curve. This calculation can be accurately approximated using Equation~\ref{eq:bezlength} as the true calculation is expensive and does not generalise nicely to $n$ degrees\cite{gravesenAdaptiveSubdivisionLength1997}.
 
-Where $L_c$ is chord length and $L_p$ is polygon length. This was proven by Jens Gravesen\cite{gravesenAdaptiveSubdivisionLength1997} in 1997
+Minimising the length of a route is a good way of ensuring generated routes are direct, however, other values and heuristics are required to maintain other requirements such as to make sure changes in direction are not too severe or that a route does not pass through infeasible space (avoiding obstacles etc.).
 
-\subsection{Co-evolution of routes for a set of agents}
+
+I initially experimented with an alternative coordinate space which enabled me to completely enclose the search space within the area of the road, eliminating the possibility of generating routes that left the \textit{road}. This was inspired by the ``Road coordinate axis system'' described by Kala in~\cite{kalaOptimizationBasedPlanning2016}
+
+
+\section{Multi-agent Approach}
 
 So far we have only concerned ourselves with planning a route through a road-space for a single agent. However, in the real world, roads are seldom occupied by a single vehicle and as such we must consider how to efficiently plan a set of routes for a set of agents between between a set of coordinate pairs, such that, our agents do not collide for any time $t$.
 
@@ -25,13 +46,10 @@ There are different approaches we can take to this problem. \todo[inline]{refer 
 
 My initial approach to a collaborative planning system was somewhat inefficient. The system operated by planning routes for each agent sequentially, using a growing \textit{context} to keep track of the routes that had already been finalised. The first agent to be planned was not concerned with avoiding collisions, as, as far as it was concerned, there were no other agents in the system. Each subsequent agent checked if any of its candidate solutions intersected with and of the routes planned before, a very high penalty was applied to any routes with collisions, equivalent to the distance \todo[inline]{check this} the routes collided for.
 
+
 This system was very inefficient with the final routes requiring a large number of checks to be carried out by my \texttt{bezInt} function, which itself suffered from \todo[inline]{verify this} exponential time (and space) complexity.
 
-\section{Implementation} 
-My for my initial implementation, I focused on simply getting a working system. I therefore, started by implementing the simplest form of each genetic operator. Namely, fitness proportional selection (aka. roulette wheel selection\todo[inline]{check this}), simple crossover and uniform mutation. (\ref{imp:FitPropSel})
-
-
-\subsection{Language Choice}
+\section{Language Choice}
 
 I have chosen to implement my approach using the Julia language project\cite{JuliaProgrammingLanguage}.
 
@@ -50,6 +68,7 @@ Julia also has distributed computation facilities. This sort of functionality co
 
 My results were achieved by
 
+%TC:macro \todo 1
 %%% Local Variables:
 %%% TeX-master: "../report"
 %%% End:

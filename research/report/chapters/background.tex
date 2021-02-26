@@ -170,7 +170,7 @@ Here the next generation of individuals is constructed. There are multiple poten
 In this stage various heuristics or alternative strategies can be implemented to speed up or slow down the convergence rate. Whilst their fitness may be low, having a diverse population allows for more of the search space to be explored. If the algorithm converges too quickly it may get \textit{stuck} in local minima. 
 
 
-\subsection{Bézier Curves}
+\section{Bézier Curves}
 \label{sec:back-bezier-curves}
 
 In my implementation, I utilise Bézier curves to encode complex route arcs between a series of points. Here I will briefly outline their construction and mathematical basis.
@@ -179,7 +179,7 @@ Bézier curves were popularised by and named after French auto-body\footnote{so 
 
 A Bézier curve is said to have a degree of $n-1$ where $n$ is the number of control points including the start and end point of the curve.
 
-\subsubsection{Formal Definition} 
+\subsection{Formal Definition}
 
 Bézier curves can be simply explicitly defined for degrees of 1 through 4, however, the general case of $n$ points is more useful to us. In their general form they can be defined recursively or explicitly. I implement the recursive version as it is much more readable for a programming language that supports recursion.
 
@@ -195,15 +195,44 @@ They are defined recursively as follows:
 
 Where the parameter $t$ is in the range of $[0,1]$. Therefore, the smoothness of the curve is determined by the granularity of the parameter when realising the curve.
 
-\subsubsection{Subdivision of $n$-degree Bézier curves}
+\subsection{Length of a Bézier curve}
+
+The length of a Bézier curve is a non-trivial calculation and is best approximated as:
+
+\begin{equation}
+    L = \frac{(2L_c + (n-1)L_p)}{n+1}
+\end{equation}
+
+Where $L_c$ is chord length and $L_p$ is polygon length. This was proven by Jens Gravesen\cite{gravesenAdaptiveSubdivisionLength1997} in 1997.
+
+Chord length is given by:
+
+\begin{equation}\label{eq:bezlength}
+  L_{c} = \sqrt{\left(P_{0_{x}} - P_{n_{x}}\right)^{2} + \left(P_{0_{y}} - P_{n_{y}}\right)^{2}}
+\end{equation}
+% √((first.x - last.x)^2 + (first.y - last.y)^2)
+
+and polygon length by:
+
+\begin{equation}
+  L_{p} = \sum_{i=0}^{n-1} \sqrt{\left(P_{i_{x}} - P_{i+1_{x}}\right)^{2} + \left(P_{i_{y}} - P_{i_{y}}\right)^{2}}
+\end{equation}
+
+Or, alternatively:
+
+\begin{equation}
+  L_{p} = \sum_{i=0}^{n-1} L_{c}(B_{P_{i},P_{i+1}})
+\end{equation}
+
+\subsection{Subdivision of $n$-degree Bézier curves}
 
 Subdivision of Bézier curves is a key stage in the process of finding any intersections between two Bézier curves. The process of subdivision is performed using De Casteljau's algorithm. This algorithm was developed by Paul de Casteljau while working at Citroen in 1959 to work with the family of curves that would later be formalised into Bézier curves by Pierre Bézier\footnote{Bézier curves have also been called de Casteljau curves as much of his work preceded that of Pierre Bézier's}.
 
 It is a simple procedure, given a Bézier curve $B$, it can be split at any arbitrary point $t \in [0,1]$ into two curves with control points of the form:
 
 \begin{align}
-  B^{(1)} &= B_{P_{0}}(t), B_{P_{0},P_1}(t), \ldots, B_{P_{0},\ldots,P_{n}}(t) \\
-  B^{(2)} &= B_{P_{n}}(1-t), B_{P_{n},P_{n-1}}(1-t), \ldots, B_{P_{n},\ldots,P_{0}}(1-t)
+  \beta_{1} &= B_{P_{0}}(t), B_{P_{0},P_1}(t), \ldots, B_{P_{0},\ldots,P_{n}}(t) \\
+  \beta_{2} &= B_{P_{n}}(1-t), B_{P_{n},P_{n-1}}(1-t), \ldots, B_{P_{n},\ldots,P_{0}}(1-t)
 \end{align}
 \todo[inline]{Should I change this superscript notation? subscript is being used to denote which control points are being considered.}
 
@@ -217,6 +246,7 @@ Fully autonomous road networks are by no means a novel concept. They have appear
 In the latter system protocols that promote the net increase in efficiency can be implemented. However, this sort of system will require a form of government mandate as a universal routing protocol would need to be established and implemented by all auto manufacturers; this is no small undertaking.
 
 
+%TC:macro \todo 1
 %%% Local Variables:
 %%% TeX-master: "../report"
 %%% End:
