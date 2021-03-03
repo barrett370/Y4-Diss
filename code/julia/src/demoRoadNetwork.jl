@@ -105,8 +105,9 @@ es = [
 rn = createRoadGraph(5,es)
 light_rn = rn |> graphToLightGraph
 
-edgelabel = map(e -> "e$(e[1])$(e[2])", LightGraphs.edges(light_rn).iter)
+edgelabel = map(e -> "e$(e[1])$(e[2]): $(e[3])", LightGraphs.edges(light_rn).iter)
+#edgelabel = map(e -> "e$(e.source)$(e.target)-$(e.attributes["road"].length))"", rn.edges)
 nodelabel = vcat(1:LightGraphs.nv(light_rn))
 
 
-GraphPlot.gplot(light_rn, edgelabel=edgelabel, nodelabel=nodelabel)
+GraphPlot.gplot(light_rn, edgelabel=edgelabel, nodelabel=nodelabel, linetype="curve")
