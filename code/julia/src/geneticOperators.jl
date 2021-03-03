@@ -34,8 +34,15 @@ function uniform_mutation!(P::Array{Individual})::Array{Individual}
                 x_r = Distributions.sample([x_p0, x_p1, x_p2], Weights([0.2, 0.6, 0.2]))
 
                 y_p0 = rand(Uniform(-10, y_rng[1])) # TODO work out better low value
-                y_p1 = rand(Uniform(y_rng[1], y_rng[2]))
-                y_p2 = rand(Uniform(y_rng[2], 2 * y_rng[2]))
+                sorted_rng = sort([y_rng[1], y_rng[2]])
+                if sorted_rng[1] == sorted_rng[2]
+                   #TODO make this not be a plaster 
+                    y_p1 = sorted_rng[1]
+                else
+                    y_p1 = rand(Uniform(sorted_rng[1],sorted_rng[2]))
+                end
+
+                y_p2 = rand(Uniform(sorted_rng[2], 2 * sorted_rng[2]))
                 y_r = Distributions.sample([y_p0, y_p1, y_p2], Weights([0.2, 0.6, 0.2]))
 
                 i.phenotype.genotype[rand(2:(length(i.phenotype.genotype) - 1))] =
