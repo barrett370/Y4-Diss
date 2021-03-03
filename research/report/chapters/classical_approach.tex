@@ -1,28 +1,28 @@
 
 \section{Single Agent Approach}
 
-The general shape of a GA as seen in Algorithm~\ref{alg:GenericGA} is the same for almost all problems. 
+The general shape of a GA as seen in Algorithm~\ref{alg:GenericGA} is the same for almost all problems.
 
 As such, I first had to implement a method to generate an initial population. In order to do this, I had to define my programmatic representations of the phenotypes and genotypes of my individuals. I decided to base my genotypic structure on the that described by Kala\cite{kalaOnroadIntelligentVehicles2016}.
 
 In this approach, the genotype is abstractly represented as a Bézier curve. This is more concretely translated into a real-valued string, interleaving the $x$ and $y$ coordinates of each control point. Taking the form:
 
-  \begin{figure}[ht]
-    \centering
-    \begin{tikzpicture}[
-    block/.style={minimum height=2.2em,outer sep=0pt,draw,rectangle,node distance=0pt}]
+\begin{figure}[ht]
+	\centering
+	\begin{tikzpicture}[
+			block/.style={minimum height=2.2em,outer sep=0pt,draw,rectangle,node distance=0pt}]
 
-        \node [block] (A) {$P_{0_{x}}$};
-        \node [block, right = of A] (B) {$P_{0_{y}}$};
-        \node [block, right = of B] (C) {$P_{1_{x}}$};
-        \node [block, right = of C] (D) {$P_{1_{y}}$};
-        \node [block, right = of D] (E) {$\ldots$};
-        \node [block, right = of E] (F) {$P_{n_{x}}$};
-        \node [block, right = of F] (G) {$P_{n_{y}}$};
+		\node [block] (A) {$P_{0_{x}}$};
+		\node [block, right = of A] (B) {$P_{0_{y}}$};
+		\node [block, right = of B] (C) {$P_{1_{x}}$};
+		\node [block, right = of C] (D) {$P_{1_{y}}$};
+		\node [block, right = of D] (E) {$\ldots$};
+		\node [block, right = of E] (F) {$P_{n_{x}}$};
+		\node [block, right = of F] (G) {$P_{n_{y}}$};
 
-    \end{tikzpicture}
-    \caption{\label{fig:GA_Genotype} Individual genotype as real-valued string }
-  \end{figure}
+	\end{tikzpicture}
+	\caption{\label{fig:GA_Genotype} Individual genotype as real-valued string }
+\end{figure}
 
 
 
@@ -58,7 +58,7 @@ Simply detecting intersections is not enough as two routes can intersect but onl
 
 I have chosen to implement my approach using the Julia language project\cite{JuliaProgrammingLanguage}.
 
-Julia is a relatively new language first developed in 2012 by Jeff Bezanson, Stefan Karpinski and Viral Shah. It is a multi-paradigm language allowing for functional, object oriented and meta programming approaches to problems. I will mainly be using it for it's functional and OO capabilities. 
+Julia is a relatively new language first developed in 2012 by Jeff Bezanson, Stefan Karpinski and Viral Shah. It is a multi-paradigm language allowing for functional, object oriented and meta programming approaches to problems. I will mainly be using it for it's functional and OO capabilities.
 
 Julia operates using multiple dispatch similar to languages such as Haskell. It interoperates with C and Fortran codebases without the need of middle-man bloat. This fact allows it to utilise the extensive high performance C libraries for floating point operations. Julia is eagerly evaluated, uses a Just in time compiler and has a garbage collector.
 
@@ -73,7 +73,7 @@ Julia also has distributed computation facilities. This sort of functionality co
 
 Due to the high dimensionality of my search space, I cannot visualise the objective function of my GA.
 
-My results were achieved by
+My results were achieved by 
 
 %TC:macro \todo 1
 %%% Local Variables:
