@@ -4,10 +4,6 @@ import Graphs
 import LightGraphs
 import SimpleWeightedGraphs
 
-
-##  A Road is defined using the Road coordinate system (X',Y') where Y' lim = width(road
-
-
 abstract type Obstacle end
 
 struct Circle <: Obstacle
@@ -34,20 +30,10 @@ struct Road
     function Road(b1, b2, obs,len)
         new(b1, b2, obs,len)
     end
-    #TODO implement road length
 end
 
-struct Intersection
-    name::Char
-end
-
-#struct RoadNetwork <: AbstractGraph{Char,}
-#    vertices::Array{Intersection}
-#    edges::Array{Tuple{Intersection,Intersection,Road}}
-#end
-
-function graphToLightGraph(g::GenericGraph)::SimpleWeightedDiGraph
-    g_light = SimpleWeightedDiGraph(length(g.vertices))
+function graphToLightGraph(g::Graphs.GenericGraph)
+    g_light = SimpleWeightedGraphs.SimpleWeightedDiGraph(length(g.vertices))
     for e in g.edges
         LightGraphs.add_edge!(g_light, e.source, e.target, e.attributes["road"].length)
     end
@@ -65,4 +51,8 @@ function createRoadGraph(n_verts::Real, abstract_edges::Array{Tuple{Int64,Int64,
     Graphs.graph(vcat(1:n_verts), edges)
 end
 
-get_edgeWeights(g::GenericGraph) = map(e -> e.attributes["road"].length, g.edges) 
+get_edgeWeights(g::Graphs.GenericGraph) = map(e -> e.attributes["road"].length, g.edges) 
+
+function macroPath(g::Graphs.GenericGraph,source::Real,goal::Real)::Array{Int64}
+   LightGraphs.enumerate_paths(LightGraphs.dijkstra_shortest_paths(g |> graphToLightGraph, source), goal) 
+end
