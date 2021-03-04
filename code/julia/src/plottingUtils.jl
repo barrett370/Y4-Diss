@@ -167,7 +167,7 @@ function plot_control_points!(plt, c::BezierCurve)
     end
 end
 
-function plot_generation_gif(road::Road, P::Array{Individual})
+function plot_generation_gif(road::Road, P::Array{Individual}, i=-1)
     plt = plot()
     plt = draw_road(road,0,20)
     ci = 1
@@ -186,6 +186,11 @@ function plot_generation_gif(road::Road, P::Array{Individual})
         end
         ci = 1
     end
+    if i != -1
+        gif(anim,"anim$i.gif",fps=2)
+    else
 
-    gif(anim,"anim1.gif",fps=2)
+        gif(anim,"anim1.gif",fps=2)
+    end
+
 end

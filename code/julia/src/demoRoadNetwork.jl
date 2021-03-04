@@ -111,3 +111,4 @@ nodelabel = vcat(1:LightGraphs.nv(light_rn))
 
 
 GraphPlot.gplot(light_rn, edgelabel=edgelabel, nodelabel=nodelabel, linetype="curve")
+#GraphPlot.gplothtml(light_rn, edgelabel=edgelabel, nodelabel=nodelabel, linetype="curve")

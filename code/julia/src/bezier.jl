@@ -5,7 +5,7 @@ using DataStructures
 using Distributed
 using MLStyle
 import LazySets.convex_hull
-using GPUArrays
+#   using GPUArrays
 
 include("utils.jl")
 

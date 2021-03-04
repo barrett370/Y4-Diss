@@ -206,7 +206,7 @@ function Fitness(r::Road, i::Individual)
     l2 = high_proximity_distance(r, i.phenotype.genotype) # length of path in which min safe distance is broken
 
 
-    @show l + α * l1 + β * l2
+    #@show l + α * l1 + β * l2
     l + α * l1 + β * l2
 end
 

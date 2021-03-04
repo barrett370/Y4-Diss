@@ -68,7 +68,7 @@ function GA(start::Point, goal::Point, road::Road; n_gens::Real=1, n::Real=10, s
             |> P -> selection(P, method=selection_method)  # Selection operator
             |> simple_crossover # Crossover operator
             |> new_pop -> append!(P, new_pop)  # Add newly generated individuals to population
-            |> uniform_mutation! # apply mutation operator
+            |> P -> gaussian_mutation!(P,road) # apply mutation operator
             |> P -> begin map(p -> p.fitness = p |> 𝓕, P); P end # recalculate fitness of population after mutation
             |> P -> map(repair, P)  # attempt repair of invalid solutions
             |> P -> sort(P, by=p -> p.fitness) # Sort my fitness
