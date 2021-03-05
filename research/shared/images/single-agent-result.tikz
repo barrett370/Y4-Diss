@@ -1,0 +1,51 @@
+\begin{tikzpicture}[/tikz/background rectangle/.style={fill={rgb,1:red,1.0;green,1.0;blue,1.0}, draw opacity={1.0}}, show background rectangle]
+\begin{axis}[point meta max={nan}, point meta min={nan}, legend cell align={left}, title={}, title style={at={{(0.5,1)}}, anchor={south}, font={{\fontsize{14 pt}{18.2 pt}\selectfont}}, color={rgb,1:red,0.0;green,0.0;blue,0.0}, draw opacity={1.0}, rotate={0.0}}, legend style={color={rgb,1:red,0.0;green,0.0;blue,0.0}, draw opacity={1.0}, line width={1}, solid, fill={rgb,1:red,1.0;green,1.0;blue,1.0}, fill opacity={1.0}, text opacity={1.0}, font={{\fontsize{8 pt}{10.4 pt}\selectfont}}, text={rgb,1:red,0.0;green,0.0;blue,0.0}, at={(1.02, 1)}, anchor={north west}}, axis background/.style={fill={rgb,1:red,1.0;green,1.0;blue,1.0}, opacity={1.0}}, anchor={north west}, xshift={1.0mm}, yshift={-1.0mm}, width={145.4mm}, height={99.6mm}, scaled x ticks={false}, xlabel={Number of generations}, x tick style={color={rgb,1:red,0.0;green,0.0;blue,0.0}, opacity={1.0}}, x tick label style={color={rgb,1:red,0.0;green,0.0;blue,0.0}, opacity={1.0}, rotate={0}}, xlabel style={at={(ticklabel cs:0.5)}, anchor=near ticklabel, font={{\fontsize{11 pt}{14.3 pt}\selectfont}}, color={rgb,1:red,0.0;green,0.0;blue,0.0}, draw opacity={1.0}, rotate={0.0}}, xmajorgrids={true}, xmin={0.97}, xmax={2.03}, xtick={{1.0,1.25,1.5,1.75,2.0}}, xticklabels={{$1.00$,$1.25$,$1.50$,$1.75$,$2.00$}}, xtick align={inside}, xticklabel style={font={{\fontsize{8 pt}{10.4 pt}\selectfont}}, color={rgb,1:red,0.0;green,0.0;blue,0.0}, draw opacity={1.0}, rotate={0.0}}, x grid style={color={rgb,1:red,0.0;green,0.0;blue,0.0}, draw opacity={0.1}, line width={0.5}, solid}, axis x line*={left}, x axis line style={color={rgb,1:red,0.0;green,0.0;blue,0.0}, draw opacity={1.0}, line width={1}, solid}, scaled y ticks={false}, ylabel={Size of population}, y tick style={color={rgb,1:red,0.0;green,0.0;blue,0.0}, opacity={1.0}}, y tick label style={color={rgb,1:red,0.0;green,0.0;blue,0.0}, opacity={1.0}, rotate={0}}, ylabel style={at={(ticklabel cs:0.5)}, anchor=near ticklabel, font={{\fontsize{11 pt}{14.3 pt}\selectfont}}, color={rgb,1:red,0.0;green,0.0;blue,0.0}, draw opacity={1.0}, rotate={0.0}}, ymajorgrids={true}, ymin={0.43000000000000005}, ymax={20.57}, ytick={{5.0,10.0,15.0,20.0}}, yticklabels={{$5$,$10$,$15$,$20$}}, ytick align={inside}, yticklabel style={font={{\fontsize{8 pt}{10.4 pt}\selectfont}}, color={rgb,1:red,0.0;green,0.0;blue,0.0}, draw opacity={1.0}, rotate={0.0}}, y grid style={color={rgb,1:red,0.0;green,0.0;blue,0.0}, draw opacity={0.1}, line width={0.5}, solid}, axis y line*={left}, y axis line style={color={rgb,1:red,0.0;green,0.0;blue,0.0}, draw opacity={1.0}, line width={1}, solid}, scaled z ticks={false}, zlabel={Time to plan /seconds}, z tick style={color={rgb,1:red,0.0;green,0.0;blue,0.0}, opacity={1.0}}, z tick label style={color={rgb,1:red,0.0;green,0.0;blue,0.0}, opacity={1.0}, rotate={0}}, zlabel style={, font={{\fontsize{11 pt}{14.3 pt}\selectfont}}, color={rgb,1:red,0.0;green,0.0;blue,0.0}, draw opacity={1.0}, rotate={0.0}}, zmajorgrids={true}, zmin={-3.64694970675e7}, zmax={1.7782922604841669e9}, ztick={{0.0,5.0e8,1.0e9,1.5e9}}, zticklabels={{$0$,$5.0\times10^{8}$,$1.0\times10^{9}$,$1.5\times10^{9}$}}, ztick align={inside}, zticklabel style={font={{\fontsize{8 pt}{10.4 pt}\selectfont}}, color={rgb,1:red,0.0;green,0.0;blue,0.0}, draw opacity={1.0}, rotate={0.0}}, z grid style={color={rgb,1:red,0.0;green,0.0;blue,0.0}, draw opacity={0.1}, line width={0.5}, solid}, axis z line*={left}, z axis line style={color={rgb,1:red,0.0;green,0.0;blue,0.0}, draw opacity={1.0}, line width={1}, solid}, view={30}{30}]
+    \addplot3[color={rgb,1:red,0.0;green,0.6056;blue,0.9787}, name path={dbecb964-8d00-446d-89ac-0be643598c70}, only marks, draw opacity={1.0}, line width={0}, solid, mark={*}, mark size={3.0 pt}, mark repeat={1}, mark options={color={rgb,1:red,0.0;green,0.0;blue,0.0}, draw opacity={1.0}, fill={rgb,1:red,0.0;green,0.6056;blue,0.9787}, fill opacity={1.0}, line width={0.75}, rotate={0}, solid}]
+        table[row sep={\\}]
+        {
+            \\
+            1.0  1.0  1.489168475e7  \\
+            1.0  2.0  2.9763781333333332e7  \\
+            1.0  3.0  5.270981116842105e7  \\
+            1.0  4.0  5.92521248e7  \\
+            1.0  5.0  8.224524819672132e7  \\
+            1.0  6.0  9.753981471153846e7  \\
+            1.0  7.0  1.1915073166666667e8  \\
+            1.0  8.0  1.3247940734210527e8  \\
+            1.0  9.0  1.3674415872972974e8  \\
+            1.0  10.0  1.499009017647059e8  \\
+            1.0  11.0  1.7489787772413793e8  \\
+            1.0  12.0  2.0568597696e8  \\
+            1.0  13.0  1.8199268142857143e8  \\
+            1.0  14.0  2.1338660166666666e8  \\
+            1.0  15.0  2.2941932245454547e8  \\
+            1.0  16.0  2.3865060452380952e8  \\
+            1.0  17.0  2.545502533e8  \\
+            1.0  18.0  2.865178772222222e8  \\
+            1.0  19.0  2.6732212015789473e8  \\
+            1.0  20.0  2.9854045488235295e8  \\
+            2.0  1.0  4.071727593495935e7  \\
+            2.0  2.0  1.5234821257575756e8  \\
+            2.0  3.0  1.4758002720588234e8  \\
+            2.0  4.0  2.3407473404545453e8  \\
+            2.0  5.0  2.6169938555e8  \\
+            2.0  6.0  2.788541412222222e8  \\
+            2.0  7.0  3.63668269e8  \\
+            2.0  8.0  6.363480651111112e8  \\
+            2.0  9.0  6.136297672222222e8  \\
+            2.0  10.0  5.088398781e8  \\
+            2.0  11.0  6.303747735e8  \\
+            2.0  12.0  7.17790242e8  \\
+            2.0  13.0  7.24944995125e8  \\
+            2.0  14.0  6.3328167875e8  \\
+            2.0  15.0  7.152168432857143e8  \\
+            2.0  16.0  1.2096147372e9  \\
+            2.0  17.0  9.53227058e8  \\
+            2.0  18.0  1.0458368374e9  \\
+            2.0  19.0  1.7269310786666667e9  \\
+            2.0  20.0  1.2480137082e9  \\
+        }
+        ;
+    \addlegendentry {y1}
+\end{axis}
+\end{tikzpicture}
