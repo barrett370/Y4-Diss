@@ -1,0 +1,11 @@
+#+TITLE: Log Week 5
+#+OPTIONS: toc:nil
+
+ This week I first focused on implementing a macro-level route planner. To do this I used existing graphing libraries to encapsulate ~Road~ structure data as edges, with nodes being intersections or junctions. I then used Dikstra's algorithm to find shortest paths between a given set of starting and terminating positions. I was able to work out when two paths occupied the same stretch of road, and complete a cooperative plan for such sections. E.g. (1 -> 2 -> 3 -> 5) and (4 -> 2 -> 3 -> 1), may share the road between node 2 and 3 if ~len(1 -> 2) + len(2 -> 3) < len(4 -> 2)~ or ~len(4 -> 2) + len(2 -> 3) < len(1 -> 2)~.
+
+ I went on to write benchmarking code and collect some results, I encountered some issues where the plotting library for Julia has some errors colouring 3D surfaces based on a 4th vector, but preliminary results look like:
+
+[[../../code/julia/images/single-agent-result.png]]
+
+
+I am intending for the colouring of the surface to be determined by the fitness of the individual at that point. Allowing me to see the effect of number of generations and size of population on both planning time and fitness of produced solutions.
