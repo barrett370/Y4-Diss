@@ -1,4 +1,32 @@
 include("../src/parallelCGA.jl")
+import BenchmarkTools
+import PlotlyJS
+
+function multi_plot_benchmarks(benches, sf = true)
+
+    means =
+        map(ns -> map(b -> BenchmarkTools.mean(b).time * 10^-7, ns), benches[1])
+    @show means
+    @show mean_fitness = map(gen -> map(n -> mean(n), gen), benches[2])
+    ns = vcat(1:length(benches[1][1]))
+    ngens = vcat(1:length(benches[1]))
+    @show ngens, ns, collect(Iterators.flatten(means))
+    surf = PlotlyJS.surface(
+        x = ns,
+        y = ngens,
+        z = means,
+        surfacecolor = mean_fitness
+    )
+    @show layout = PlotlyJS.Layout(;
+        title = "Multi agent parallel planner, coloured by average fitness",
+        xaxis_title = "Size of population",
+        yaxis_title = "Number of generations",
+        zaxis_title = "Time to plan /ms"
+    )
+
+    p= PlotlyJS.plot(surf, layout)
+    p
+end
 
 function multi_test_gensPopsize(n = 20, n_gens = 10)
     starts = [Point(0, 5), Point(0, 8), Point(0, 6)]
@@ -23,7 +51,7 @@ function multi_test_gensPopsize(n = 20, n_gens = 10)
                     BenchmarkTools.@benchmark append!(
                         $plans[$ng+1][$n],
                         [
-                                PCGA(
+                            PCGA(
                                 $starts,
                                 $goals,
                                 $road,
@@ -31,7 +59,7 @@ function multi_test_gensPopsize(n = 20, n_gens = 10)
                                 n = $n,
                                 selection_method = "ranked",
                                 mutation_method = "gaussian",
-                            )
+                            ),
                         ],
                     )
                 ],
@@ -39,7 +67,16 @@ function multi_test_gensPopsize(n = 20, n_gens = 10)
         end
     end
     @show plans
-    fs = map( gen -> map( n -> map(each -> map(p -> p.fitness, each), n), gen), plans)
-    av_fs = map(gen -> map(n -> [mean([i[j] for i in n]) for j in 1:length(starts)], gen), fs)
+    fs = map(
+        gen -> map(n -> map(each -> map(p -> p.fitness, each), n), gen),
+        plans,
+    )
+    av_fs = map(
+        gen -> map(
+            n -> [mean([i[j] for i in n]) for j = 1:length(starts)],
+            gen,
+        ),
+        fs,
+    )
     (res, av_fs)
 end

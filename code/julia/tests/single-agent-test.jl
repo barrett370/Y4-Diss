@@ -24,8 +24,7 @@ function plot_benchmarks(benches, sf = true)
         zaxis_title = "Time to plan /ms"
     )
 
-    Plotly.plot(surf, layout)
-
+    p= Plotly.plot(surf, layout)
 end
 
 function test_gensPopsize(n = 20, n_gens = 10)

@@ -17,7 +17,7 @@ function PCGA(
 )
 
 
-    current_plans = SharedArray{SVector{12,Float64}}(n) # Length of 12 as this is the max number of control points *2
+    current_plans = SharedArray{SVector{12,Float64}}(length(starts)) # Length of 12 as this is the max number of control points *2
     ret::Array{Individual} = []
     # Build tasks
     tasks::Array = []
@@ -25,9 +25,11 @@ function PCGA(
     for (start, goal) in zip(starts, goals)
         @show start, goal, c
         append!(tasks,
-                [Threads.@spawn PCGA(start,goal,road,current_plans,c,
+                [Threads.@spawn PCGA(start,goal,road,current_plans,i=deepcopy(c),
                              n_gens=n_gens,n=n,selection_method=selection_method,mutation_method=mutation_method)])
-        c = c + 1
+        if c + 1 <= length(starts)
+            c = c + 1
+        end
     end
     println("fetching results")
     for task in tasks
@@ -52,11 +54,12 @@ end
 function PCGA(start::Point,
               goal::Point,
               road::Road,
-              other_routes::SharedArray, i::Integer;
+              other_routes::SharedArray; i::Integer=0,
               n_gens::Real=1, n::Real=10,
               selection_method="roulette",
               mutation_method="uniform")::Array{Individual}
     # Initialise population
+    "Size of other_routes = $(length(other_routes))" |> println
     if start.y < road.boundary_1(start.x) || start.y > road.boundary_2(start.y) || goal.y < road.boundary_1(goal.x) || goal.y > road.boundary_2(goal.x)
         println("ERROR, start of goal is outside of roadspace")
         return []
@@ -90,7 +93,7 @@ function PCGA(start::Point,
     # end
     P_filtered = filter(c -> FinalCheck(c, other_routes, i), P)
     if P_filtered |> length  != 0
-        P_2filtered = filter(i -> high_proximity_distance(road, i.phenotype.genotype) == 0, filter(i -> infeasible_distance(road, i.phenotype.genotype) == 0, P_filtered))
+        P_2filtered = filter(ind -> high_proximity_distance(road, ind.phenotype.genotype) == 0, filter(ind -> infeasible_distance(road, ind.phenotype.genotype) == 0, P_filtered))
         if P_2filtered |> length  != 0
             @show "Final solution $(P_2filtered[1])"
             return [P_2filtered[1]]
