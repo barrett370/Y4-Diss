@@ -1,68 +1,30 @@
 import BenchmarkTools
 include("../src/GA.jl")
-using Plots;
+using PlotlyJS
 
 function plot_benchmarks(benches, sf = true)
 
     means =
         map(ns -> map(b -> BenchmarkTools.mean(b).time * 10^-7, ns), benches[1])
-        @show means
-    mean_times = benches[2]
+    @show means
+    @show mean_fitness = benches[2]
     ns = vcat(1:length(benches[1][1]))
     ngens = vcat(1:length(benches[1]))
-
-    new_ns = []
-    new_ngens = []
-    new_means = []
-    new_mean_times = []
-    for ng in ngens
-        for n in ns
-            append!(new_ns, n)
-            append!(new_ngens, ng)
-            append!(new_means, means[ng][n])
-            append!(new_mean_times, mean_times[ng][n])
-        end
-    end
-
-    #p = plot(new_ngens, new_ns, new_means, seriestype = :scatter ,zaxis="Time to plan /ms",leg=false)
-    #plot!(p, new_ngens,new_ns,new_means, seriestype=:surface)
-    @show size(new_means)
-    @show size(new_ns) ==
-          size(new_ngens) ==
-          size(new_means) ==
-          size(new_mean_times)
-          @show typeof(new_mean_times)
-          @show new_mean_times
-         @show new_means
-    p = plot(
-        new_ngens,
-        new_ns,
-        new_means,
-        #c = cgrad([:orange, :blue], new_mean_times),
-        fill_z = new_mean_times,
-        seriestype = :surface,
-        zaxis = "Time to plan /ms",
+    @show ngens, ns, collect(Iterators.flatten(means))
+    surf = PlotlyJS.surface(
+        x = ns,
+        y = ngens,
+        z = means,
+        surfacecolor = mean_fitness
     )
-    plot!(p, new_ngens,new_ns,new_means, seriestype=:scatter,leg=false)
-    xaxis!("Number of generations")
-    yaxis!("Size of population")
-    @show size(mean_times,1)
-    @show size(mean_times,2)
-    @show typeof(mean_times)
-    hm = Plots.heatmap(vcat(1:size(mean_times,1)), vcat(1:size(mean_times,2)),mean_times)
-    @show maximum(new_means)
-    @show maximum(new_mean_times)
-    #p= surface(new_ngens,new_ns, new_means, c = cgrad([:, :orange],))
-    xaxis!("Number of generations")
-    yaxis!("Size of population")
-    #pgfplots()
-    #Plots.savefig(p,"images/single-agent-result.tikz")
-    if sf
-        Plots.savefig(p, "images/single-agent-result02.png")
-    end
+    @show layout = Layout(;
+        title = "Single agent planner, coloured by fitness",
+        xaxis_title = "Size of population",
+        yaxis_title = "Number of generations",
+        zaxis_title = "Time to plan /ms"
+    )
 
-    plot(p,hm)
-
+    Plotly.plot(surf, layout)
 
 end
 
@@ -101,7 +63,18 @@ function test_gensPopsize(n = 20, n_gens = 10)
         end
     end
     @show plans
-    #av_fitnesses = map(ng -> map(fs -> mean(fs), ng), plans)
     av_fitnesses = map(gen -> map(n -> mean(n), gen), plans)
     (res, av_fitnesses)
+end
+
+
+function save_res(res, dir)
+    for gen in 1:length(res[1])
+        for n in 1:length(res[1][gen])
+            open("$dir/bench-$gen-$n", "w") do f
+                println(f, BenchmarkTools.mean(res[1][gen][n]).time)
+                println(f, res[2][gen][n])
+            end
+        end
+    end
 end
