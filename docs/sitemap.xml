@@ -1,73 +1,41 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
-  
   <url>
     <loc>/Y4-Diss/</loc>
     <lastmod>2020-10-08T12:42:50+01:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>/Y4-Diss/posts/week2/</loc>
     <lastmod>2020-10-08T12:42:50+01:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>/Y4-Diss/posts/</loc>
     <lastmod>2020-10-08T12:42:50+01:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>/Y4-Diss/posts/week1/</loc>
     <lastmod>2020-09-30T11:42:50+01:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>/Y4-Diss/posts/project_proposal/</loc>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>/Y4-Diss/posts/week10/</loc>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>/Y4-Diss/posts/week11/</loc>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>/Y4-Diss/posts/week4/</loc>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>/Y4-Diss/posts/week5/</loc>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>/Y4-Diss/posts/week6/</loc>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>/Y4-Diss/posts/week7/</loc>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>/Y4-Diss/posts/week8/</loc>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>/Y4-Diss/categories/</loc>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>/Y4-Diss/posts/week9/</loc>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>/Y4-Diss/posts/week3/</loc>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>/Y4-Diss/tags/</loc>
   </url>
-  
 </urlset>
