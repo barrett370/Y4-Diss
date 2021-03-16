@@ -15,16 +15,16 @@ function multi_plot_benchmarks(benches, sf = true)
         x = ns,
         y = ngens,
         z = means,
-        surfacecolor = mean_fitness
+        surfacecolor = mean_fitness,
     )
     @show layout = PlotlyJS.Layout(;
         title = "Multi agent parallel planner, coloured by average fitness",
         xaxis_title = "Size of population",
         yaxis_title = "Number of generations",
-        zaxis_title = "Time to plan /ms"
+        zaxis_title = "Time to plan /ms",
     )
 
-    p= PlotlyJS.plot(surf, layout)
+    p = PlotlyJS.plot(surf, layout)
     p
 end
 

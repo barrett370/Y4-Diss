@@ -191,10 +191,12 @@ function planRoutes(
 end
 
 function plot_road_network(routes, rn::Graphs.GenericGraph, paths::Array{Tuple{Int64,Int64}})
+    plots = []
     macroPaths = map(i -> macroPath(rn, i[1],i[2]), paths)
     pathGroups = getPathGroups(rn,paths, macroPaths)
     c = 0
     for key in keys(pathGroups)
+        @show key
         road = filter(e -> e.source == key[1] && e.target == key[2], rn.edges)[1].attributes["road"]
         is :: Array{Individual}= []
         for i in pathGroups[key]
@@ -203,7 +205,8 @@ function plot_road_network(routes, rn::Graphs.GenericGraph, paths::Array{Tuple{I
             append!(is, [routes[i][route_section]])
         end
 
-        @show plot_generation_gif(road,is, c)
+        append!(plots,[plot_generation_gif(road,is, c)])
         c = c +1
     end
+    plots
 end
