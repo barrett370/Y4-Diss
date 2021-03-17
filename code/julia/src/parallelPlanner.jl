@@ -74,6 +74,7 @@ end
 function planRoutes(
     agents::Array{Tuple{Int64,Int64}},
     road_network::Graphs.GenericGraph,
+    multi_threaded=true
 )
     # Given a set of start and end goals on the macro road network, generate a series of sets of routes between roads.
 
@@ -161,6 +162,7 @@ function planRoutes(
                     starts,
                     goals,
                     road,
+                    multi_threaded,
                     n_gens = 1,
                     n = 5,
                     selection_method = "roulette",

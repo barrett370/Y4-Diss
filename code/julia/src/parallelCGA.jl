@@ -9,14 +9,15 @@ import Base.Threads
 function PCGA(
     starts::Array{Point},
     goals::Array{Point},
-    road::Road;
+    road::Road,
+    multi_thread=true;
     n_gens::Real=1,
     n::Real=10,
     selection_method="roulette",
     mutation_method="uniform"
 )
 
-
+    
     current_plans = SharedArray{SVector{12,Float64}}(length(starts)) # Length of 12 as this is the max number of control points *2
     ret::Array{Individual} = []
     # Build tasks
@@ -24,16 +25,25 @@ function PCGA(
     c = 1
     for (start, goal) in zip(starts, goals)
         @debug start, goal, c
-        append!(tasks,
-                [Threads.@spawn PCGA(start,goal,road,current_plans,i=deepcopy(c),
-                             n_gens=n_gens,n=n,selection_method=selection_method,mutation_method=mutation_method)])
+        if multi_thread
+            append!(tasks,
+                    [Threads.@spawn PCGA(start,goal,road,current_plans,i=deepcopy(c),
+                                         n_gens=n_gens,n=n,selection_method=selection_method,mutation_method=mutation_method)])
+        else
+            @warn "Not running in multithreaded mode"
+            append!(ret,PCGA(start,goal,road,current_plans,i=deepcopy(c),
+                                         n_gens=n_gens,n=n,selection_method=selection_method,mutation_method=mutation_method))
+        end
+        
         if c + 1 <= length(starts)
             c = c + 1
         end
     end
-    @debug "fetching results"
-    for task in tasks
-        append!(ret, fetch(task))
+    if multi_thread
+        @debug "fetching results"
+        for task in tasks
+            append!(ret, fetch(task))
+        end
     end
 
     ret
@@ -86,6 +96,11 @@ function PCGA(start::Point,
         n_gens = n_gens - 1
         @debug "accessing routes at $i" 
         other_routes[i] = P[1] |> toSVector
+        #TODO is this good?
+        if P[1].fitness / √((start.x - goal.x)^2 + (start.y - goal.y)^2)  < 1.1
+            @debug "Exiting early, within 10% of straight line fitness"
+            break
+        end
     end
 #    savefig(plotGeneration!(draw_road(road,0,20),P,road,100),string("./gen-",n_gens))
     # if length(P) == 0
