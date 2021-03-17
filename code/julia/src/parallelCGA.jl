@@ -23,7 +23,7 @@ function PCGA(
     tasks::Array = []
     c = 1
     for (start, goal) in zip(starts, goals)
-        @show start, goal, c
+        @debug start, goal, c
         append!(tasks,
                 [Threads.@spawn PCGA(start,goal,road,current_plans,i=deepcopy(c),
                              n_gens=n_gens,n=n,selection_method=selection_method,mutation_method=mutation_method)])
@@ -31,7 +31,7 @@ function PCGA(
             c = c + 1
         end
     end
-    println("fetching results")
+    @debug "fetching results"
     for task in tasks
         append!(ret, fetch(task))
     end
@@ -59,9 +59,9 @@ function PCGA(start::Point,
               selection_method="roulette",
               mutation_method="uniform")::Array{Individual}
     # Initialise population
-    "Size of other_routes = $(length(other_routes))" |> println
+    @debug "Size of other_routes = $(length(other_routes))" 
     if start.y < road.boundary_1(start.x) || start.y > road.boundary_2(start.y) || goal.y < road.boundary_1(goal.x) || goal.y > road.boundary_2(goal.x)
-        println("ERROR, start of goal is outside of roadspace")
+        @error "ERROR, start of goal is outside of roadspace"
         return []
     end
 
@@ -84,7 +84,7 @@ function PCGA(start::Point,
             |> P -> P[1:minimum([n,length(P)])]# take top n
         )
         n_gens = n_gens - 1
-        "accessing routes at $i" |> println
+        @debug "accessing routes at $i" 
         other_routes[i] = P[1] |> toSVector
     end
 #    savefig(plotGeneration!(draw_road(road,0,20),P,road,100),string("./gen-",n_gens))
@@ -95,14 +95,14 @@ function PCGA(start::Point,
     if P_filtered |> length  != 0
         P_2filtered = filter(ind -> high_proximity_distance(road, ind.phenotype.genotype) == 0, filter(ind -> infeasible_distance(road, ind.phenotype.genotype) == 0, P_filtered))
         if P_2filtered |> length  != 0
-            @show "Final solution $(P_2filtered[1])"
+            @debug "Final solution $(P_2filtered[1])"
             return [P_2filtered[1]]
         else
-            @show "Final solution $(P_filtered[1])"
+            @debug "Final solution $(P_filtered[1])"
             return [P_filtered[1]]
         end
     else
-        "no non-colliding routes found" |> println
+        @warn "no non-colliding routes found" 
         return [P[1]]
     end
 

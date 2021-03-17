@@ -10,7 +10,7 @@ function mutation!(P::Array{Individual}, road::Road; method="uniform")::Array{In
         "uniform" => uniform_mutation!(P)
         "gaussian" => gaussian_mutation!(P,road)
         _ => begin
-            "MUST ENTER A VALID MUTATION METHOD" |> println
+            @error "MUST ENTER A VALID MUTATION METHOD" 
             P
         end
 

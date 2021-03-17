@@ -22,7 +22,7 @@ mutable struct Individual
 end
 
 function toSVector(i::Individual)::SVector{12,Float64}
-    @show i
+    @debug i
     real_array = getGenotypeString(i.phenotype.genotype)
     if length(real_array) < 12
         real_array = vcat(real_array,zeros(12-length(real_array)))
@@ -31,7 +31,7 @@ function toSVector(i::Individual)::SVector{12,Float64}
         real_array = real_array[1:12]
     end
 
-    @show real_array
+    @debug real_array
     return SVector{12}(map(r-> Float64(r), real_array))
 end
 
@@ -240,9 +240,9 @@ function Fitness(r::Road, os::SharedArray, i::Individual) # Given knowledge of o
     #
     for o in os
         if o != SVector{12,Float64}(zeros(12))
-            println("Testing fitness of $i, wrt. $o, parallel")
+            @debug "Testing fitness of $i, wrt. $o, parallel"
             if collisionDetection(i.phenotype.genotype, o |> getGenotype)
-                println("Detected collision!")
+                @debug "Detected collision!"
                 base_fitness = base_fitness * 5 # TODO tune this
             end
         end
@@ -254,13 +254,13 @@ end
 function debugIsValid(i::Individual)
 
     if sort(i.phenotype.genotype, by=g -> g.x) != i.phenotype.genotype
-        println("control points not in order")
+        @debug "control points not in order"
     elseif length(i.phenotype.genotype) < 2
-        println("too few control points")
+        @debug "too few control points"
     elseif i.phenotype.genotype[1] != i.phenotype.source
-        println("initial control point is not origin")
+        @debug "initial control point is not origin"
     elseif i.phenotype.genotype[end] != i.phenotype.goal
-        println("final control point is not goal")
+        @debug "final control point is not goal"
     end
 end
 
@@ -281,7 +281,7 @@ end
 function collisionDetection(c1::BezierCurve, c2::BezierCurve)::Bool
     (b, ps) = bezInt(c1, c2)
     if b # if they do intersect
-        println("Intersection")
+        @debug "Intersection"
         c1_to_intersect = deepcopy(c1)
         for i in 1:length(c1)
             if c1[i].x > ps[1][1].x # TODO tweak this
@@ -299,9 +299,9 @@ function collisionDetection(c1::BezierCurve, c2::BezierCurve)::Bool
                 break
             end
         end
-        @show abs(bezLength(c1_to_intersect) - bezLength(c2_to_intersect)) < 3.5
-        @show abs(bezLength(c1_to_intersect) - bezLength(c2_to_intersect))
-        return abs(bezLength(c1_to_intersect) - bezLength(c2_to_intersect)) < 3.5 # TODO tweak pessimistic fuzz to this comparison
+        @debug abs(bezLength(c1_to_intersect) - bezLength(c2_to_intersect)) < 3.5
+        @debug abs(bezLength(c1_to_intersect) - bezLength(c2_to_intersect))
+        return abs(bezLength(c1_to_intersect) - bezLength(c2_to_intersect)) < 1.5 # TODO tweak pessimistic fuzz to this comparison
         # If the distance between (c1 origin -> end of c1 intersection section) -  distance between (c2 origin -> end of c2 intersection section)
         # is less than <val>, we say they reached approx the same point at approx the same time => collision!
     else
@@ -313,11 +313,11 @@ end
 
 function collisionDetection(i1::Individual, i2::Individual)::Bool
 
-    println("Detecting Collisions")
+    @debug "Detecting Collisions"
 
     (b, ps) = bezInt(i1.phenotype.genotype, i2.phenotype.genotype)
     if b # if they do intersect
-        println("Intersection")
+        @debug "Intersection"
         i1_to_intersect = i1.phenotype.genotype
         for i in 1:length(i1.phenotype.genotype)
             if i1.phenotype.genotype[i].x > ps[1][1].x # TODO tweak this
@@ -335,8 +335,8 @@ function collisionDetection(i1::Individual, i2::Individual)::Bool
                 break
             end
         end
-        @show abs(bezLength(i1_to_intersect) - bezLength(i2_to_intersect))
-        return abs(bezLength(i1_to_intersect) - bezLength(i2_to_intersect)) < 4 # TODO tweak pessimistic fuzz to this comparison
+        @debug abs(bezLength(i1_to_intersect) - bezLength(i2_to_intersect))
+        return abs(bezLength(i1_to_intersect) - bezLength(i2_to_intersect)) < 1.5 # TODO tweak pessimistic fuzz to this comparison
     else
         return false
     end

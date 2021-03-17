@@ -14,7 +14,7 @@ function CGA(
     completed_plans::Array{Individual} = []
     ret::Array{Individual} = []
     for (start, goal) in zip(starts, goals)
-        @show start, goal
+        @debug start, goal
         P = CGA(start, goal, road, completed_plans, n_gens=n_gens, n=n, selection_method=selection_method)
         append!(completed_plans, [P[1]])
         # append!(ret,[P[1]])
@@ -28,7 +28,7 @@ end
 function CGA(start::Point, goal::Point, road::Road, other_routes::Array{Individual}; n_gens::Real=1, n::Real=10, selection_method="roulette")::Array{Individual}
     # Initialise population
     if start.y < road.boundary_1(start.x) || start.y > road.boundary_2(start.y) || goal.y < road.boundary_1(goal.x) || goal.y > road.boundary_2(goal.x)
-        println("ERROR, start of goal is outside of roadspace")
+        @error ("ERROR, start of goal is outside of roadspace")
         return []
     end
     𝓕 = curry(curry(Fitness, road), other_routes) # Curry fitness function with road as this is a static attribute of the function. Allows for nicer piping of data.
@@ -56,7 +56,7 @@ end
 function GA(start::Point, goal::Point, road::Road; n_gens::Real=1, n::Real=10, selection_method="roulette")::Array{Individual}
     # Initialise population
     if start.y < road.boundary_1(start.x) || start.y > road.boundary_2(start.y) || goal.y < road.boundary_1(goal.x) || goal.y > road.boundary_2(goal.x)
-        println("ERROR, start of goal is outside of roadspace")
+        @error "ERROR, start of goal is outside of roadspace"
         return []
     end
     𝓕 = curry(Fitness, road) # Curry fitness function with road as this is a static attribute of the function. Allows for nicer piping of data.

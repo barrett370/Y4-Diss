@@ -80,7 +80,7 @@ function bezInt(B1::BezierCurve,B2::BezierCurve) :: Tuple{Bool,Tuple{BezierCurve
     while isopen(c)
         res = take!(c)
         if res[1]
-            println("Found intersection $res")
+            @debug "Found intersection $res"
             return res
         else
             false_count = false_count + 1
@@ -168,7 +168,7 @@ function bezInt(B1::BezierCurve, B2::BezierCurve, rdepth::Int,rdepth_max,ret_cha
 
             end
         else
-            println("B1 and B2 are not candidates therefore, cannot intersect.")
+            @debug "B1 and B2 are not candidates therefore, cannot intersect."
             #@show "initial individuals are not candidates"
             put!(ret_channel,false)
         end
@@ -194,7 +194,6 @@ function YapInt(F::BezierCurve, G::BezierCurve) :: Bool
 
 
     # A pair (F,G) is micro if diam(convex_hull(F) ∪ convex_hull(G)) < Δ⋆, macropair otherwise
-    println("Entering while")
     debug_counter = 10
     while (length(Q₀) > 0 || lenght(Q₁) > 0) && debug_counter > 0
         debug_counter = debug_counter -1

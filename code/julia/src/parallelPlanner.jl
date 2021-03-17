@@ -14,11 +14,11 @@ function getPathGroups(
 
     pathGroupings = Dict()
     for i = 1:length(macroPaths)
-        "checking for agent $(agents[i])" |> println
+        @debug "checking for agent $(agents[i])" 
         for j = 1:length(macroPaths[i])-1
             try
                 pathGroupings[(macroPaths[i][j], macroPaths[i][j+1])]
-                "already analysed" |> println
+                @debug "already analysed" 
             catch e
                 continue
             finally
@@ -79,7 +79,7 @@ function planRoutes(
 
     macroPaths = map(p -> macroPath(road_network, p[1], p[2]), agents)
     pathGroupings= getPathGroups(road_network,agents,macroPaths)
-    @show pathGroupings
+    @debug pathGroupings
 
     prev_positions = zeros(length(agents))
     plans = []
@@ -94,11 +94,11 @@ function planRoutes(
             microPath = (macroPath[i], macroPath[i+1])
             if microPath in keys(pathGroupings)
                 #@async begin
-                "plotting routes in $microPath" |> println
+                @debug "plotting routes in $microPath" 
                 # TODO work out intial starting coordinates a better way
                 # TODO work out goal coordinates a proper way
-                @show parallel_agents = pathGroupings[microPath]
-
+                parallel_agents = pathGroupings[microPath]
+                @debug parallel_agents
                 road = filter(
                     e ->
                         e.source == microPath[1] &&
@@ -157,7 +157,7 @@ function planRoutes(
                 #@show starts,goals
                 #oldstd = stdout
                 #redirect_stdout(open("/dev/null","w"))
-                @show res = PCGA(
+                res = PCGA(
                     starts,
                     goals,
                     road,
@@ -167,26 +167,24 @@ function planRoutes(
                     mutation_method = "uniform",
                 )
                 #redirect_stdout(oldstd)
-                "Planned for this goalset" |> println
+                @debug "Planned for this goalset" 
                 for agent in parallel_agents
-                    @show append!(
+                    append!(
                         plans[agent],
                         [res[findfirst(x -> x == agent, parallel_agents)]],
                     )
                     prev_positions[agent] = plans[agent][end].phenotype.goal.y
                 end
-                "planned microPath $microPath, removing from pathGroupings" |>
-                println
+                @debug "planned microPath $microPath, removing from pathGroupings" 
                 delete!(pathGroupings, microPath)
                 #end
             else
-                "microPath $microPath already planned" |> println
+                @debug "microPath $microPath already planned" 
 
             end
 
         end
     end
-    @show plans
     plans
 end
 
@@ -196,11 +194,11 @@ function plot_road_network(routes, rn::Graphs.GenericGraph, paths::Array{Tuple{I
     pathGroups = getPathGroups(rn,paths, macroPaths)
     c = 0
     for key in keys(pathGroups)
-        @show key
+        @debug key
         road = filter(e -> e.source == key[1] && e.target == key[2], rn.edges)[1].attributes["road"]
         is :: Array{Individual}= []
         for i in pathGroups[key]
-            @show i
+            @debug i
             route_section = findfirst(x -> x==key[1], macroPaths[i])
             append!(is, [routes[i][route_section]])
         end
