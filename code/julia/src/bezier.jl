@@ -5,6 +5,7 @@ using DataStructures
 using Distributed
 using MLStyle
 import LazySets.convex_hull
+using Luxor
 #   using GPUArrays
 
 include("utils.jl")
@@ -72,10 +73,11 @@ end
 #end
 
 function bezInt(B1::BezierCurve,B2::BezierCurve) :: Tuple{Bool,Tuple{BezierCurve,BezierCurve}}
-    #println("bezInt called")
+    @debug "bezInt called"
     n = 7
     c = Channel(4^(n-1))
     main = Threads.@spawn bezInt(B1,B2,1,n,c)
+    @debug "spawned main process"
     false_count = 0
     while isopen(c)
         res = take!(c)
@@ -84,10 +86,18 @@ function bezInt(B1::BezierCurve,B2::BezierCurve) :: Tuple{Bool,Tuple{BezierCurve
             return res
         else
             false_count = false_count + 1
-            if false_count == 4^(n-1)
-                #println("no intersect detected, all false, $false_count")
-                return (false,([],[]))
+            if length(res) > 1
+                if res[2] == "non-candidate"
+                    @warn "returning due to non-candidacy"
+                    return (false,([],[]))
+                end
+           else 
+                if false_count == 4^(n-1)
+                    #println("no intersect detected, all false, $false_count")
+                    return (false,([],[]))
+                end
             end
+            
         end
     end
     #println("no intersect detected, c closed")
@@ -99,79 +109,57 @@ function deCasteljau(B::BezierCurve,t::Real)::Tuple{BezierCurve,BezierCurve}
 end
 
 function bezInt(B1::BezierCurve, B2::BezierCurve, rdepth::Int,rdepth_max,ret_channel::Channel)
-#function bezInt(B1::BezierCurve, B2::BezierCurve, rdepth::Int) :: Bool
-    #println("recurse started")
-   # @show rdepth
-    #@show "starting"
     if rdepth +1 > rdepth_max
-        #"rdepth reached" |> println
+        @warn "rdepth reached" 
         put!(ret_channel,false)
     end
     ε  = 2.5 # TODO tune param
     toRealArray = i -> [[float(p.x),float(p.y)] for p in i]
+    toLuxPoints = b -> map(p-> Luxor.Point(p[1],p[2]),b)
     if length(B1) < 2 || length(B2) < 2
         @show "error not enough control points"
         put!(ret_channel,false)
     else
-        if length(convex_hull(B1 |> toRealArray) ∪ convex_hull(B2 |> toRealArray)) != 0 # Union of the convex hulls of the control points is non-empty
+        #if length(convex_hull(B1 |> toRealArray) ∪ convex_hull(B2 |> toRealArray)) != 0 # Union of the convex hulls of the control points is non-empty
+        @debug "testing hulls"
+        dupe_points = length((B1 |> toRealArray) ∩ (B2 |> toRealArray)) != 0
+        if !dupe_points
+            hull_intersection = length(filter(each -> each == 1,
+                         [Luxor.isinside(p, B1 |> toRealArray |> convex_hull |> toLuxPoints) for p in B2 |> toRealArray |> convex_hull |> toLuxPoints] ∩
+                                          [Luxor.isinside(p, B2 |> toRealArray |> convex_hull |> toLuxPoints) for p in B1|> toRealArray |> convex_hull  |> toLuxPoints])) != 0
+        else
+            @debug "setting intersection to default (true)"
+            hull_intersection = true
+        end
+        
+
+        if hull_intersection
             # B1 and B2 are a "candidate pair"
+            @debug "B1 and B2 are a candidate pair"
             if diam(B1 ∪ B2) < ε
                 #@show rdepth
                 put!(ret_channel,(true,(B1,B2)))
             else # subdivides the curve with the larger diameter
     #            println("subdividing")
                 if diam(B1) >= diam(B2)
-                    #@show "splitting B1"
-                    #B1_1 = [ B1[1:i](0.5) for i in 1:length(B1) ]
-                    #B1_2 = [ B1[1:i](1) for i in [length(B1)-i for i in 0:length(B1)-1]]
                     (B1_1,B1_2) = deCasteljau(B1,0.5)
                     Threads.@spawn bezInt(B1_1,B2,rdepth+1,rdepth_max, ret_channel)
                     Threads.@spawn bezInt(B1_2,B2,rdepth+1,rdepth_max, ret_channel)
-                    #GPUArrays.syncronize([
-                    #    bezInt(B1_1,B2,rdepth+1,rdepth_max, ret_channel),
-                    #    bezInt(B1_2,B2,rdepth+1,rdepth_max, ret_channel)
-                    #])
-                    #Threads.@spawnat :any bezInt(B1_1,deepcopy(B2),deepcopy(rdepth+1),rdepth_max, ret_channel)
-                    #Threads.@spawnat :any bezInt(B1_2,deepcopy(B2),deepcopy(rdepth+1),rdepth_max, ret_channel)
                 else
-                    #@show "splitting B2"
-                    #B2_1 = [ B2[1:i](0.5) for i in 1:length(B2) ]
-                    #B2_2 = [ B2[1:i](1) for i in [length(B2)-i for i in 0:length(B2)-1]]
                     (B2_1,B2_2) = deCasteljau(B2,0.5)
                     Threads.@spawn bezInt(B1,B2_1,rdepth+1,rdepth_max, ret_channel)
                     Threads.@spawn bezInt(B1,B2_2,rdepth+1,rdepth_max, ret_channel)
-                    #GPUArrays.syncronize([
-                    #    bezInt(B1,B2_1,rdepth+1,rdepth_max, ret_channel),
-                    #bezInt(B1,B2_2,rdepth+1,rdepth_max, ret_channel)])
-                    #Threads.@spawnat :any bezInt(deepcopy(B1),B2_1,deepcopy(rdepth+1),rdepth_max, ret_channel)
-                    #Threads.@spawnat :any bezInt(deepcopy(B1),B2_2,deepcopy(rdepth+1),rdepth_max, ret_channel)
                 end
                 #@show "created tasks"
 
-                #t1_channel = Channel(1)
-                #t2_channel = Channel(1)
-                #t3_channel = Channel(1)
-                #t4_channel = Channel(1)
-                #println("creating async tasks")
-                #t1 = @task bezInt(B1_1,B2_1,rdepth+1,rdepth_max, ret_channel)
-                #t2 = @task bezInt(B1_1,B2_2,rdepth+1,rdepth_max, ret_channel)
-                #t3 = @task bezInt(B1_2,B2_1,rdepth+1,rdepth_max, ret_channel)
-                #t4 = @task bezInt(B1_2,B2_2,rdepth+1,rdepth_max, ret_channel)
-                #   #return bezInt(B1_1,B2_1,rdepth+1) || bezInt(B1_1,B2_2,rdepth+1) || bezInt(B1_2,B2_1,rdepth+1) || bezInt(B1_2,B2_2,rdepth+1)
-
-                #tasks = [t1,t2,t3,t4]
-                #tasks = [t1,t2]
-    #           # println("spawning subprocesses")
-                #for task in tasks
-                #    schedule(task)
-                #end
 
             end
         else
-            @debug "B1 and B2 are not candidates therefore, cannot intersect."
+            @warn "B1 and B2 are not candidates therefore, cannot intersect."
             #@show "initial individuals are not candidates"
-            put!(ret_channel,false)
+            put!(ret_channel,(false,"non-candidate"))
         end
+        
     end
     return
 end
