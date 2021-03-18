@@ -56,7 +56,7 @@ end
 function gaussian_mutation!(P::Array{Individual},road::Road)::Array{Individual}
     # Interval bounds
 
-    μ = 0.3 # TODO tweak probability of selecting individual
+    μ = 0.4 # TODO tweak probability of selecting individual
     for i in P
         if Distributions.sample([true, false], Weights([μ, 1-μ])) # Do we mutate this candidate ?
             new_i = deepcopy(i)

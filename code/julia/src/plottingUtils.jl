@@ -68,8 +68,8 @@ end
 
 function draw_road(r::Road, s::Real, e::Real)
     e = r.length
-    rg = plot(r.boundary_1, s, e, linewidth = 3, linecolor = :black, legend = false)
-    plot!(rg, r.boundary_2, s, e, linewidth = 3, linecolor = :black)
+    rg = Plots.plot(r.boundary_1, s, e, linewidth = 3, linecolor = :black, legend = false)
+    Plots.plot!(rg, r.boundary_2, s, e, linewidth = 3, linecolor = :black)
     for o in r.obstacles
 
         # @match o begin
@@ -101,7 +101,7 @@ function draw_road(r::Road, s::Real, e::Real)
                 legend = false,
             )
         elseif typeof(o) == Rectangle
-            rectangle(w, h, x, y) = Shape(x .+ [0,w,w,0], y .+ [0,0,h,h])
+            rectangle(w, h, x, y) = Plots.Shape(x .+ [0,w,w,0], y .+ [0,0,h,h])
 
             plot!(
                 rg,
@@ -168,13 +168,13 @@ function plot_control_points!(plt, c::BezierCurve)
 end
 
 function plot_generation_gif(road::Road, P::Array{Individual}, i=-1)
-    plt = plot()
+    plt = Plots.plot()
     plt = draw_road(road,0,20)
     ci = 1
     colours = [:red,:blue,:green,:yellow,:orange,:grey,:lime]
     for i in P
         for p in i.phenotype.genotype
-            plot!(plt,[(p.x,p.y)],seriestype=:scatter,color=colours[ci])
+            Plots.plot!(plt,[(p.x,p.y)],seriestype=:scatter,color=colours[ci])
         end
         ci = ci + 1
     end

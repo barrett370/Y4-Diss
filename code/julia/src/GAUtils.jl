@@ -199,7 +199,7 @@ function Fitness(r::Road, i::Individual)
 
     # Curve Fitness
 
-    α = 30# Infeasible path Penalty weight
+    α = 300# Infeasible path Penalty weight
     β = 5 # Min safe distance break penalty weight
     l = bezLength(i.phenotype.genotype)
     l1 = infeasible_distance(r, i.phenotype.genotype)

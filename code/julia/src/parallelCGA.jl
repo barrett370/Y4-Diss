@@ -114,7 +114,7 @@ function PCGA(start::Point,
             @debug "Final solution $(P_2filtered[1])"
             return [P_2filtered[1]]
         else
-            @debug "Final solution $(P_filtered[1])"
+            @warn "Cannot avoid infeasible space"
             return [P_filtered[1]]
         end
     else
