@@ -43,6 +43,7 @@ function PCGA(
         @debug "fetching results"
         for task in tasks
             append!(ret, fetch(task))
+            @debug "fetched result $ret"
         end
     end
 
@@ -120,5 +121,6 @@ function PCGA(start::Point,
         @warn "no non-colliding routes found" 
         return [P[1]]
     end
+    @error "No valid results"
 
 end

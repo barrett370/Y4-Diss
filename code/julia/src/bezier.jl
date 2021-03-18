@@ -71,9 +71,14 @@ end
 #function bezInt(B1::BezierCurve,B2::BezierCurve) :: Bool
 #    bezInt(B1,B2,1)[1]
 #end
+toRealArray = i -> [[float(p.x),float(p.y)] for p in i]
 
 function bezInt(B1::BezierCurve,B2::BezierCurve) :: Tuple{Bool,Tuple{BezierCurve,BezierCurve}}
     @debug "bezInt called"
+    if B2 |> toRealArray != zeros(B2 |> length)
+        return (false,([],[]))
+    end
+    
     n = 7
     c = Channel(4^(n-1))
     main = Threads.@spawn bezInt(B1,B2,1,n,c)
@@ -88,7 +93,7 @@ function bezInt(B1::BezierCurve,B2::BezierCurve) :: Tuple{Bool,Tuple{BezierCurve
             false_count = false_count + 1
             if length(res) > 1
                 if res[2] == "non-candidate"
-                    @debug "returning due to non-candidacy"
+                    @debug "returning due to non-candidacy, $B1, $B2"
                     return (false,([],[]))
                 end
            else 
@@ -114,7 +119,6 @@ function bezInt(B1::BezierCurve, B2::BezierCurve, rdepth::Int,rdepth_max,ret_cha
         put!(ret_channel,false)
     end
     ε  = 2.5 # TODO tune param
-    toRealArray = i -> [[float(p.x),float(p.y)] for p in i]
     toLuxPoints = b -> map(p-> Luxor.Point(p[1],p[2]),b)
     if length(B1) < 2 || length(B2) < 2
         @show "error not enough control points"
@@ -124,6 +128,7 @@ function bezInt(B1::BezierCurve, B2::BezierCurve, rdepth::Int,rdepth_max,ret_cha
         @debug "testing hulls"
         dupe_points = length((B1 |> toRealArray) ∩ (B2 |> toRealArray)) != 0
         if !dupe_points
+            @debug "no dupe points"
             hull_intersection = length(filter(each -> each == 1,
                          [Luxor.isinside(p, B1 |> toRealArray |> convex_hull |> toLuxPoints) for p in B2 |> toRealArray |> convex_hull |> toLuxPoints] ∩
                                           [Luxor.isinside(p, B2 |> toRealArray |> convex_hull |> toLuxPoints) for p in B1|> toRealArray |> convex_hull  |> toLuxPoints])) != 0
@@ -159,98 +164,9 @@ function bezInt(B1::BezierCurve, B2::BezierCurve, rdepth::Int,rdepth_max,ret_cha
             #@show "initial individuals are not candidates"
             put!(ret_channel,(false,"non-candidate"))
         end
-        
     end
     return
 end
 
 
 
-function YapInt(F::BezierCurve, G::BezierCurve) :: Bool
-    Q₀ = Queue{Tuple{BezierCurve,BezierCurve}}() # macro queue
-    Q₁ = Queue{Tuple{BezierCurve,BezierCurve}}() # micro queue
-    Δ = 1 # TODO set this properly
-    ε = 0.7
-
-    toRealArray = i -> [[float(p.x),float(p.y)] for p in i]
-    toPointArray = i -> [ Point(i[1],i[2]) ]
-    if diam((convex_hull(F |> toRealArray ) ∪ convex_hull(G |> toRealArray ))[1] |> toPointArray) < Δ # macro pair
-        enqueue!(Q₀,(F,G))
-    else
-        enqueue!(Q₁,(F,G))
-    end
-
-
-    # A pair (F,G) is micro if diam(convex_hull(F) ∪ convex_hull(G)) < Δ⋆, macropair otherwise
-    debug_counter = 10
-    while (length(Q₀) > 0 || lenght(Q₁) > 0) && debug_counter > 0
-        debug_counter = debug_counter -1
-        if length(Q₀) > 0
-            println("taking from Q₀ $(length(Q₀))")
-            (F,G) = dequeue!(Q₀)
-            if length(convex_hull(F |> toRealArray) ∪ convex_hull(G |> toRealArray)) != 0 # Union of the convex hulls of the control points is non-empty
-
-                if diam(F ∪ G) < ε
-                    return true
-                else
-                    if diam(F) > diam(G)
-
-                        F₀ = [ F[1:i](0.5) for i in 1:length(F) ]
-                        F₁ = [ F[1:i](1) for i in [length(F) - i for i in 0:length(F)-1]]
-
-                        if diam((convex_hull(F₀ |> toRealArray ) ∪ convex_hull(G |> toRealArray ))[1] |> toPointArray) < Δ # macro pair
-                           println("enqueue 1")
-                            enqueue!(Q₀,(F₀,G))
-                        else
-                           println("enqueue 2")
-                            enqueue!(Q₁,(F₀,G))
-                        end
-
-                        if diam((convex_hull(F₁ |> toRealArray ) ∪ convex_hull(G |> toRealArray ))[1] |> toPointArray) < Δ # macro pair
-                           println("enqueue 3")
-                            enqueue!(Q₀,(F₁,G))
-                        else
-
-                           println("enqueue 4")
-                            enqueue!(Q₁,(F₁,G))
-                        end
-                    else
-
-                        G₀ = [ G[1:i](0.5) for i in 1:length(G) ]
-                        G₁ = [ G[1:i](1) for i in [length(G) - i for i in 0:length(G)-1]]
-
-                        if diam((convex_hull(G₀ |> toRealArray ) ∪ convex_hull(G |> toRealArray ))[1] |> toPointArray) < Δ # macro pair
-                            enqueue!(Q₀,(G₀,F))
-                           println("enqueue 5")
-                        else
-                           println("enqueue 6")
-                            enqueue!(Q₁,(G₀,F))
-                        end
-
-                        if diam((convex_hull(G₁ |> toRealArray ) ∪ convex_hull(F |> toRealArray ))[1] |> toPointArray) < Δ # macro pair
-                           println("enqueue 7")
-                            enqueue!(Q₀,(G₁,F))
-                        else
-                           println("enqueue 8")
-                            enqueue!(Q₁,(G₁,F))
-                        end
-
-                    end
-
-
-
-                end
-
-            else
-                return false
-            end
-        else
-            (F,G) = dequeue!(Q₁)
-            return false
-        end
-    end
-    return false
-
-
-
-end

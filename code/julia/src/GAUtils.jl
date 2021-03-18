@@ -239,7 +239,7 @@ function Fitness(r::Road, os::SharedArray, i::Individual) # Given knowledge of o
     #    base_fitness = base_fitness * 5
     #
     for o in os
-        if o != SVector{12,Float64}(zeros(12))
+        if o != SVector{12,Float64}(zeros(o |> length))
             @debug "Testing fitness of $i, wrt. $o, parallel"
             if collisionDetection(i.phenotype.genotype, o |> getGenotype)
                 @debug "Detected collision!"
@@ -280,6 +280,7 @@ end
 
 function collisionDetection(c1::BezierCurve, c2::BezierCurve)::Bool
     (b, ps) = bezInt(c1, c2)
+    @debug (b,ps)
     if b # if they do intersect
         @debug "Intersection"
         c1_to_intersect = deepcopy(c1)
