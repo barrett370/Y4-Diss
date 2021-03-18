@@ -88,7 +88,7 @@ function bezInt(B1::BezierCurve,B2::BezierCurve) :: Tuple{Bool,Tuple{BezierCurve
             false_count = false_count + 1
             if length(res) > 1
                 if res[2] == "non-candidate"
-                    @warn "returning due to non-candidacy"
+                    @debug "returning due to non-candidacy"
                     return (false,([],[]))
                 end
            else 
@@ -110,7 +110,7 @@ end
 
 function bezInt(B1::BezierCurve, B2::BezierCurve, rdepth::Int,rdepth_max,ret_channel::Channel)
     if rdepth +1 > rdepth_max
-        @warn "rdepth reached" 
+        @debug "rdepth reached" 
         put!(ret_channel,false)
     end
     ε  = 2.5 # TODO tune param
@@ -155,7 +155,7 @@ function bezInt(B1::BezierCurve, B2::BezierCurve, rdepth::Int,rdepth_max,ret_cha
 
             end
         else
-            @warn "B1 and B2 are not candidates therefore, cannot intersect."
+            @debug "B1 and B2 are not candidates therefore, cannot intersect."
             #@show "initial individuals are not candidates"
             put!(ret_channel,(false,"non-candidate"))
         end
