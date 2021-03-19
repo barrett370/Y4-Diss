@@ -13,11 +13,11 @@ function PCGA(
     multi_thread=true;
     n_gens::Real=1,
     n::Real=10,
-    selection_method="roulette",
-    mutation_method="uniform"
+    selection_method::SelectionMethod,
+    mutation_method::MutationMethod
 )
 
-    
+
     current_plans = SharedArray{SVector{12,Float64}}(length(starts)) # Length of 12 as this is the max number of control points *2
     ret::Array{Individual} = []
     # Build tasks
@@ -34,7 +34,7 @@ function PCGA(
             append!(ret,PCGA(start,goal,road,current_plans,i=deepcopy(c),
                                          n_gens=n_gens,n=n,selection_method=selection_method,mutation_method=mutation_method))
         end
-        
+
         if c + 1 <= length(starts)
             c = c + 1
         end
@@ -67,10 +67,10 @@ function PCGA(start::Point,
               road::Road,
               other_routes::SharedArray; i::Integer=0,
               n_gens::Real=1, n::Real=10,
-              selection_method="roulette",
-              mutation_method="uniform")::Array{Individual}
+              selection_method::SelectionMethod,
+              mutation_method::MutationMethod)::Array{Individual}
     # Initialise population
-    @debug "Size of other_routes = $(length(other_routes))" 
+    @debug "Size of other_routes = $(length(other_routes))"
     if start.y < road.boundary_1(start.x) || start.y > road.boundary_2(start.y) || goal.y < road.boundary_1(goal.x) || goal.y > road.boundary_2(goal.x)
         @error "ERROR, start of goal is outside of roadspace"
         return []
@@ -85,8 +85,6 @@ function PCGA(start::Point,
         P = (P
             |> P -> selection(P, method=selection_method)  # Selection operator
             |> simple_crossover |> new_pop -> append!(P, new_pop)  ## Crossover operator & Add newly generated individuals to population
-            #|> uniform_mutation! # apply mutation operator
-            #|> P -> gaussian_mutation!(P,road) # apply mutation operator
             |> P -> mutation!(P,road,method=mutation_method) # apply mutation operator
             |> P -> begin map(p -> p.fitness = p |> 𝓕, P); P end # recalculate fitness of population after mutation
             |> P -> map(repair, P)  # attempt repair of invalid solutions
@@ -94,12 +92,19 @@ function PCGA(start::Point,
             |> P -> filter(isValid, P) # remove invalid solutions
             |> P -> P[1:minimum([n,length(P)])]# take top n
         )
-        n_gens = n_gens - 1
-        @debug "accessing routes at $i" 
+
+        #P_filtered = filter(c -> FinalCheck(c, other_routes, i), P)
+        #P_2filtered = filter(ind -> high_proximity_distance(road, ind.phenotype.genotype) == 0, filter(ind -> infeasible_distance(road, ind.phenotype.genotype) == 0, P_filtered))
+        #if (n_gens -1 == 0 && P_2filtered |> length != 0) || n_gens -1 != 0
+            n_gens -= 1
+        #else
+        #    @warn "extending gens, no valid routes found"
+        #end
+        @debug "accessing routes at $i"
         other_routes[i] = P[1] |> toSVector
         #TODO is this good?
         if P[1].fitness / √((start.x - goal.x)^2 + (start.y - goal.y)^2)  < 1.1
-            @debug "Exiting early, within 10% of straight line fitness"
+            @warn "Exiting early, within 10% of straight line fitness"
             break
         end
     end
@@ -118,7 +123,7 @@ function PCGA(start::Point,
             return [P_filtered[1]]
         end
     else
-        @warn "no non-colliding routes found" 
+        @warn "no non-colliding routes found"
         return [P[1]]
     end
     @error "No valid results"

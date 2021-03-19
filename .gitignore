@@ -337,3 +337,4 @@ geckodriver.log
 .history
 .vscode
 *.prv/
+themes/

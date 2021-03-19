@@ -44,92 +44,156 @@ end
 
 function polygon_length(curve::BezierCurve)
     l = 0
-    for i = 1:length(curve) - 1
-        l += √((curve[i].x - curve[i + 1].x)^2 + (curve[i].y - curve[i + 1].y)^2)
+    for i = 1:length(curve)-1
+        l += √((curve[i].x - curve[i+1].x)^2 + (curve[i].y - curve[i+1].y)^2)
     end
     l
 end
 
 function bezLength(c::BezierCurve)::Real
     n = length(c)
-    l =
-        (
-            2 * chord_length(c) +
-            (n - 1) * polygon_length(c)
-        ) / (n + 1)
+    l = (2 * chord_length(c) + (n - 1) * polygon_length(c)) / (n + 1)
     return l
 end
 
 
-function diam(X::Array{Point}) ::Real
-    dist(a,os) = [√((a.x - b.x)^2 + (a.y - b.y)^2) for b in os]
-    dist_matrix = [dist(a,X) for a in X]
+function diam(X::Array{Point})::Real
+    dist(a, os) = [√((a.x - b.x)^2 + (a.y - b.y)^2) for b in os]
+    dist_matrix = [dist(a, X) for a in X]
     dist_matrix |> Iterators.flatten |> collect |> maximum
 
 end
 
-#function bezInt(B1::BezierCurve,B2::BezierCurve) :: Bool
-#    bezInt(B1,B2,1)[1]
-#end
-toRealArray = i -> [[float(p.x),float(p.y)] for p in i]
+toRealArray = i -> [[float(p.x), float(p.y)] for p in i]
 
-function bezInt(B1::BezierCurve,B2::BezierCurve) :: Tuple{Bool,Tuple{BezierCurve,BezierCurve}}
+function bezInt(
+    B1::BezierCurve,
+    B2::BezierCurve,
+)::Tuple{Bool,Tuple{BezierCurve,BezierCurve}}
     @debug "bezInt called"
     if B2 |> toRealArray == zeros(B2 |> length)
-        return (false,([],[]))
+        return (false, ([], []))
     end
-    
-    n = floor(1.4*max(B1 |> length , B2 |> length))
-    main = bezInt(B1,B2,1,n)
+
+    n = floor(1.4 * max(B1 |> length, B2 |> length))
+    n = 8
+    main = bezInt(B1, B2, 1, n)
     @debug "spawned main process"
     return main
 end
 
-function deCasteljau(B::BezierCurve,t::Real)::Tuple{BezierCurve,BezierCurve}
-    ([ B[1:i](t) for i in 1:length(B) ],[ B[i:length(B)](1-t) for i in length(B):-1:1])
+function deCasteljau(B::BezierCurve, t::Real)::Tuple{BezierCurve,BezierCurve}
+    (
+        [B[1:i](t) for i = 1:length(B)],
+        [B[i:length(B)](1 - t) for i = length(B):-1:1],
+    )
 end
 
-function bezInt(B1::BezierCurve, B2::BezierCurve, rdepth::Int,rdepth_max)
-    if rdepth +1 > rdepth_max
-        @debug "rdepth reached" 
-        return (false,([],[]))
+function bezInt(B1::BezierCurve, B2::BezierCurve, rdepth::Int, rdepth_max)
+    if rdepth + 1 > rdepth_max
+        @debug "rdepth reached"
+        return (false, ([], []))
     end
-    ε  = 4 # TODO tune param
-    toLuxPoints = b -> map(p-> Luxor.Point(p[1],p[2]),b)
+    ε = 4 # TODO tune param
+    toLuxPoints = b -> map(p -> Luxor.Point(p[1], p[2]), b)
     if length(B1) < 2 || length(B2) < 2
         @show "error not enough control points"
-        return (false,([],[]))
+        return (false, ([], []))
     else
         dupe_points = length((B1 |> toRealArray) ∩ (B2 |> toRealArray)) != 0
         if !dupe_points && length(B1) > 1 && length(B2) > 1
             @debug "no dupe points"
-            ts = rand(0:0.05:1,1000)
+            ts = rand(0:0.05:1, 300)
             B1_points = map(t -> B1(t), ts)
             B2_points = map(t -> B2(t), ts)
-            hull_intersection = length(filter(each -> each == 1,
-                         [Luxor.isinside(p, B1 |> toRealArray |> convex_hull |> toLuxPoints, allowonedge=true   ) for p in B2_points |> toRealArray |> convex_hull |> toLuxPoints] ∪
-                                          [Luxor.isinside(p, B2 |> toRealArray |> convex_hull |> toLuxPoints, allowonedge=true) for p in B1_points |> toRealArray |> convex_hull  |> toLuxPoints])) != 0
+            hull_intersection =
+                length(
+                    filter(
+                        each -> each == 1,
+                        [
+                            Luxor.isinside(
+                                p,
+                                B1 |> toRealArray |> convex_hull |> toLuxPoints,
+                                allowonedge = true,
+                            ) for p in
+                            B2_points |>
+                            toRealArray |>
+                            convex_hull |>
+                            toLuxPoints
+                        ] ∪ [
+                            Luxor.isinside(
+                                p,
+                                B2 |> toRealArray |> convex_hull |> toLuxPoints,
+                                allowonedge = true,
+                            ) for p in
+                            B1_points |>
+                            toRealArray |>
+                            convex_hull |>
+                            toLuxPoints
+                        ],
+                    ),
+                ) != 0
         else
             @debug "setting intersection to default (true)"
             hull_intersection = true
         end
-        
+
 
         if hull_intersection
             # B1 and B2 are a "candidate pair"
             @debug "B1 and B2 are a candidate pair"
             if diam(B1 ∪ B2) < ε
-                return (true,(B1,B2))
+                return (true, (B1, B2))
             else # subdivides the curve with the larger diameter
                 tasks::Array{Task} = []
                 if diam(B1) >= diam(B2)
-                    (B1_1,B1_2) = deCasteljau(B1,0.5)
-                    append!(tasks,[Threads.@spawn bezInt(B1_1,B2,rdepth+1,rdepth_max )])
-                    append!(tasks,[Threads.@spawn bezInt(B1_2,B2,rdepth+1,rdepth_max)])
+                    (B1_1, B1_2) = deCasteljau(B1, 0.5)
+                    append!(
+                        tasks,
+                        [
+                            Threads.@spawn bezInt(
+                                B1_1,
+                                B2,
+                                rdepth + 1,
+                                rdepth_max,
+                            )
+                        ],
+                    )
+                    append!(
+                        tasks,
+                        [
+                            Threads.@spawn bezInt(
+                                B1_2,
+                                B2,
+                                rdepth + 1,
+                                rdepth_max,
+                            )
+                        ],
+                    )
                 else
-                    (B2_1,B2_2) = deCasteljau(B2,0.5)
-                    append!(tasks,[Threads.@spawn bezInt(B1,B2_1,rdepth+1,rdepth_max)])
-                    append!(tasks,[Threads.@spawn bezInt(B1,B2_2,rdepth+1,rdepth_max)])
+                    (B2_1, B2_2) = deCasteljau(B2, 0.5)
+                    append!(
+                        tasks,
+                        [
+                            Threads.@spawn bezInt(
+                                B1,
+                                B2_1,
+                                rdepth + 1,
+                                rdepth_max,
+                            )
+                        ],
+                    )
+                    append!(
+                        tasks,
+                        [
+                            Threads.@spawn bezInt(
+                                B1,
+                                B2_2,
+                                rdepth + 1,
+                                rdepth_max,
+                            )
+                        ],
+                    )
                 end
                 for task in tasks
                     res = fetch(task)
@@ -137,15 +201,12 @@ function bezInt(B1::BezierCurve, B2::BezierCurve, rdepth::Int,rdepth_max)
                         return res
                     end
                 end
-                return (false,([],[]))
+                return (false, ([], []))
 
             end
         else
             @debug "B1 and B2 are not candidates therefore, cannot intersect."
-            return (false,([],[]))
+            return (false, ([], []))
         end
     end
 end
-
-
-

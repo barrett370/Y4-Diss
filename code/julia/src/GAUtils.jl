@@ -21,6 +21,16 @@ mutable struct Individual
     fitness::Real
 end
 
+@enum SelectionMethod begin
+    roulette
+    ranked
+end
+
+@enum MutationMethod begin
+    uniform
+    gaussian
+end
+
 function toSVector(i::Individual)::SVector{12,Float64}
     @debug i
     real_array = getGenotypeString(i.phenotype.genotype)
@@ -63,7 +73,7 @@ function getGenotype(svec::SVector{12,Float64})::BezierCurve
 end
 
 
-MAX_P = 6
+MAX_P = 10
 
 
 function generatePopulation(
@@ -77,7 +87,7 @@ function generatePopulation(
     P = []
     for i = 1:n
         ps = [start]
-        n_control_points = rand(1:MAX_P)
+        n_control_points = rand(0:MAX_P)
         for i = 1:n_control_points
             new_x =
                 ps[end].x +
