@@ -118,7 +118,6 @@ function draw_road(r::Road, s::Real, e::Real)
     rg
 end
 
-
 function get_rectangle(r::Rectangle)
     Shape(r.origin.x .+ [0, r.w, r.w, 0], r.origin.y .+ [0, 0, r.h, r.h])
 end
@@ -177,12 +176,19 @@ function plot_generation_gif(road::Road, P::Array{Individual}, i=-1)
             Plots.plot!(plt,[(p.x,p.y)],seriestype=:scatter,color=colours[ci])
         end
         ci = ci + 1
+        if ci > colours |> length
+            ci = 1
+        end
+
     end
     ci=1
     anim = @animate for i ∈ 0:0.08:1
         for p in P
             plot_curve_bounds!(plt,1,p.phenotype.genotype,300,i,colours[ci])
             ci = ci + 1
+            if ci > colours |> length
+                ci = 1
+            end
         end
         ci = 1
     end

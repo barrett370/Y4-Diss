@@ -57,8 +57,8 @@ function multi_test_gensPopsize(n = 20, n_gens = 10)
                                 $road,
                                 n_gens = $ng,
                                 n = $n,
-                                selection_method = "ranked",
-                                mutation_method = "gaussian",
+                                selection_method = ranked,
+                                mutation_method = gaussian,
                             ),
                         ],
                     )

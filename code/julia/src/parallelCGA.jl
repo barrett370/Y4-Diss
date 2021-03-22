@@ -18,7 +18,7 @@ function PCGA(
 )
 
 
-    current_plans = SharedArray{SVector{12,Float64}}(length(starts)) # Length of 12 as this is the max number of control points *2
+    current_plans = SharedArray{SVector{2*MAX_P,Float64}}(length(starts)) # Length of 12 as this is the max number of control points *2
     ret::Array{Individual} = []
     # Build tasks
     tasks::Array = []

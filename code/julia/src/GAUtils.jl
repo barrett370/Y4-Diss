@@ -31,18 +31,21 @@ end
     gaussian
 end
 
-function toSVector(i::Individual)::SVector{12,Float64}
+MAX_P =10
+
+function toSVector(i::Individual)::SVector{2*MAX_P,Float64}
     @debug i
     real_array = getGenotypeString(i.phenotype.genotype)
-    if length(real_array) < 12
-        real_array = vcat(real_array,zeros(12-length(real_array)))
+    if length(real_array) < 2*MAX_P
+        real_array = vcat(real_array,zeros(2*MAX_P-length(real_array)))
     end
-    if length(real_array) > 12 # TODO why does this happen?
-        real_array = real_array[1:12]
+    if length(real_array) > 2*MAX_P# TODO why does this happen?
+        @warn "too many control points? $i"
+        real_array = real_array[1:2*MAX_P]
     end
 
     @debug real_array
-    return SVector{12}(map(r-> Float64(r), real_array))
+    return SVector{2*MAX_P}(map(r-> Float64(r), real_array))
 end
 
 
@@ -64,7 +67,7 @@ function getGenotype(genotypeString::Array{Real})::BezierCurve
     ret
 end
 
-function getGenotype(svec::SVector{12,Float64})::BezierCurve
+function getGenotype(svec::SVector{2*MAX_P,Float64})::BezierCurve
     ret::BezierCurve = []
     for i = 1:2:6
         append!(ret, [ControlPoint(svec[i], svec[i + 1])])
@@ -248,7 +251,7 @@ function Fitness(r::Road, os::SharedArray, i::Individual) # Given knowledge of o
     #    base_fitness = base_fitness * 5
     #
     for o in os
-        if o != SVector{12,Float64}(zeros(o |> length))
+        if o != SVector{2*MAX_P,Float64}(zeros(o |> length))
             @debug "Testing fitness of $i, wrt. $o, parallel"
             if collisionDetection(i.phenotype.genotype, o |> getGenotype)
                 @debug "Detected collision!"

@@ -14,11 +14,11 @@ function getPathGroups(
 
     pathGroupings = Dict()
     for i = 1:length(macroPaths)
-        @debug "checking for agent $(agents[i])" 
+        @debug "checking for agent $(agents[i])"
         for j = 1:length(macroPaths[i])-1
             try
                 pathGroupings[(macroPaths[i][j], macroPaths[i][j+1])]
-                @debug "already analysed" 
+                @debug "already analysed"
             catch e
                 continue
             finally
@@ -95,7 +95,7 @@ function planRoutes(
             microPath = (macroPath[i], macroPath[i+1])
             if microPath in keys(pathGroupings)
                 #@async begin
-                @debug "plotting routes in $microPath" 
+                @debug "plotting routes in $microPath"
                 # TODO work out intial starting coordinates a better way
                 # TODO work out goal coordinates a proper way
                 parallel_agents = pathGroupings[microPath]
@@ -165,11 +165,11 @@ function planRoutes(
                     multi_threaded,
                     n_gens = 1,
                     n = 5,
-                    selection_method = "roulette",
-                    mutation_method = "uniform",
+                    selection_method = roulette,
+                    mutation_method = uniform,
                 )
                 #redirect_stdout(oldstd)
-                @debug "Planned for this goalset" 
+                @debug "Planned for this goalset"
                 for agent in parallel_agents
                     append!(
                         plans[agent],
@@ -177,11 +177,11 @@ function planRoutes(
                     )
                     prev_positions[agent] = plans[agent][end].phenotype.goal.y
                 end
-                @debug "planned microPath $microPath, removing from pathGroupings" 
+                @debug "planned microPath $microPath, removing from pathGroupings"
                 delete!(pathGroupings, microPath)
                 #end
             else
-                @debug "microPath $microPath already planned" 
+                @debug "microPath $microPath already planned"
 
             end
 
