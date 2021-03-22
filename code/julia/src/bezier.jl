@@ -75,10 +75,9 @@ function bezInt(
         return (false, ([], []))
     end
 
-    n = floor(1.4 * max(B1 |> length, B2 |> length))
-    n = 8
+    #n = floor(1.4 * max(B1 |> length, B2 |> length))
+    n = 10
     main = bezInt(B1, B2, 1, n)
-    @debug "spawned main process"
     return main
 end
 
@@ -89,17 +88,32 @@ function deCasteljau(B::BezierCurve, t::Real)::Tuple{BezierCurve,BezierCurve}
     )
 end
 
+previous_checks = Dict{
+    Tuple{BezierCurve,BezierCurve},
+    Tuple{Bool,Tuple{BezierCurve,BezierCurve}},
+}()
+
 function bezInt(B1::BezierCurve, B2::BezierCurve, rdepth::Int, rdepth_max)
     if rdepth + 1 > rdepth_max
         @debug "rdepth reached"
+        previous_checks[(B1, B2)] = (false, ([], []))
         return (false, ([], []))
     end
-    ε = 4 # TODO tune param
+    ε = 2 # TODO tune param
     toLuxPoints = b -> map(p -> Luxor.Point(p[1], p[2]), b)
     if length(B1) < 2 || length(B2) < 2
-        @show "error not enough control points"
+        @error "error not enough control points"
+        previous_checks[(B1, B2)] = (false, ([], []))
         return (false, ([], []))
     else
+        if (B1, B2) in keys(previous_checks)
+            @debug "found in previous checks"
+            return previous_checks[(B1, B2)]
+        elseif (B2, B1) in keys(previous_checks)
+            @debug "found in previous checks"
+            return previous_checks[(B2, B1)]
+        end
+        @debug "not found in previous checks"
         dupe_points = length((B1 |> toRealArray) ∩ (B2 |> toRealArray)) != 0
         if !dupe_points && length(B1) > 1 && length(B2) > 1
             @debug "no dupe points"
@@ -143,6 +157,7 @@ function bezInt(B1::BezierCurve, B2::BezierCurve, rdepth::Int, rdepth_max)
             # B1 and B2 are a "candidate pair"
             @debug "B1 and B2 are a candidate pair"
             if diam(B1 ∪ B2) < ε
+                previous_checks[(B1, B2)] = (true, (B1, B2))
                 return (true, (B1, B2))
             else # subdivides the curve with the larger diameter
                 tasks::Array{Task} = []
@@ -198,14 +213,17 @@ function bezInt(B1::BezierCurve, B2::BezierCurve, rdepth::Int, rdepth_max)
                 for task in tasks
                     res = fetch(task)
                     if res[1]
+                        previous_checks[(B1, B2)] = res
                         return res
                     end
                 end
+                previous_checks[(B1, B2)] = (false, ([], []))
                 return (false, ([], []))
 
             end
         else
             @debug "B1 and B2 are not candidates therefore, cannot intersect."
+            previous_checks[(B1, B2)] = (false, ([], []))
             return (false, ([], []))
         end
     end

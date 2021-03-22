@@ -225,7 +225,6 @@ function Fitness(r::Road, os::Array{Individual}, i::Individual) # Given knowledg
     cd = true# for testing, collision detection flag
     base_fitness = Fitness(r, i)
 
-
     for o in os
         # println("Testing fitness of $i, wrt. $o")
         # if bezInt(i.phenotype.genotype, o.phenotype.genotype)
@@ -310,8 +309,8 @@ function collisionDetection(c1::BezierCurve, c2::BezierCurve)::Bool
                 break
             end
         end
-        @debug abs(bezLength(c1_to_intersect) - bezLength(c2_to_intersect)) < 3.5
-        @debug abs(bezLength(c1_to_intersect) - bezLength(c2_to_intersect))
+        #@debug abs(bezLength(c1_to_intersect) - bezLength(c2_to_intersect)) < 3.5
+        #@debug abs(bezLength(c1_to_intersect) - bezLength(c2_to_intersect))
         return abs(bezLength(c1_to_intersect) - bezLength(c2_to_intersect)) < 1.5 # TODO tweak pessimistic fuzz to this comparison
         # If the distance between (c1 origin -> end of c1 intersection section) -  distance between (c2 origin -> end of c2 intersection section)
         # is less than <val>, we say they reached approx the same point at approx the same time => collision!
