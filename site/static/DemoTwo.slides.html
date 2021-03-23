@@ -15150,6 +15150,7 @@ M1550.24 1174.17 L1550.23 1172.8 L1550.21 1171.43 L1550.18 1170.07 L1550.13 1168
 </div></section><section>
 <div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<h2 id="Evaluation">Evaluation<a class="anchor-link" href="#Evaluation">&#182;</a></h2><p>I have started to collect data to evaluate my single agent planner. It will not be the focus of my evaluation as it has become a subsection of my larger project.  I indend to collect similar results varying the genetic operators and parameter values used. I will also vary the number and size of any obstacles.</p>
 <p><a href="../images/single-agent-result.html">Fitness landscape of single agent planning</a></p>
 
 </div>
@@ -15190,27 +15191,13 @@ M1550.24 1174.17 L1550.23 1172.8 L1550.21 1171.43 L1550.18 1170.07 L1550.13 1168
 </pre></div>
 
 </div>
-</div><div class="fragment"><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-julia"><pre><span></span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-</div></div><div class="fragment">
+</div></section><section>
 <div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <p>A key factor of this approach is making sure the routes do not collide.</p>
 
 </div>
-</div></div></section><section>
+</div></section><section>
 <div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <h2 id="Intersections-&amp;-collisions">Intersections &amp; collisions<a class="anchor-link" href="#Intersections-&amp;-collisions">&#182;</a></h2><p>How do I differentiate between path intersection (legal) and route collision (illegal)?</p>
@@ -15597,15 +15584,21 @@ M142.455 1486.45 L2352.76 1486.45 L2352.76 47.2441 L142.455 47.2441  Z
 </div></section><section>
 <div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<h2 id="Evaluation">Evaluation<a class="anchor-link" href="#Evaluation">&#182;</a></h2><p>I am also intending to collect data varying genetic operators, parameter values as well as the number of obstacles and agents being planned for.</p>
 <p><a href="../images/multi-agent-result.html">Fitness landscape for multi-agent planning</a></p>
 
 </div>
-</div>
+</div></section><section>
 <div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <p>This system can work for any $n$ number of agents although the system does become slower as there are exponentially more collision detections that must be made each generation.</p>
 <p>An example for 12 randomly generated start-goal pairs can be seen:</p>
-<p><img src="../images/12-agents.gif" alt="12 agents"></p>
+
+</div>
+</div></section><section>
+<div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<p><img src="https://sambarrett.online/Y4-Diss/12-agents.gif" alt="12 agents"></p>
 <p>It is quite confusing and highlights an issue with my current implementation: the system has no method for slowing down/stopping agents to avoid collisions, instead plannning increasingly strange routes to get around it.</p>
 
 </div>
@@ -16135,7 +16128,7 @@ macroPath = [3, 2, 5]
 </div></section><section>
 <div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>Here I employ Dijkstra's algorithm to plan the toplevel <em>macro</em> routes from $A\rightarrow B$ which produces the list of <em>intersections</em> the route must pass through. Each edge or <em>road</em> is weighted by its length but this could <em>easily</em> extended to be more dynamic and take into account cogestion etc.</p>
+<p>Here I employ Dijkstra's algorithm to plan the toplevel <em>macro</em> routes from $A\rightarrow B$ which produces the list of <em>intersections</em> the route must pass through. Each edge or <em>road</em> is weighted by its length but this could <em>easily</em> be extended to be more dynamic and take into account congestion etc.</p>
 
 </div>
 </div></section><section>
@@ -16394,7 +16387,26 @@ macroPath = [3, 2, 5]
 
 </div>
 
-</div></div></section></section>
+</div></div></section></section><section><section>
+<div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<h1 id="Going-forward">Going forward<a class="anchor-link" href="#Going-forward">&#182;</a></h1><p>Sadly, I am running out of time. But given more time to research this I would look at all of the following areas:</p>
+<ol>
+<li>Incorporating a velocity-time profile for each agent in the learning process, allowing for the assumption of constant velocity to be broken</li>
+<li>Reduce abstraction, incorporate vehicle size, focus more on smoothness and viability of routes in real-life.</li>
+<li>Think about more smartly setting start/ end points of vehciles in the macro-level planning </li>
+<li>Further increase planning speed through more heuristics or even GPU parallelism/ distributed computation</li>
+<li><strong>Tune parameters more precisely</strong></li>
+<li><strong>Implement more genetic operators and better assess which lend themselves best to the task</strong></li>
+</ol>
+
+</div>
+</div></section><section>
+<div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<h1 id="Any-Questions?">Any Questions?<a class="anchor-link" href="#Any-Questions?">&#182;</a></h1>
+</div>
+</div></section></section>
 </div>
 </div>
 </body>
