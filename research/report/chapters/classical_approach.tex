@@ -1,11 +1,14 @@
 
 \section{Single Agent Approach}
 
-The general shape of a GA as seen in Algorithm~\ref{alg:GenericGA} is the same for almost all problems.
+The goal of this section was to design a system that fulfilled the requirements outlined in Problem~\ref{prob:sub2}
 
+The general shape of a GA as seen in Algorithm~\ref{alg:GenericGA} is the same for almost all problems. But each individual operator implementation is domain specific.
+
+\subsection{Individual Encoding}
 As such, I first had to implement a method to generate an initial population. In order to do this, I had to define my programmatic representations of the phenotypes and genotypes of my individuals. I decided to base my genotypic structure on the that described by Kala\cite{kalaOnroadIntelligentVehicles2016}.
 
-In this approach, the genotype is abstractly represented as a Bézier curve. This is more concretely translated into a real-valued string, interleaving the $x$ and $y$ coordinates of each control point. Taking the form:
+In this approach, the genotype is abstractly represented as a Bézier curve (Section~\ref{sec:back-bezier-curves}). This is more concretely translated into a real-valued string, interleaving the $x$ and $y$ coordinates of each control point. Taking the form:
 
 \begin{figure}[ht]
 	\centering
@@ -28,12 +31,22 @@ In this approach, the genotype is abstractly represented as a Bézier curve. Thi
 
 Initially my Phenotype contained no additional information. However, I still created the distinction to allow for additional properties to be encapsulated during development.
 
+\subsection{Population Generation}
+
+Population generation theoretically can be very simple and generate very little diversity, relying on the other operators to explore the search space. However, the more diverse a set of initial routes one can generate, the quicker the system will converge to an optimal solution.
+
+As such we want to ensure that both the number of control points as well as their position of properly varied.
+
+The first and last control points \textbf{must} be the starting and goal position for the agent. In a Bézier curve these are the only two points that the curve definitely passes through. We must also ensure that the $x$ coordinates of the control points are in order, so as to avoid routes which \textit{double back} on themselves. This can also occur as the result of other operators such as crossover and mutation, we can fix this using a simple repair operator which re-orders points based on their $x$ positions.
+
+
+\subsection{Fitness assessment}
+
 The foundation of my Fitness function is the length of each route, i.e. the length of a given $n$ degree Bézier curve. This calculation can be accurately approximated using Equation~\ref{eq:bezlength} as the true calculation is expensive and does not generalise nicely to $n$ degrees\cite{gravesenAdaptiveSubdivisionLength1997}.
 
 Minimising the length of a route is a good way of ensuring generated routes are direct, however, other values and heuristics are required to maintain other requirements such as to make sure changes in direction are not too severe or that a route does not pass through infeasible space (avoiding obstacles etc.).
 
-
-I initially experimented with an alternative coordinate space which enabled me to completely enclose the search space within the area of the road, eliminating the possibility of generating routes that left the \textit{road}. This was inspired by the ``Road coordinate axis system'' described by Kala in~\cite{kalaOptimizationBasedPlanning2016}
+I initially experimented with an alternative coordinate space which enabled me to completely enclose the search space within the area of the road, eliminating the possibility of generating routes that left the \textit{road}. This was inspired by the ``Road coordinate axis system'' described by Kala in~\cite{kalaOptimizationBasedPlanning2016}. However I abandoned this concept as it did not appear to increase performance and introduced overhead when visualising or generating the routes.
 
 
 \section{Multi-agent Approach}

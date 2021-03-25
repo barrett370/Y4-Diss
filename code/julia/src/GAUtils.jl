@@ -98,7 +98,7 @@ function generatePopulation(
             if new_x > goal.x
                 new_x = goal.x
             end
-            new_y = ps[end].y + rand(-(y_distance / n):1 / n:(y_distance / n))
+            new_y = ps[end].y + rand(-2*(y_distance / n):1 / n:2*(y_distance / n))
             if new_y > goal.y
                 new_y = goal.y
             end

@@ -108,7 +108,7 @@ Here we can view crossover as the \textit{breeding} process and mutation as rese
 \paragraph{Mutation}
 In mutation we alter each gene with a set probability $p_m$ known as the \textit{mutation rate}. A standard value for a mutation rate is $ \frac{1}{L} $ but it can fall anywhere in the range $p_m \in [ \frac{1}{L} , \frac{1}{2} ] $ where $L$ is the length of the genome.
 
-A low value for $p_m$ a new individual which can be shown to be \textit{close} to it's parents in the search space relative to their \textit{Hamming distance}\footnote{Hamming Distance: The metric for comparing two binary data strings. The Hamming distance between two strings is the number of bit position in which they differ.} if using a Binary coded GA. In real-coded GAs they can be shown to be close by the Euclidean distance between them.
+A low value for $p_m$ a new individual which can be shown to be \textit{close} to it's parents in the search space relative to their \textit{Hamming distance}\footnote{Hamming Distance: A metric for comparing two binary data strings. The Hamming distance between two strings is the number of bit position in which they differ.} if using a Binary coded GA. In real-coded GAs they can be shown to be close by the Euclidean distance between them.
 
 In binary coded GAs we alter a given gene by \textit{flipping} it's value.
 In real-coded GAs mutation operators include: 
@@ -196,6 +196,7 @@ They are defined recursively as follows:
 Where the parameter $t$ is in the range of $[0,1]$. Therefore, the smoothness of the curve is determined by the granularity of the parameter when realising the curve.
 
 \subsection{Length of a Bézier curve}
+\label{subsec:back-bez-length}
 
 The length of a Bézier curve is a non-trivial calculation and is best approximated as:
 

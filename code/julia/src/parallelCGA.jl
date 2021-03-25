@@ -116,16 +116,16 @@ function PCGA(start::Point,
     if P_filtered |> length  != 0
         P_2filtered = filter(ind -> high_proximity_distance(road, ind.phenotype.genotype) == 0, filter(ind -> infeasible_distance(road, ind.phenotype.genotype) == 0, P_filtered))
         if P_2filtered |> length  != 0
-            @debug "Final solution $(P_2filtered[1])"
+            @debug "$i Final solution $(P_2filtered[1])"
             return [P_2filtered[1]]
         else
-            @warn "Cannot avoid infeasible space"
+            @warn "$i Cannot avoid infeasible space"
             return [P_filtered[1]]
         end
     else
-        @warn "no non-colliding routes found"
+        @warn "$i no non-colliding routes found"
         return [P[1]]
     end
-    @error "No valid results"
+    @error "$i No valid results"
 
 end

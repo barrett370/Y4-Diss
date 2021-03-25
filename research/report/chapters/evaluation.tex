@@ -9,7 +9,7 @@ Bézier curves have been utlised in this project to encode and represent the rou
 
 My solution to the problem of planning $n$ non-colliding routes for $n$ agents was so wrap my existing \texttt{GA} function in a cooperative \textit{layer}. This cooperative layer relied on a function for detecting collisions which had extremely high overhead, at one point causing around 50x slowdown in the running time of the function. Detecting intersections between two Bézier curves is a non-trivial task with the best methods taking the same approach of recursive subdivision that I utilised.
 
-\todo[inline]{make mention of possible GPU implementations such at in~\cite{robergeFastGeneticAlgorithm2018}, modern enterprise GPUs have around 4600 cores, approximately the max number of curve splits and comparisons in a binary check of depth 6. Being able to do this in a single cycle would result in a huge speedup }
+\todo[inline]{make mention of possible GPU implementations such at in~\cite{robergeFastGeneticAlgorithm2018}, modern enterprise GPUs have around 4000-10000 cores, approximately the max number of curve splits and comparisons in a binary check of depth 6. Being able to do this in a single cycle would result in a huge speedup }
 
 
 
