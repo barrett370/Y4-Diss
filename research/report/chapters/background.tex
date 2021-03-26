@@ -52,7 +52,7 @@ Genetic algorithms are both \textit{probabilistically optimal} and \textit{proba
 As you can see from Figure \ref{fig:hollandAlg} and Algorithm \ref{alg:GenericGA} the overall shape of GAs has not changed substantially over the course of the past 50 years. Being comprised of a series of operations that a starting population is piped through until criteria are met.
 
 \subsection{Genetic Operators}\todo{Expand definitions of operators used in implementation section}
-
+\label{subsec:GAOps}
 In the following section I will outline the various genetic operations that take place in a GA, they can be seen in Algorithm~\ref{alg:GenericGA}. Any operators used and analysed in Chapter~\ref{chap:ClassicalApproach} will have more detailed explanations of their process.
 
 \subsubsection{Selection}
@@ -226,6 +226,7 @@ Or, alternatively:
 \end{equation}
 
 \subsection{Subdivision of $n$-degree Bézier curves}
+\label{sec:decasteljau}
 
 Subdivision of Bézier curves is a key stage in the process of finding any intersections between two Bézier curves. The process of subdivision is performed using De Casteljau's algorithm. This algorithm was developed by Paul de Casteljau while working at Citroen in 1959 to work with the family of curves that would later be formalised into Bézier curves by Pierre Bézier\footnote{Bézier curves have also been called de Casteljau curves as much of his work preceded that of Pierre Bézier's}.
 

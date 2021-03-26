@@ -27,7 +27,7 @@ In this approach, the genotype is abstractly represented as a Bézier curve (Sec
 	\caption{\label{fig:GA_Genotype} Individual genotype as real-valued string }
 \end{figure}
 
-
+In the above form the descriptions of genetic operators found in Section~\ref{subsec:GAOps} should be sufficiently detailed to re-implement.\todo{Phrasing?  Correct? should I elaborate?}
 
 Initially my Phenotype contained no additional information. However, I still created the distinction to allow for additional properties to be encapsulated during development.
 
@@ -35,7 +35,7 @@ Initially my Phenotype contained no additional information. However, I still cre
 
 Population generation theoretically can be very simple and generate very little diversity, relying on the other operators to explore the search space. However, the more diverse a set of initial routes one can generate, the quicker the system will converge to an optimal solution.
 
-As such we want to ensure that both the number of control points as well as their position of properly varied.
+As such we want to ensure that both the number of control points as well as their position are properly varied.
 
 The first and last control points \textbf{must} be the starting and goal position for the agent. In a Bézier curve these are the only two points that the curve definitely passes through. We must also ensure that the $x$ coordinates of the control points are in order, so as to avoid routes which \textit{double back} on themselves. This can also occur as the result of other operators such as crossover and mutation, we can fix this using a simple repair operator which re-orders points based on their $x$ positions.
 
@@ -48,6 +48,70 @@ Minimising the length of a route is a good way of ensuring generated routes are 
 
 I initially experimented with an alternative coordinate space which enabled me to completely enclose the search space within the area of the road, eliminating the possibility of generating routes that left the \textit{road}. This was inspired by the ``Road coordinate axis system'' described by Kala in~\cite{kalaOptimizationBasedPlanning2016}. However I abandoned this concept as it did not appear to increase performance and introduced overhead when visualising or generating the routes.
 
+Instead I defined each section of road using the following Structure:
+
+\begin{minted}{julia}
+struct Road
+    boundary_1::Function
+    boundary_2::Function
+    obstacles::Array{Obstacle}
+    length::Real
+end
+\end{minted}
+
+This approach allows me to define the upper and lower boundary of a road as any function, straight roads can be defined as a pair of straight lines a certain width apart, and arbitrarily complex roads can be represented using arbitrarily complicated functions.
+
+For example the road seen in Figure~\ref{fig:simple-road} had boundary functions:
+
+\begin{align*}
+  b_{1}(x) &= 0 \\
+  b_{2}(x) &= 5
+\end{align*}
+
+And the curved road section seen in Figure~\ref{fig:curved-road} functions:
+
+\begin{align*}
+  b_{1}(x) &= 2\cosh (0.1x)-2 \\
+  b_{2}(x) &= 2\cosh(0.12x)+8
+\end{align*}
+
+Where in both cases the length of the road (and therefore upper bound of $x$) was 25, the lower bound of $x$ was 0.
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[scale=0.2]{figures/curved-road.png}
+  \caption{\label{fig:curved-road} A curved road}
+\end{figure}
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[scale=0.2]{figures/simple-road.png}
+  \caption{\label{fig:simple-road} A straight road}
+\end{figure}
+
+\paragraph{Road Obstacles}
+
+I have implemented two basic \texttt{Obstacle} types (\texttt{Rectangle} and \texttt{Circle}) allowing me to create regions of infeasible space within the valid road-space.
+
+Infeasible space is then calculated by taking a sample of 500 points along a given curve $B$ and checking which (if any) lie within any of the obstacles.
+
+A Bézier curve is then constructed using two applications of De Casteljau's algorithm (See Section~\ref{sec:decasteljau}) using values for $t$ derived from the subsample points. An illustration of this process can be seen in Figure~\ref{fig:ifspace-illustration}. The length of this curve is weighted and added to the overall fitness of the candidate solution.
+
+A similar process is performed to determine how much of a curve passes too closely to an infeasible region.
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[scale=0.55]{figures/ifspace.jpg}
+  \caption{\label{fig:ifspace-illustration} Illustration of finding infeasible section of curve}
+\end{figure}\todo{replace with plotted version}
+
+
+
+
+
+Once the initial population is generated, the main algorithmic loop can begin, this is the repeated application of the selection, crossover, mutation and evaluation operators (See Section~\ref{subsec:GAOps}) until set termination criteria are met or the maximum number of generations is completed, seen in Algorithm~\ref{alg:GenericGA}.
+
+The final set of routes is finally filtered by the predicate $\texttt{infeasible-distance}(i) = 0 $
 
 \section{Multi-agent Approach}
 

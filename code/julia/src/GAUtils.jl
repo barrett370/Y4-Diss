@@ -31,21 +31,21 @@ end
     gaussian
 end
 
-MAX_P =10
+MAX_P = 10
 
-function toSVector(i::Individual)::SVector{2*MAX_P,Float64}
+function toSVector(i::Individual)::SVector{2 * MAX_P,Float64}
     @debug i
     real_array = getGenotypeString(i.phenotype.genotype)
-    if length(real_array) < 2*MAX_P
-        real_array = vcat(real_array,zeros(2*MAX_P-length(real_array)))
+    if length(real_array) < 2 * MAX_P
+        real_array = vcat(real_array, zeros(2 * MAX_P - length(real_array)))
     end
-    if length(real_array) > 2*MAX_P# TODO why does this happen?
+    if length(real_array) > 2 * MAX_P# TODO why does this happen?
         @warn "too many control points? $i"
         real_array = real_array[1:2*MAX_P]
     end
 
     @debug real_array
-    return SVector{2*MAX_P}(map(r-> Float64(r), real_array))
+    return SVector{2 * MAX_P}(map(r -> Float64(r), real_array))
 end
 
 
@@ -62,15 +62,15 @@ end
 function getGenotype(genotypeString::Array{Real})::BezierCurve
     ret::BezierCurve = []
     for i = 1:2:length(genotypeString)
-        append!(ret, [ControlPoint(genotypeString[i], genotypeString[i + 1])])
+        append!(ret, [ControlPoint(genotypeString[i], genotypeString[i+1])])
     end
     ret
 end
 
-function getGenotype(svec::SVector{2*MAX_P,Float64})::BezierCurve
+function getGenotype(svec::SVector{2 * MAX_P,Float64})::BezierCurve
     ret::BezierCurve = []
     for i = 1:2:6
-        append!(ret, [ControlPoint(svec[i], svec[i + 1])])
+        append!(ret, [ControlPoint(svec[i], svec[i+1])])
     end
     ret
 end
@@ -93,12 +93,13 @@ function generatePopulation(
         n_control_points = rand(0:MAX_P)
         for i = 1:n_control_points
             new_x =
-                ps[end].x +
-                rand(x_distance / (n_control_points * 4):0.1:x_distance / n_control_points)
+                ps[end].x + rand(
+                    x_distance/(n_control_points*4):0.1:x_distance/n_control_points,
+                )
             if new_x > goal.x
                 new_x = goal.x
             end
-            new_y = ps[end].y + rand(-2*(y_distance / n):1 / n:2*(y_distance / n))
+            new_y = ps[end].y + rand(-2*(y_distance/n):1/n:2*(y_distance/n))
             if new_y > goal.y
                 new_y = goal.y
             end
@@ -125,12 +126,14 @@ function infeasible_distance(road::Road, curve::BezierCurve)
                 x = curve_values[1][i]
                 y = curve_values[2][i]
                 potential_circle_intersect_is = findall(
-                    cx -> round(cx, digits=1) == round(x, digits=1),
+                    cx -> round(cx, digits = 1) == round(x, digits = 1),
                     obstacle_values[1],
                 )
                 for j in potential_circle_intersect_is
-                    if round(y, digits=1) == round(obstacle_values[2][j], digits=1)
-                        append!(intersects, [(x, y)])
+                    if round(y, digits = 1) ==
+                       round(obstacle_values[2][j], digits = 1)
+                        t = i / 500
+                        append!(intersects, [(x, y, t)])
                     end
                 end
             end
@@ -140,27 +143,31 @@ function infeasible_distance(road::Road, curve::BezierCurve)
                 x = curve_values[1][i]
                 y = curve_values[2][i]
 
-                if (x > obstacle.origin.x && x < obstacle.origin.x + obstacle.w) && (y > obstacle.origin.y && y < obstacle.origin.y + obstacle.h) # TODO assumes I define rectangles with origin at bottom left and always have positive h and w
-                    append!(intersects, [(x,y)])
+                if (
+                    x > obstacle.origin.x && x < obstacle.origin.x + obstacle.w
+                ) &&
+                   (y > obstacle.origin.y && y < obstacle.origin.y + obstacle.h) # TODO assumes I define rectangles with origin at bottom left and always have positive h and w
+                    t = i / 500
+                    append!(intersects, [(x, y, t)])
                 end
             end
 
         end
         if length(intersects) > 0
-            l =
-                l + √(
-                    (intersects[1][1] - intersects[end][1])^2 +
-                    (intersects[1][2] - intersects[end][2])^2,
-                ) # TODO replace with new bezier curve and find length of that, this is a cheap fix
+            curve_section = deCasteljau(
+                deCasteljau(curve, intersects[1][3])[2],
+                intersects[end][3],
+            )[1]
+            l += bezLength(curve_section)
         end
     end
-    for i = 1:length(curve_values[1]) - 1
+    for i = 1:length(curve_values[1])-1
         if curve_values[2][i] >= road.boundary_2(curve_values[1][i]) ||
            curve_values[2][i] <= road.boundary_1(curve_values[1][i])
 
             dist = √(
-                (curve_values[1][i] - curve_values[1][i + 1])^2 +
-                (curve_values[2][i] - curve_values[2][i + 1])^2,
+                (curve_values[1][i] - curve_values[1][i+1])^2 +
+                (curve_values[2][i] - curve_values[2][i+1])^2,
             )
             # @show 100*dist
             l = l + dist
@@ -177,7 +184,7 @@ function high_proximity_distance(road::Road, curve::BezierCurve)
     for obstacle in road.obstacles
         if typeof(obstacle) == Circle
             threshold = obstacle.r * 1.5
-            for i = 1:length(curve_values[1]) - 1
+            for i = 1:length(curve_values[1])-1
                 # @show   √((curve_values[1][i] - obstacle.centre.x)^2 +
                 # (curve_values[2][i] - obstacle.centre.y)^2)
                 if √(
@@ -185,8 +192,8 @@ function high_proximity_distance(road::Road, curve::BezierCurve)
                     (curve_values[2][i] - obstacle.centre.y)^2,
                 ) <= threshold
                     l += √(
-                        (curve_values[1][i + 1] - curve_values[1][i])^2 +
-                        (curve_values[2][i + 1] - curve_values[2][i])^2,
+                        (curve_values[1][i+1] - curve_values[1][i])^2 +
+                        (curve_values[2][i+1] - curve_values[2][i])^2,
                     )
                 end
             end
@@ -194,12 +201,14 @@ function high_proximity_distance(road::Road, curve::BezierCurve)
     end
     for i in length(curve_values[1]) - 1
         threshold = 0.6
-        if abs(curve_values[2][i] - road.boundary_2(curve_values[1][i])) <= threshold ||
-           abs(curve_values[2][i] - road.boundary_1(curve_values[1][i])) <= threshold
+        if abs(curve_values[2][i] - road.boundary_2(curve_values[1][i])) <=
+           threshold ||
+           abs(curve_values[2][i] - road.boundary_1(curve_values[1][i])) <=
+           threshold
 
             dist = √(
-                (curve_values[1][i] - curve_values[1][i + 1])^2 +
-                (curve_values[2][i] - curve_values[2][i + 1])^2,
+                (curve_values[1][i] - curve_values[1][i+1])^2 +
+                (curve_values[2][i] - curve_values[2][i+1])^2,
             )
             # @show 100*dist
             l = l + dist
@@ -251,7 +260,7 @@ function Fitness(r::Road, os::SharedArray, i::Individual) # Given knowledge of o
     #    base_fitness = base_fitness * 5
     #
     for o in os
-        if o != SVector{2*MAX_P,Float64}(zeros(o |> length))
+        if o != SVector{2 * MAX_P,Float64}(zeros(o |> length))
             @debug "Testing fitness of $i, wrt. $o, parallel"
             if collisionDetection(i.phenotype.genotype, o |> getGenotype)
                 @debug "Detected collision!"
@@ -265,7 +274,7 @@ end
 
 function debugIsValid(i::Individual)
 
-    if sort(i.phenotype.genotype, by=g -> g.x) != i.phenotype.genotype
+    if sort(i.phenotype.genotype, by = g -> g.x) != i.phenotype.genotype
         @debug "control points not in order"
     elseif length(i.phenotype.genotype) < 2
         @debug "too few control points"
@@ -278,7 +287,7 @@ end
 
 function isValid(i::Individual)::Bool
 
-    sort(i.phenotype.genotype, by=g -> g.x) == i.phenotype.genotype &&
+    sort(i.phenotype.genotype, by = g -> g.x) == i.phenotype.genotype &&
         length(i.phenotype.genotype) >= 2 &&
         i.phenotype.genotype[1] == i.phenotype.source &&
         i.phenotype.genotype[end] == i.phenotype.goal
@@ -286,17 +295,17 @@ function isValid(i::Individual)::Bool
 end
 
 function repair(i::Individual)::Individual
-    sort!(i.phenotype.genotype, by=g -> g.x)
+    sort!(i.phenotype.genotype, by = g -> g.x)
     return i
 end
 
 function collisionDetection(c1::BezierCurve, c2::BezierCurve)::Bool
     (b, ps) = bezInt(c1, c2)
-    @debug (b,ps)
+    @debug (b, ps)
     if b # if they do intersect
         @debug "Intersection"
         c1_to_intersect = deepcopy(c1)
-        for i in 1:length(c1)
+        for i = 1:length(c1)
             if c1[i].x > ps[1][1].x # TODO tweak this
                 c1_to_intersect = c1_to_intersect[1:i]
                 append!(c1_to_intersect, ps[1][2:end])
@@ -305,7 +314,7 @@ function collisionDetection(c1::BezierCurve, c2::BezierCurve)::Bool
         end
 
         c2_to_intersect = deepcopy(c2)
-        for i in 1:length(c2) # for each control point
+        for i = 1:length(c2) # for each control point
             if c2[i].x > ps[2][1].x # TODO tweak this | if the x position of the control point is greater than the x value of the inital point in the section of the curve that insersects
                 c2_to_intersect = c2_to_intersect[1:i] # restrict the intersection to this section of c2
                 append!(c2_to_intersect, ps[2][2:end]) # append the rest of the intersected section creating a curve that goes from c2 start to end of intersection section
@@ -314,9 +323,10 @@ function collisionDetection(c1::BezierCurve, c2::BezierCurve)::Bool
         end
         #@debug abs(bezLength(c1_to_intersect) - bezLength(c2_to_intersect)) < 3.5
         #@debug abs(bezLength(c1_to_intersect) - bezLength(c2_to_intersect))
-        return abs(bezLength(c1_to_intersect) - bezLength(c2_to_intersect)) < 1.5 # TODO tweak pessimistic fuzz to this comparison
-        # If the distance between (c1 origin -> end of c1 intersection section) -  distance between (c2 origin -> end of c2 intersection section)
-        # is less than <val>, we say they reached approx the same point at approx the same time => collision!
+        return abs(bezLength(c1_to_intersect) - bezLength(c2_to_intersect)) <
+               1.5 # TODO tweak pessimistic fuzz to this comparison
+    # If the distance between (c1 origin -> end of c1 intersection section) -  distance between (c2 origin -> end of c2 intersection section)
+    # is less than <val>, we say they reached approx the same point at approx the same time => collision!
     else
         return false
     end
@@ -332,7 +342,7 @@ function collisionDetection(i1::Individual, i2::Individual)::Bool
     if b # if they do intersect
         @debug "Intersection"
         i1_to_intersect = i1.phenotype.genotype
-        for i in 1:length(i1.phenotype.genotype)
+        for i = 1:length(i1.phenotype.genotype)
             if i1.phenotype.genotype[i].x > ps[1][1].x # TODO tweak this
                 i1_to_intersect = i1_to_intersect[1:i]
                 append!(i1_to_intersect, ps[1][2:end])
@@ -341,7 +351,7 @@ function collisionDetection(i1::Individual, i2::Individual)::Bool
         end
 
         i2_to_intersect = i2.phenotype.genotype
-        for i in 1:length(i2.phenotype.genotype)
+        for i = 1:length(i2.phenotype.genotype)
             if i2.phenotype.genotype[i].x > ps[2][1].x # TODO tweak this
                 i2_to_intersect = i2_to_intersect[1:i]
                 append!(i2_to_intersect, ps[2][2:end])
@@ -349,15 +359,16 @@ function collisionDetection(i1::Individual, i2::Individual)::Bool
             end
         end
         @debug abs(bezLength(i1_to_intersect) - bezLength(i2_to_intersect))
-        return abs(bezLength(i1_to_intersect) - bezLength(i2_to_intersect)) < 1.5 # TODO tweak pessimistic fuzz to this comparison
+        return abs(bezLength(i1_to_intersect) - bezLength(i2_to_intersect)) <
+               1.5 # TODO tweak pessimistic fuzz to this comparison
     else
         return false
     end
 end
 
-function get_curve(c::BezierCurve, n=500)
+function get_curve(c::BezierCurve, n = 500)
     ps_x, ps_y = [], []
-    for x in range(0, 1, step=1 / n)
+    for x in range(0, 1, step = 1 / n)
         C = c(x)
         append!(ps_x, C.x)
         append!(ps_y, C.y)

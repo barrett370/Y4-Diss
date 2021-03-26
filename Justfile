@@ -15,3 +15,4 @@ site:
 
 deploy: 
     just site && git add docs && ./utils/datecommit.sh && git push
+
