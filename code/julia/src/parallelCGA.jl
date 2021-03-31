@@ -53,7 +53,7 @@ end
 function FinalCheck(route::Individual, os::SharedArray, i::Integer)::Bool
     for j in 1:length(os)
         if j != i
-            if collisionDetection(route.phenotype.genotype, os[j] |> getGenotype)
+            if ft_collisionDetection(route.phenotype.genotype, os[j] |> getGenotype)
                 return false
             end
         end

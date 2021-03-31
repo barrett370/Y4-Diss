@@ -101,139 +101,139 @@ function clear_previous_checks()
 end
 
 
-function bezInt(B1::BezierCurve, B2::BezierCurve, rdepth::Int, rdepth_max)
-    if rdepth + 1 > rdepth_max
-        @debug "rdepth reached"
-        previous_checks[(B1, B2)] = (false, ([], []))
-        return (false, ([], []))
-    end
-    ε = 2 # TODO tune param
-    toLuxPoints = b -> map(p -> Luxor.Point(p[1], p[2]), b)
-    if length(B1) < 2 || length(B2) < 2
-        @error "error not enough control points"
-        previous_checks[(B1, B2)] = (false, ([], []))
-        return (false, ([], []))
-    else
-        if (B1, B2) in keys(previous_checks)
-            @debug "found in previous checks"
-            return previous_checks[(B1, B2)]
-        elseif (B2, B1) in keys(previous_checks)
-            @debug "found in previous checks"
-            return previous_checks[(B2, B1)]
-        end
-        @debug "not found in previous checks"
-        dupe_points = length((B1 |> toRealArray) ∩ (B2 |> toRealArray)) != 0
-        if !dupe_points && length(B1) > 1 && length(B2) > 1
-        #    @debug "no dupe points"
-        #    ts = rand(0:0.05:1, 500)
-        #    B1_points = map(t -> B1(t), ts)
-        #    B2_points = map(t -> B2(t), ts)
-        #    hull_intersection =
-        #        length(
-        #            filter(
-        #                each -> each == 1,
-        #                [
-        #                    Luxor.isinside(
-        #                        p,
-        #                        B1 |> toRealArray |> convex_hull |> toLuxPoints,
-        #                        allowonedge = true,
-        #                    ) for p in
-        #                    B2_points |>
-        #                    toRealArray |>
-        #                    convex_hull |>
-        #                    toLuxPoints
-        #                ] ∪ [
-        #                    Luxor.isinside(
-        #                        p,
-        #                        B2 |> toRealArray |> convex_hull |> toLuxPoints,
-        #                        allowonedge = true,
-        #                    ) for p in
-        #                    B1_points |>
-        #                    toRealArray |>
-        #                    convex_hull |>
-        #                    toLuxPoints
-        #                ],
-        #            ),
-        #        ) != 0
-				hull_intersection = true
-        else
-            @debug "setting intersection to default (true)"
-            hull_intersection = true
-        end
-
-
-        if hull_intersection
-            # B1 and B2 are a "candidate pair"
-            @debug "B1 and B2 are a candidate pair"
-            if diam(B1 ∪ B2) < ε
-                previous_checks[(B1, B2)] = (true, (B1, B2))
-                return (true, (B1, B2))
-            else # subdivides the curve with the larger diameter
-                tasks::Array{Task} = []
-                if diam(B1) >= diam(B2)
-                    (B1_1, B1_2) = deCasteljau(B1, 0.5)
-                    append!(
-                        tasks,
-                        [
-                            Threads.@spawn bezInt(
-                                B1_1,
-                                B2,
-                                rdepth + 1,
-                                rdepth_max,
-                            )
-                        ],
-                    )
-                    append!(
-                        tasks,
-                        [
-                            Threads.@spawn bezInt(
-                                B1_2,
-                                B2,
-                                rdepth + 1,
-                                rdepth_max,
-                            )
-                        ],
-                    )
-                else
-                    (B2_1, B2_2) = deCasteljau(B2, 0.5)
-                    append!(
-                        tasks,
-                        [
-                            Threads.@spawn bezInt(
-                                B1,
-                                B2_1,
-                                rdepth + 1,
-                                rdepth_max,
-                            )
-                        ],
-                    )
-                    append!(
-                        tasks,
-                        [
-                            Threads.@spawn bezInt(
-                                B1,
-                                B2_2,
-                                rdepth + 1,
-                                rdepth_max,
-                            )
-                        ],
-                    )
-                end
-                for task in tasks
-                    res = fetch(task)
-                    if res[1]
-                        previous_checks[(B1, B2)] = res
-                        return res
-                    end
-                end
-                previous_checks[(B1, B2)] = (false, ([], []))
-                return (false, ([], []))
-
-            end
-        else
-            @debug "B1 and B2 are not candidates therefore, cannot intersect."
-            previous_checks[(B1, B2)] = (false, ([], []))
-            return (false, ([], []))
-        end
-    end
-end
+#function bezInt(B1::BezierCurve, B2::BezierCurve, rdepth::Int, rdepth_max)
+#    if rdepth + 1 > rdepth_max
+#        @debug "rdepth reached"
+#        previous_checks[(B1, B2)] = (false, ([], []))
+#        return (false, ([], []))
+#    end
+#    ε = 2 # TODO tune param
+#    toLuxPoints = b -> map(p -> Luxor.Point(p[1], p[2]), b)
+#    if length(B1) < 2 || length(B2) < 2
+#        @error "error not enough control points"
+#        previous_checks[(B1, B2)] = (false, ([], []))
+#        return (false, ([], []))
+#    else
+#        if (B1, B2) in keys(previous_checks)
+#            @debug "found in previous checks"
+#            return previous_checks[(B1, B2)]
+#        elseif (B2, B1) in keys(previous_checks)
+#            @debug "found in previous checks"
+#            return previous_checks[(B2, B1)]
+#        end
+#        @debug "not found in previous checks"
+#        dupe_points = length((B1 |> toRealArray) ∩ (B2 |> toRealArray)) != 0
+#        if !dupe_points && length(B1) > 1 && length(B2) > 1
+#        #    @debug "no dupe points"
+#        #    ts = rand(0:0.05:1, 500)
+#        #    B1_points = map(t -> B1(t), ts)
+#        #    B2_points = map(t -> B2(t), ts)
+#        #    hull_intersection =
+#        #        length(
+#        #            filter(
+#        #                each -> each == 1,
+#        #                [
+#        #                    Luxor.isinside(
+#        #                        p,
+#        #                        B1 |> toRealArray |> convex_hull |> toLuxPoints,
+#        #                        allowonedge = true,
+#        #                    ) for p in
+#        #                    B2_points |>
+#        #                    toRealArray |>
+#        #                    convex_hull |>
+#        #                    toLuxPoints
+#        #                ] ∪ [
+#        #                    Luxor.isinside(
+#        #                        p,
+#        #                        B2 |> toRealArray |> convex_hull |> toLuxPoints,
+#        #                        allowonedge = true,
+#        #                    ) for p in
+#        #                    B1_points |>
+#        #                    toRealArray |>
+#        #                    convex_hull |>
+#        #                    toLuxPoints
+#        #                ],
+#        #            ),
+#        #        ) != 0
+#				hull_intersection = true
+#        else
+#            @debug "setting intersection to default (true)"
+#            hull_intersection = true
+#        end
+#
+#
+#        if hull_intersection
+#            # B1 and B2 are a "candidate pair"
+#            @debug "B1 and B2 are a candidate pair"
+#            if diam(B1 ∪ B2) < ε
+#                previous_checks[(B1, B2)] = (true, (B1, B2))
+#                return (true, (B1, B2))
+#            else # subdivides the curve with the larger diameter
+#                tasks::Array{Task} = []
+#                if diam(B1) >= diam(B2)
+#                    (B1_1, B1_2) = deCasteljau(B1, 0.5)
+#                    append!(
+#                        tasks,
+#                        [
+#                            Threads.@spawn bezInt(
+#                                B1_1,
+#                                B2,
+#                                rdepth + 1,
+#                                rdepth_max,
+#                            )
+#                        ],
+#                    )
+#                    append!(
+#                        tasks,
+#                        [
+#                            Threads.@spawn bezInt(
+#                                B1_2,
+#                                B2,
+#                                rdepth + 1,
+#                                rdepth_max,
+#                            )
+#                        ],
+#                    )
+#                else
+#                    (B2_1, B2_2) = deCasteljau(B2, 0.5)
+#                    append!(
+#                        tasks,
+#                        [
+#                            Threads.@spawn bezInt(
+#                                B1,
+#                                B2_1,
+#                                rdepth + 1,
+#                                rdepth_max,
+#                            )
+#                        ],
+#                    )
+#                    append!(
+#                        tasks,
+#                        [
+#                            Threads.@spawn bezInt(
+#                                B1,
+#                                B2_2,
+#                                rdepth + 1,
+#                                rdepth_max,
+#                            )
+#                        ],
+#                    )
+#                end
+#                for task in tasks
+#                    res = fetch(task)
+#                    if res[1]
+#                        previous_checks[(B1, B2)] = res
+#                        return res
+#                    end
+#                end
+#                previous_checks[(B1, B2)] = (false, ([], []))
+#                return (false, ([], []))
+#
+#            end
+#        else
+#            @debug "B1 and B2 are not candidates therefore, cannot intersect."
+#            previous_checks[(B1, B2)] = (false, ([], []))
+#            return (false, ([], []))
+#        end
+#    end
+#end

@@ -5,6 +5,8 @@ using Distributed
 include("bezier.jl")
 include("roadNetwork.jl")
 include("utils.jl")
+include("ftbezier.jl")
+
 
 mutable struct Genotype
     curve::BezierCurve
@@ -243,7 +245,7 @@ function Fitness(r::Road, os::Array{Individual}, i::Individual) # Given knowledg
         #    base_fitness = base_fitness * 5
         # end
         if cd # If collision detection is enabled (true by default)
-            if collisionDetection(i, o)
+            if ft_collisionDetection(i, o)
                 println("Detected collision!")
                 base_fitness = base_fitness * 5
             end
@@ -262,7 +264,7 @@ function Fitness(r::Road, os::SharedArray, i::Individual) # Given knowledge of o
     for o in os
         if o != SVector{2 * MAX_P,Float64}(zeros(o |> length))
             @debug "Testing fitness of $i, wrt. $o, parallel"
-            if collisionDetection(i.phenotype.genotype, o |> getGenotype)
+            if ft_collisionDetection(i.phenotype.genotype, o |> getGenotype)
                 @debug "Detected collision!"
                 base_fitness = base_fitness * 5 # TODO tune this
             end
@@ -298,73 +300,87 @@ function repair(i::Individual)::Individual
     sort!(i.phenotype.genotype, by = g -> g.x)
     return i
 end
-
-function collisionDetection(c1::BezierCurve, c2::BezierCurve)::Bool
-    (b, ps) = bezInt(c1, c2)
-    @debug (b, ps)
-    if b # if they do intersect
-        @debug "Intersection"
-        c1_to_intersect = deepcopy(c1)
-        for i = 1:length(c1)
-            if c1[i].x > ps[1][1].x # TODO tweak this
-                c1_to_intersect = c1_to_intersect[1:i]
-                append!(c1_to_intersect, ps[1][2:end])
-                break
-            end
+function ft_collisionDetection(c1::BezierCurve, c2::BezierCurve)::Bool
+    @warn "Using fortran bezier lib"
+    @show (b, ps) = ft_bezInt(c1,c2)
+    if b
+        if (deCasteljau(c1,ps[1])[1] |> bezLength) - (deCasteljau(c2,ps[2])[1] |> bezLength) < 0.5
+            return true
+        else
+            return false
         end
 
-        c2_to_intersect = deepcopy(c2)
-        for i = 1:length(c2) # for each control point
-            if c2[i].x > ps[2][1].x # TODO tweak this | if the x position of the control point is greater than the x value of the inital point in the section of the curve that insersects
-                c2_to_intersect = c2_to_intersect[1:i] # restrict the intersection to this section of c2
-                append!(c2_to_intersect, ps[2][2:end]) # append the rest of the intersected section creating a curve that goes from c2 start to end of intersection section
-                break
-            end
-        end
-        #@debug abs(bezLength(c1_to_intersect) - bezLength(c2_to_intersect)) < 3.5
-        #@debug abs(bezLength(c1_to_intersect) - bezLength(c2_to_intersect))
-        return abs(bezLength(c1_to_intersect) - bezLength(c2_to_intersect)) <
-               1.5 # TODO tweak pessimistic fuzz to this comparison
-    # If the distance between (c1 origin -> end of c1 intersection section) -  distance between (c2 origin -> end of c2 intersection section)
-    # is less than <val>, we say they reached approx the same point at approx the same time => collision!
     else
         return false
     end
 
 end
+#function collisionDetection(c1::BezierCurve, c2::BezierCurve)::Bool
+#    (b, ps) = bezInt(c1, c2)
+#    @debug (b, ps)
+#    if b # if they do intersect
+#        @debug "Intersection"
+#        c1_to_intersect = deepcopy(c1)
+#        for i = 1:length(c1)
+#            if c1[i].x > ps[1][1].x # TODO tweak this
+#                c1_to_intersect = c1_to_intersect[1:i]
+#                append!(c1_to_intersect, ps[1][2:end])
+#                break
+#            end
+#        end
+#
+#        c2_to_intersect = deepcopy(c2)
+#        for i = 1:length(c2) # for each control point
+#            if c2[i].x > ps[2][1].x # TODO tweak this | if the x position of the control point is greater than the x value of the inital point in the section of the curve that insersects
+#                c2_to_intersect = c2_to_intersect[1:i] # restrict the intersection to this section of c2
+#                append!(c2_to_intersect, ps[2][2:end]) # append the rest of the intersected section creating a curve that goes from c2 start to end of intersection section
+#                break
+#            end
+#        end
+#        #@debug abs(bezLength(c1_to_intersect) - bezLength(c2_to_intersect)) < 3.5
+#        #@debug abs(bezLength(c1_to_intersect) - bezLength(c2_to_intersect))
+#        return abs(bezLength(c1_to_intersect) - bezLength(c2_to_intersect)) <
+#               1.5 # TODO tweak pessimistic fuzz to this comparison
+#    # If the distance between (c1 origin -> end of c1 intersection section) -  distance between (c2 origin -> end of c2 intersection section)
+#    # is less than <val>, we say they reached approx the same point at approx the same time => collision!
+#    else
+#        return false
+#    end
+#
+#end
 
 
-function collisionDetection(i1::Individual, i2::Individual)::Bool
-
-    @debug "Detecting Collisions"
-
-    (b, ps) = bezInt(i1.phenotype.genotype, i2.phenotype.genotype)
-    if b # if they do intersect
-        @debug "Intersection"
-        i1_to_intersect = i1.phenotype.genotype
-        for i = 1:length(i1.phenotype.genotype)
-            if i1.phenotype.genotype[i].x > ps[1][1].x # TODO tweak this
-                i1_to_intersect = i1_to_intersect[1:i]
-                append!(i1_to_intersect, ps[1][2:end])
-                break
-            end
-        end
-
-        i2_to_intersect = i2.phenotype.genotype
-        for i = 1:length(i2.phenotype.genotype)
-            if i2.phenotype.genotype[i].x > ps[2][1].x # TODO tweak this
-                i2_to_intersect = i2_to_intersect[1:i]
-                append!(i2_to_intersect, ps[2][2:end])
-                break
-            end
-        end
-        @debug abs(bezLength(i1_to_intersect) - bezLength(i2_to_intersect))
-        return abs(bezLength(i1_to_intersect) - bezLength(i2_to_intersect)) <
-               1.5 # TODO tweak pessimistic fuzz to this comparison
-    else
-        return false
-    end
-end
+#function collisionDetection(i1::Individual, i2::Individual)::Bool
+#
+#    @debug "Detecting Collisions"
+#
+#    (b, ps) = bezInt(i1.phenotype.genotype, i2.phenotype.genotype)
+#    if b # if they do intersect
+#        @debug "Intersection"
+#        i1_to_intersect = i1.phenotype.genotype
+#        for i = 1:length(i1.phenotype.genotype)
+#            if i1.phenotype.genotype[i].x > ps[1][1].x # TODO tweak this
+#                i1_to_intersect = i1_to_intersect[1:i]
+#                append!(i1_to_intersect, ps[1][2:end])
+#                break
+#            end
+#        end
+#
+#        i2_to_intersect = i2.phenotype.genotype
+#        for i = 1:length(i2.phenotype.genotype)
+#            if i2.phenotype.genotype[i].x > ps[2][1].x # TODO tweak this
+#                i2_to_intersect = i2_to_intersect[1:i]
+#                append!(i2_to_intersect, ps[2][2:end])
+#                break
+#            end
+#        end
+#        @debug abs(bezLength(i1_to_intersect) - bezLength(i2_to_intersect))
+#        return abs(bezLength(i1_to_intersect) - bezLength(i2_to_intersect)) <
+#               1.5 # TODO tweak pessimistic fuzz to this comparison
+#    else
+#        return false
+#    end
+#end
 
 function get_curve(c::BezierCurve, n = 500)
     ps_x, ps_y = [], []
