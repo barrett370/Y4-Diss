@@ -97,13 +97,13 @@ Infeasible space is then calculated by taking a sample of 500 points along a giv
 
 A Bézier curve is then constructed using two applications of De Casteljau's algorithm (See Section~\ref{sec:decasteljau}) using values for $t$ derived from the subsample points. An illustration of this process can be seen in Figure~\ref{fig:ifspace-illustration}. The length of this curve is weighted and added to the overall fitness of the candidate solution.
 
-A similar process is performed to determine how much of a curve passes too closely to an infeasible region.
+A similar process is performed to determine how much of a curve passes too closely to an infeasible region, this is penalised with a separate, lower, weighting.
 
 \begin{figure}[ht]
   \centering
   \includegraphics[scale=0.55]{figures/ifspace.jpg}
   \caption{\label{fig:ifspace-illustration} Illustration of finding infeasible section of curve}
-\end{figure}\todo{replace with plotted version}
+\end{figure}\todo{replace with plotted/ computer designed version}
 
 
 
@@ -115,21 +115,34 @@ The final set of routes is finally filtered by the predicate $\texttt{infeasible
 
 \section{Multi-agent Approach}
 
-So far we have only concerned ourselves with planning a route through a road-space for a single agent. However, in the real world, roads are seldom occupied by a single vehicle and as such we must consider how to efficiently plan a set of routes for a set of agents between between a set of coordinate pairs, such that, our agents do not collide for any time $t$.
+So far we have only concerned ourselves with planning a route through a road-space for a single agent. However, in the real world, roads are seldom occupied by a single vehicle and as such we must consider how to efficiently plan a set of routes for a set of agents between between a set of coordinate pairs, such that, our agents do not collide at any point in time.
 
 There are different approaches we can take to this problem. \todo[inline]{refer to lit rev sections discussing approaches by Kala\cite{kalaOnroadIntelligentVehicles2016} and Cai \& Peng \cite{caiCooperativeCoevolutionaryAdaptive2002}}
 
-My initial approach to a collaborative planning system was somewhat inefficient. The system operated by planning routes for each agent sequentially, using a growing \textit{context} to keep track of the routes that had already been finalised. The first agent to be planned was not concerned with avoiding collisions, as, as far as it was concerned, there were no other agents in the system. Each subsequent agent checked if any of its candidate solutions intersected with and of the routes planned before, a very high penalty was applied to any routes with collisions, equivalent to the distance \todo[inline]{check this} the routes collided for.
-
+My initial approach to a collaborative planning system was somewhat inefficient. The system operated by planning routes for each agent sequentially, using a growing \textit{context} to keep track of the routes that had already been finalised. The first agent to be planned was not concerned with avoiding collisions, as, as far as it was concerned, there were no other agents in the system. Each subsequent agent checked if any of its candidate solutions intersected with and of the routes planned before, a very high penalty was applied to any routes with collisions.
 
 This system was very inefficient with the final routes requiring a large number of checks to be carried out by my \texttt{bezInt} function, which itself suffered from \todo[inline]{verify this} exponential time (and space) complexity.
+
+
+This system was improved upon by splitting the process over multiple threads, each agent being given a separate thread, communicating their most up-to-date plans via a shared array, $S$. Agent $i$ will store its current fittest route in $S[i]$, the fitness of any candidate checks for collisions with each route in $S$. This system may conduct more checks but it removes the problem of prioritising the first route to the planned and reduces the overall runtime of the system approximately proportionally to the number of threads available.
 
 \subsection{Collision Detection}
 \label{subsec:col-detection}
 
-Collision detection is one of the core obstacles to a cooperative route planner. You must be able to certify that your resulting set of routes do not collide at any point in time.
+Collision detection is one of the core obstacles to a viable cooperative route planner. You must be able to certify that your resulting set of routes do not collide at any point in time, else the entire system fails.
 
 Simply detecting intersections is not enough as two routes can intersect but only collide if they pass through the same point at the same time. We therefore require some notion of time when realising our Bézier curve routes.
+
+I made the assumption that each agent in my system travels at a uniform constant speed. To remove this assumption we would need to include a velocity-time profile in the genotype of each individual, this is an area for further research.
+
+With this assumption, we can now say that two routes collide if they intersect and the distance from their respective origins and the point of intersection is the same. We have now reduced this problem to finding a point of intersection between two Bézier curves, this is still a non-trivial task.
+
+\subsubsection{Bézier Curve intersection}
+
+The commonly employed technique for finding intersections between two $n$-degree Bézier curves is repeated recursive subdivision. Whilst it is possible to precisely calculate the point of intersection it is very difficult and computationally expensive and does not generalise well to $n$ degrees. For example, to numerically find the intersection two curves of degree 3 we must solve a $9^{th}$ order equation, producing unstable results. This is described by Bézout's theorem which states that two planar algebraic curves of degrees $d_{1}$ and $d_{2}$ will have up to $d_{1}d_{2}$ intersection points.\todo{cite this or remove it}
+
+In their 2006 paper Yap\cite{yapCompleteSubdivisionAlgorithms2006} propose an efficient method for finding the intersection of two Bézier curves through a 2 stage process surrounding repeated subdivision.
+
 
 \section{Language Choice}\todo[inline]{decide whether to remove this, I am thinking yes but last para is interesting, maybe move to evaluation}
 

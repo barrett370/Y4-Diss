@@ -1,5 +1,6 @@
 
 include("roadNetwork.jl")
+include("parallelCGA.jl")
 boundary1(x) = 0
 boundary2(x) = 12
 
@@ -12,7 +13,8 @@ obstacles = [o1,o2]
 road = Road(
         boundary1,
         boundary2,
-        obstacles
+        obstacles,
+        20
 )
 
 starts = [Point(0,2),Point(0,6), Point(0,1)]

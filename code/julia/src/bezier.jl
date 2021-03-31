@@ -76,7 +76,7 @@ function bezInt(
     end
 
     #n = floor(1.4 * max(B1 |> length, B2 |> length))
-    n = 10
+    n = 7
     main = bezInt(B1, B2, 1, n)
     return main
 end
@@ -92,6 +92,14 @@ previous_checks = Dict{
     Tuple{BezierCurve,BezierCurve},
     Tuple{Bool,Tuple{BezierCurve,BezierCurve}},
 }()
+
+function clear_previous_checks()
+	previous_checks = Dict{
+	    Tuple{BezierCurve,BezierCurve},
+	    Tuple{Bool,Tuple{BezierCurve,BezierCurve}},
+	}()
+end
+
 
 function bezInt(B1::BezierCurve, B2::BezierCurve, rdepth::Int, rdepth_max)
     if rdepth + 1 > rdepth_max
@@ -116,37 +124,38 @@ function bezInt(B1::BezierCurve, B2::BezierCurve, rdepth::Int, rdepth_max)
         @debug "not found in previous checks"
         dupe_points = length((B1 |> toRealArray) ∩ (B2 |> toRealArray)) != 0
         if !dupe_points && length(B1) > 1 && length(B2) > 1
-            @debug "no dupe points"
-            ts = rand(0:0.05:1, 300)
-            B1_points = map(t -> B1(t), ts)
-            B2_points = map(t -> B2(t), ts)
-            hull_intersection =
-                length(
-                    filter(
-                        each -> each == 1,
-                        [
-                            Luxor.isinside(
-                                p,
-                                B1 |> toRealArray |> convex_hull |> toLuxPoints,
-                                allowonedge = true,
-                            ) for p in
-                            B2_points |>
-                            toRealArray |>
-                            convex_hull |>
-                            toLuxPoints
-                        ] ∪ [
-                            Luxor.isinside(
-                                p,
-                                B2 |> toRealArray |> convex_hull |> toLuxPoints,
-                                allowonedge = true,
-                            ) for p in
-                            B1_points |>
-                            toRealArray |>
-                            convex_hull |>
-                            toLuxPoints
-                        ],
-                    ),
-                ) != 0
+        #    @debug "no dupe points"
+        #    ts = rand(0:0.05:1, 500)
+        #    B1_points = map(t -> B1(t), ts)
+        #    B2_points = map(t -> B2(t), ts)
+        #    hull_intersection =
+        #        length(
+        #            filter(
+        #                each -> each == 1,
+        #                [
+        #                    Luxor.isinside(
+        #                        p,
+        #                        B1 |> toRealArray |> convex_hull |> toLuxPoints,
+        #                        allowonedge = true,
+        #                    ) for p in
+        #                    B2_points |>
+        #                    toRealArray |>
+        #                    convex_hull |>
+        #                    toLuxPoints
+        #                ] ∪ [
+        #                    Luxor.isinside(
+        #                        p,
+        #                        B2 |> toRealArray |> convex_hull |> toLuxPoints,
+        #                        allowonedge = true,
+        #                    ) for p in
+        #                    B1_points |>
+        #                    toRealArray |>
+        #                    convex_hull |>
+        #                    toLuxPoints
+        #                ],
+        #            ),
+        #        ) != 0
+				hull_intersection = true
         else
             @debug "setting intersection to default (true)"
             hull_intersection = true
