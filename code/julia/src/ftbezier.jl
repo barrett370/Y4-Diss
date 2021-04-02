@@ -39,18 +39,31 @@ end
 mutable struct Status end
 
 function ft_bezInt(B1::BezierCurve, B2::BezierCurve)
-
     n1 = B1 |> length |> Cint
     n2 = B2 |> length |> Cint
     nodes1 = B1 |> toFtArray
     nodes2 = B2 |> toFtArray
-    intersects_size= Cint((B1 |> length) * (B2 |> length))
-    intersections = Vector{Cdouble}(zeros(intersects_size*2))
+    if (nodes1 == zeros(nodes1 |> length)) || (nodes2 == zeros(nodes2 |> length))
+        @warn "returning false as one curve is default"
+        return (false,([],[]))
+    end
+    #@show intersects_size= Cint((B1 |> length) * (B2 |> length))
+    intersects_size= Cint(4)
+    intersections = Vector{Cdouble}(zeros(4))
     num_intersections = 0 |> Cint |> Ref
     coincident = false |> Ref
     status = 1 |> Cint |> Ref
 
 
+        @show n1
+        @show nodes1
+        @show n2
+        @show nodes2
+        @show intersects_size
+        @show intersections
+        @show num_intersections
+        @show coincident
+        @show status
 
     ccall(
         (:BEZ_curve_intersections, "/usr/local/lib/libbezier.so"),
@@ -76,7 +89,7 @@ function ft_bezInt(B1::BezierCurve, B2::BezierCurve)
         coincident,
         status,
     )
-
+    @warn status
     #intersections = filter(x -> x != 0.0, intersections)
 
     if num_intersections == 0

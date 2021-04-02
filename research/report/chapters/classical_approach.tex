@@ -141,7 +141,28 @@ With this assumption, we can now say that two routes collide if they intersect a
 
 The commonly employed technique for finding intersections between two $n$-degree Bézier curves is repeated recursive subdivision. Whilst it is possible to precisely calculate the point of intersection it is very difficult and computationally expensive and does not generalise well to $n$ degrees. For example, to numerically find the intersection two curves of degree 3 we must solve a $9^{th}$ order equation, producing unstable results. This is described by Bézout's theorem which states that two planar algebraic curves of degrees $d_{1}$ and $d_{2}$ will have up to $d_{1}d_{2}$ intersection points.\todo{cite this or remove it}
 
-In their 2006 paper Yap\cite{yapCompleteSubdivisionAlgorithms2006} propose an efficient method for finding the intersection of two Bézier curves through a 2 stage process surrounding repeated subdivision.
+In their 2006 paper Yap\cite{yapCompleteSubdivisionAlgorithms2006} proposed an efficient method for finding the intersection of two Bézier curves through a 2 stage process surrounding repeated subdivision.
+
+During development I attempted to use a Bézier curve library (\texttt{libbezier})\cite{Hermes2017} written for python but featuring a core written in Fortran, providing a C ABI. Julia, featuring interoperability with C and Fortran, allowed me to make direct calls to the Fortran subroutines and C functions. Ultimately, however, I encountered too many issues stemming from this library's inability to be run in parallel along with seemingly random segfaults which I struggled to diagnose through two levels of language abstraction (Fortran $\rightarrow$ C $\rightarrow$ Julia); this led me to write my own functions natively in Julia, although replicating the same accuracy as the nearly 4000 lines of Fortran proved challenging.
+
+In order to speedup my Bézier Intersection function I implemented a number of time saving measures:
+
+\begin{enumerate}
+  \item If the convex hulls of two curves $B_{1}$ and $B_{2}$ intersect, i.e. some amount of the area of the convex hull of $B_{1}$ ($CH(B_{1})$), lies inside the convex hull of $B_{2}$ ($CH(B_{2})$) then there may  be some intersection and as such, further checks are required. If however, this is not the case then (likely) the two curves do not intersect and the function can exit early.
+
+        This is a simplified version of the logic presented by Yap in his \textit{Micro Phase} of intersection detection. However, in order to cover all edge cases and make this a reliable rule to follow a lot more precomputation is required (See Elementary curves \& curve coupling in~\cite{yapCompleteSubdivisionAlgorithms2006}).
+
+        As such, I ended up removing this feature as the additional work required was too high for this project.
+  \item I instead instituted a simpler heuristic using bounded boxes. Using the \texttt{Luxor} library \todo{cite?} I was able to detect whether two bounded boxes intersected, if they did not, futher checks can be skipped.\todo{Merge these first 2? }
+  \item If two curve segments have already been checked for intersection, why bother checking them again?
+
+        This question was solved by trading computation time for memory, by constructing a hash table linking curve pairs to a tuple of intersection curve segments (if present) and a boolean, when checking two curve sections, if they already exist in the hash table the remaining computation can be skipped with the precomputed result returned instead.
+
+        In most cases a check is performed at least twice. Given two candidate solutions for two distinct agents $B_{1}$ and $B_{2}$, when evaluating the fitness of $B_{1}$ it is checked for intersections with $B_{2}$ and equally when evaluating the fitness of $B_{2}$ $B_{2}$ is checked against $B_{1}$, thus buy storing the first result, the second check can be skipped.
+
+        In reality, many curve segments are found repeatedly inside of populations and as such many more duplicate checks can be skipped through this method.
+\end{enumerate}
+
 
 
 \section{Language Choice}\todo[inline]{decide whether to remove this, I am thinking yes but last para is interesting, maybe move to evaluation}

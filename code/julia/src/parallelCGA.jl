@@ -17,6 +17,7 @@ function PCGA(
     mutation_method::MutationMethod
 )
 
+    global MT = multi_thread
 
     current_plans = SharedArray{SVector{2*MAX_P,Float64}}(length(starts)) # Length of 12 as this is the max number of control points *2
     ret::Array{Individual} = []
@@ -26,9 +27,11 @@ function PCGA(
     for (start, goal) in zip(starts, goals)
         @debug start, goal, c
         if multi_thread
+            @warn "spawning task with c value $c"
             append!(tasks,
                     [Threads.@spawn PCGA(start,goal,road,current_plans,i=deepcopy(c),
                                          n_gens=n_gens,n=n,selection_method=selection_method,mutation_method=mutation_method)])
+            sleep(0.1)
         else
             @warn "Not running in multithreaded mode"
             append!(ret,PCGA(start,goal,road,current_plans,i=deepcopy(c),
@@ -53,8 +56,15 @@ end
 function FinalCheck(route::Individual, os::SharedArray, i::Integer)::Bool
     for j in 1:length(os)
         if j != i
-            if ft_collisionDetection(route.phenotype.genotype, os[j] |> getGenotype)
-                return false
+            if !MT
+                @warn "Using fortran collision detection"
+                if ft_collisionDetection(route.phenotype.genotype, os[j] |> getGenotype)
+                    return false
+                end
+            else
+                if collisionDetection(route.phenotype.genotype, os[j] |> getGenotype)
+                    return false
+                end
             end
         end
     end
@@ -70,16 +80,18 @@ function PCGA(start::Point,
               selection_method::SelectionMethod,
               mutation_method::MutationMethod)::Array{Individual}
     # Initialise population
+    i = deepcopy(i)
     @debug "Size of other_routes = $(length(other_routes))"
     if start.y < road.boundary_1(start.x) || start.y > road.boundary_2(start.y) || goal.y < road.boundary_1(goal.x) || goal.y > road.boundary_2(goal.x)
         @error "ERROR, start of goal is outside of roadspace"
         return []
     end
-
+    @warn "Started thread with identifier $i"
     ngens_copy = deepcopy(n_gens)
     𝓕 = curry(curry(Fitness, road), other_routes) # Curry fitness function with road as this is a static attribute of the function. Allows for nicer piping of data.
     P = generatePopulation(n, start, goal, road)
     map(p -> p.fitness = p |> 𝓕, P) # Calculate fitness for initial population, map 𝓕 over all Individuals
+    other_routes[i] = P[1] |> toSVector
     while n_gens > 0 && length(P) > 0# Replace with stopping criteria
         # savefig(plotGeneration!(draw_road(road,0,20),P,road,100,100-n_gens),string("./gifgen/gen-",100-n_gens))
         P = (P
@@ -117,14 +129,21 @@ function PCGA(start::Point,
         P_2filtered = filter(ind -> high_proximity_distance(road, ind.phenotype.genotype) == 0, filter(ind -> infeasible_distance(road, ind.phenotype.genotype) == 0, P_filtered))
         if P_2filtered |> length  != 0
             @debug "$i Final solution $(P_2filtered[1])"
+            other_routes[i] = P_2filtered[1] |> toSVector
             return [P_2filtered[1]]
         else
             @warn "$i Cannot avoid infeasible space"
+            other_routes[i] = P_filtered[1] |> toSVector
             return [P_filtered[1]]
         end
     else
-        @warn "$i no non-colliding routes found"
+        @warn "$i no non-colliding routes found, $P"
+        other_routes[i] = P[1] |> toSVector
         return [P[1]]
+        if P |> length == 0
+            @error "$i No valid results"
+        end
+
     end
     @error "$i No valid results"
 
