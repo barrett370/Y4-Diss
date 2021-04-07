@@ -6,18 +6,18 @@ function multi_plot_benchmarks(benches, sf = true)
 
     means =
         map(ns -> map(b -> BenchmarkTools.mean(b).time * 10^-7, ns), benches[1])
-    @show means
-    @show mean_fitness = map(gen -> map(n -> mean(n), gen), benches[2])
+#    @show means
+    mean_fitness = map(gen -> map(n -> mean(n), gen), benches[2])
     ns = vcat(1:length(benches[1][1]))
     ngens = vcat(1:length(benches[1]))
-    @show ngens, ns, collect(Iterators.flatten(means))
+#    @show ngens, ns, collect(Iterators.flatten(means))
     surf = PlotlyJS.surface(
         x = ns,
         y = ngens,
         z = means,
         surfacecolor = mean_fitness,
     )
-    @show layout = PlotlyJS.Layout(;
+    layout = PlotlyJS.Layout(;
         title = "Multi agent parallel planner, coloured by average fitness",
         xaxis_title = "Size of population",
         yaxis_title = "Number of generations",
@@ -43,6 +43,7 @@ function multi_test_gensPopsize(n = 20, n_gens = 10)
     plans = [[] for i = 0:n_gens]
     for ng = 0:n_gens
         for n = 1:n
+            global previous_checks = Dict{Tuple{BezierCurve,BezierCurve},Tuple{Bool,Tuple{BezierCurve,BezierCurve}}}()
             append!(plans[ng+1], [[]])
             "benchmarking with $ng generations over $n individuals" |> println
             append!(

@@ -79,14 +79,14 @@ Where in both cases the length of the road (and therefore upper bound of $x$) wa
 
 \begin{figure}[ht]
   \centering
-  \includegraphics[scale=0.2]{figures/curved-road.png}
-  \caption{\label{fig:curved-road} A curved road}
+  \includegraphics[scale=0.2]{figures/simple-road.png}
+  \caption{\label{fig:simple-road} A straight road}
 \end{figure}
 
 \begin{figure}[ht]
   \centering
-  \includegraphics[scale=0.2]{figures/simple-road.png}
-  \caption{\label{fig:simple-road} A straight road}
+  \includegraphics[scale=0.2]{figures/curved-road.png}
+  \caption{\label{fig:curved-road} A curved road}
 \end{figure}
 
 \paragraph{Road Obstacles}
@@ -95,15 +95,48 @@ I have implemented two basic \texttt{Obstacle} types (\texttt{Rectangle} and \te
 
 Infeasible space is then calculated by taking a sample of 500 points along a given curve $B$ and checking which (if any) lie within any of the obstacles.
 
-A Bézier curve is then constructed using two applications of De Casteljau's algorithm (See Section~\ref{sec:decasteljau}) using values for $t$ derived from the subsample points. An illustration of this process can be seen in Figure~\ref{fig:ifspace-illustration}. The length of this curve is weighted and added to the overall fitness of the candidate solution.
+A Bézier curve is then constructed using two applications of De Casteljau's algorithm (See Section~\ref{sec:decasteljau}) using values for $t$ derived from the subsample points. An illustration of this process can be seen in Figure~\ref{fig:ifspace-illustration}. The length of this curve is weighted and added to the overall fitness of the candidate solution. The stages progress as Follows:
+
+\begin{enumerate}
+  \item Curve and obstacle drawn
+  \item Uniform sample of points chosen along curve
+  \item Curve segment from origin to first infeasible point isolated
+  \item Curve segment from last infeasible point to end position isolated
+  \item Infeasible distance calculated as difference in length between original curve and two isolated segments
+\end{enumerate}
+
 
 A similar process is performed to determine how much of a curve passes too closely to an infeasible region, this is penalised with a separate, lower, weighting.
 
-\begin{figure}[ht]
+\begin{figure}
   \centering
-  \includegraphics[scale=0.55]{figures/ifspace.jpg}
+  \begin{subfigure}[b]{0.44\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{figures/obstacleavoidance-stage1.png}
+    \caption{Stage 1}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.44\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{figures/obstacleavoidance-stage2.png}
+    \caption{Stage 2}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.44\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{figures/obstacleavoidance-stage3.png}
+    \caption{Stage 3}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.44\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{figures/obstacleavoidance-stage4.png}
+    \caption{Stage 4}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.44\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{figures/obstacleavoidance-stage4-aux.png}
+    \caption{Stage 5}
+  \end{subfigure}
   \caption{\label{fig:ifspace-illustration} Illustration of finding infeasible section of curve}
-\end{figure}\todo{replace with plotted/ computer designed version}
+\end{figure}\todo{Remove hand-drawn figure and move descriptions to paragraph instead of caption}
 
 Once the initial population is generated, the main algorithmic loop can begin, this is the repeated application of the selection, crossover, mutation and evaluation operators (See Section~\ref{subsec:GAOps}) until set termination criteria are met or the maximum number of generations is completed, seen in Algorithm~\ref{alg:GenericGA}.
 
@@ -118,7 +151,6 @@ There are different approaches we can take to this problem. \todo[inline]{refer 
 My initial approach to a collaborative planning system was somewhat inefficient. The system operated by planning routes for each agent sequentially, using a growing \textit{context} to keep track of the routes that had already been finalised. The first agent to be planned was not concerned with avoiding collisions, as, as far as it was concerned, there were no other agents in the system. Each subsequent agent checked if any of its candidate solutions intersected with and of the routes planned before, a very high penalty was applied to any routes with collisions.
 
 This system was very inefficient with the final routes requiring a large number of checks to be carried out by my \texttt{bezInt} function, which itself suffered from \todo[inline]{verify this} exponential time (and space) complexity.
-
 
 This system was improved upon by splitting the process over multiple threads, each agent being given a separate thread, communicating their most up-to-date plans via a shared array, $S$. Agent $i$ will store its current fittest route in $S[i]$, the fitness of any candidate checks for collisions with each route in $S$. This system may conduct more checks but it removes the problem of prioritising the first route to the planned and reduces the overall runtime of the system approximately proportionally to the number of threads available.
 
@@ -141,14 +173,14 @@ In their 2006 paper Yap\cite{yapCompleteSubdivisionAlgorithms2006} proposed an e
 
 During development I attempted to use a Bézier curve library (\texttt{libbezier})\cite{Hermes2017} written for python but featuring a core written in Fortran, providing a C ABI. Julia, featuring interoperability with C and Fortran, allowed me to make direct calls to the Fortran subroutines and C functions. Ultimately, however, I encountered too many issues stemming from this library's inability to be run in parallel along with seemingly random segfaults which I struggled to diagnose through two levels of language abstraction (Fortran $\rightarrow$ C $\rightarrow$ Julia); this led me to write my own functions natively in Julia, although replicating the same accuracy as the nearly 4000 lines of Fortran proved challenging.
 
-In order to speedup my Bézier Intersection function I implemented a number of time saving measures:
+In order to speedup my Bézier intersection function I implemented a number of time saving measures:
 
 \begin{enumerate}
   \item If the convex hulls of two curves $B_{1}$ and $B_{2}$ intersect, i.e. some amount of the area of the convex hull of $B_{1}$ ($CH(B_{1})$), lies inside the convex hull of $B_{2}$ ($CH(B_{2})$) then there may  be some intersection and as such, further checks are required. If however, this is not the case then (likely) the two curves do not intersect and the function can exit early.
 
         This is a simplified version of the logic presented by Yap in his \textit{Micro Phase} of intersection detection. However, in order to cover all edge cases and make this a reliable rule to follow a lot more precomputation is required (See Elementary curves \& curve coupling in~\cite{yapCompleteSubdivisionAlgorithms2006}).
 
-        As such, I ended up removing this feature as the additional work required was too high for this project.
+        As such, I ended up removing this feature as the additional work required was too high for this project.\todo{phrasing? }
     \item I instead instituted a simpler heuristic using bounded boxes (See Section~\ref{subsec:back_boundedboxes}). Using the \texttt{Luxor} library \todo{cite?} I was able to detect whether two bounded boxes intersected, if they did not, further checks can be skipped.\todo{Merge these first 2? }
   \item If two curve segments have already been checked for intersection, why bother checking them again?
 
@@ -158,9 +190,11 @@ In order to speedup my Bézier Intersection function I implemented a number of t
 
         In reality, many curve segments are found repeatedly inside of populations and as such many more duplicate checks can be skipped through this method.
   \item I implemented a recursion depth limit so as to introduce an upper bound in computation before the function returns false. Without this I found that often the checks would repeat until it was searching for intersections between infinitesimally small curve sections.
+
+  \item I was also able to reduce the runtime of this function via the use of threading. Upon a subdivision two more threaded tasks are spawned and the disjunction of their results returned. The optimal case for this approach is that the intersection occurs early on in the curve as the task results must be fetched sequentially in the order that they were spawned. \todo{remove this sentence?}
+
 \end{enumerate}
 
-I was also able to reduce the runtime of this function via the use of threading. Upon a subdivision two more threaded tasks are spawned and the disjunction of their results returned. The optimal case for this approach is that the intersection occurs early on in the curve as the task results must be fetched sequentially in the order that they were spawned. \todo{remove this sentence?}
 
 
 
@@ -176,7 +210,7 @@ Julia features a syntax similar to both Python and Matlab with performance on pa
 
 A real-world deployment of a system based on my research would undoubtedly be required to run on small, relatively low performance, embedded systems and as such Julia may not be appropriate here. A language such as C or Rust may be used instead.
 
-Julia also has distributed computation facilities. This sort of functionality could be extremely useful in a system such as mine as it could allow for computation to be spread across the agents themselves, removing the need for a central planning center which could be a single point of failure.
+Julia also has distributed computation facilities. This sort of functionality could be extremely useful in a system such as mine as it could allow for computation to be spread across the agents themselves, removing the need for a central planning centre which could be a single point of failure.
 
 
 \section{Results}
@@ -186,7 +220,8 @@ Due to the high dimensionality of my search space, I cannot visualise the object
 My results were achieved by 
 
 %TC:macro \todo 1
+
 %%% Local Variables:
 %%% mode: latex
-%%% TeX-master: "../report"
+%%% TeX-master: "report"
 %%% End:

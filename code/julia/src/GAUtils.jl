@@ -156,11 +156,12 @@ function infeasible_distance(road::Road, curve::BezierCurve)
 
         end
         if length(intersects) > 0
-            curve_section = deCasteljau(
+            pre_ob = deCasteljau(curve, intersects[1][3])[1]|> bezLength
+            post_ob = curve_section = deCasteljau(
                 deCasteljau(curve, intersects[1][3])[2],
                 intersects[end][3],
-            )[1]
-            l += bezLength(curve_section)
+            )[1] |> bezLength
+            l += bezLength(b1) - pre_ob - post_ob
         end
     end
     for i = 1:length(curve_values[1])-1

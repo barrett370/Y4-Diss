@@ -69,7 +69,7 @@ end
 function draw_road(r::Road, s::Real, e::Real)
     e = r.length
     rg = Plots.plot(r.boundary_1, s, e, linewidth = 3, linecolor = :black, legend = false)
-    Plots.plot!(rg, r.boundary_2, s, e, linewidth = 3, linecolor = :black,ylims=(0,30))
+    Plots.plot!(rg, r.boundary_2, s, e, linewidth = 3, linecolor = :black,ylims=(0,r.boundary_2(e)))
     for o in r.obstacles
 
         # @match o begin
@@ -111,7 +111,7 @@ function draw_road(r::Road, s::Real, e::Real)
                 c = :red,
                 linecolor = :black,
                 legend = false,
-                ylims=(0,30)
+                ylims=(0,r.boundary_2(e))
             )
         end
 

@@ -5,7 +5,7 @@ using DataStructures
 using Distributed
 using MLStyle
 import LazySets.convex_hull
-using Luxor
+import Luxor as lx
 #   using GPUArrays
 
 include("utils.jl")
@@ -106,7 +106,7 @@ function bbox(b::BezierCurve)
 	min_y = ys |> minimum
 	max_y = ys |> maximum
 
-	box = Luxor.BoundingBox(Luxor.Point(min_x,min_y),Luxor.Point(max_x,max_y))
+	box = lx.BoundingBox(lx.Point(min_x,min_y),lx.Point(max_x,max_y))
 
 	box
 
@@ -119,7 +119,7 @@ function bezInt(B1::BezierCurve, B2::BezierCurve, rdepth::Int, rdepth_max)
         return (false, ([], []))
     end
     ε = 2 # TODO tune param
-    toLuxPoints = b -> map(p -> Luxor.Point(p[1], p[2]), b)
+    toLuxPoints = b -> map(p -> lx.Point(p[1], p[2]), b)
     if length(B1) < 2 || length(B2) < 2
         @error "error not enough control points"
         previous_checks[(B1, B2)] = (false, ([], []))
@@ -144,7 +144,7 @@ function bezInt(B1::BezierCurve, B2::BezierCurve, rdepth::Int, rdepth_max)
             #        filter(
             #            each -> each == 1,
             #            [
-            #                Luxor.isinside(
+            #                lx.isinside(
             #                    p,
             #                    #B1 |> toRealArray |> convex_hull |> toLuxPoints,
 			#					B1 |> bbox,
@@ -155,7 +155,7 @@ function bezInt(B1::BezierCurve, B2::BezierCurve, rdepth::Int, rdepth_max)
             #                convex_hull |>
             #                toLuxPoints
             #            ] ∪ [
-            #                Luxor.isinside(
+            #                lx.isinside(
             #                    p,
             #                    #B2 |> toRealArray |> convex_hull |> toLuxPoints,
 			#					B2 |> bbox,
@@ -169,7 +169,7 @@ function bezInt(B1::BezierCurve, B2::BezierCurve, rdepth::Int, rdepth_max)
             #        ),
             #    ) != 0
 				#hull_intersection = true
-			hull_intersection = Luxor.boundingboxesintersect(B1 |> bbox, B2|> bbox)
+			hull_intersection = lx.boundingboxesintersect(B1 |> bbox, B2|> bbox)
         else
             @debug "setting intersection to default (true)"
             hull_intersection = true
