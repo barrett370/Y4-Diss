@@ -247,8 +247,23 @@ Fully autonomous road networks are by no means a novel concept. They have appear
 
 In the latter system protocols that promote the net increase in efficiency can be implemented. However, this sort of system will require a form of government mandate as a universal routing protocol would need to be established and implemented by all auto manufacturers; this is no small undertaking.
 
+\section{Miscellaneous}
+
+\subsection{Bounded Boxes}
+\label{subsec:back_boundedboxes}
+
+  A bounded box of a curve is defined as the box constructed from the points $(x_{min},y_{min}), (x_{min},y_{max}), (x_{max},y_{min}), (x_{max},y_{max})$ Where $x_{min,max}$ and $y_{min,max}$ are the minimum and maximum $x$ and $y$ values from all control points respectively. An example can be seen in Figure~\ref{fig:bboxeg}
+
+ \begin{figure}[ht]
+   \centering
+   \includegraphics[scale=0.5]{figures/bbox_eg.png}
+   \caption{\label{fig:bboxeg} A bounding box for a Bézier curve of degree 2}
+ \end{figure}
+
 
 %TC:macro \todo 1
+
 %%% Local Variables:
-%%% TeX-master: "../report"
+%%% mode: latex
+%%% TeX-master: "report"
 %%% End:

@@ -105,10 +105,6 @@ A similar process is performed to determine how much of a curve passes too close
   \caption{\label{fig:ifspace-illustration} Illustration of finding infeasible section of curve}
 \end{figure}\todo{replace with plotted/ computer designed version}
 
-
-
-
-
 Once the initial population is generated, the main algorithmic loop can begin, this is the repeated application of the selection, crossover, mutation and evaluation operators (See Section~\ref{subsec:GAOps}) until set termination criteria are met or the maximum number of generations is completed, seen in Algorithm~\ref{alg:GenericGA}.
 
 The final set of routes is finally filtered by the predicate $\texttt{infeasible-distance}(i) = 0 $
@@ -153,7 +149,7 @@ In order to speedup my Bézier Intersection function I implemented a number of t
         This is a simplified version of the logic presented by Yap in his \textit{Micro Phase} of intersection detection. However, in order to cover all edge cases and make this a reliable rule to follow a lot more precomputation is required (See Elementary curves \& curve coupling in~\cite{yapCompleteSubdivisionAlgorithms2006}).
 
         As such, I ended up removing this feature as the additional work required was too high for this project.
-  \item I instead instituted a simpler heuristic using bounded boxes. Using the \texttt{Luxor} library \todo{cite?} I was able to detect whether two bounded boxes intersected, if they did not, futher checks can be skipped.\todo{Merge these first 2? }
+    \item I instead instituted a simpler heuristic using bounded boxes (See Section~\ref{subsec:back_boundedboxes}). Using the \texttt{Luxor} library \todo{cite?} I was able to detect whether two bounded boxes intersected, if they did not, further checks can be skipped.\todo{Merge these first 2? }
   \item If two curve segments have already been checked for intersection, why bother checking them again?
 
         This question was solved by trading computation time for memory, by constructing a hash table linking curve pairs to a tuple of intersection curve segments (if present) and a boolean, when checking two curve sections, if they already exist in the hash table the remaining computation can be skipped with the precomputed result returned instead.
@@ -161,7 +157,10 @@ In order to speedup my Bézier Intersection function I implemented a number of t
         In most cases a check is performed at least twice. Given two candidate solutions for two distinct agents $B_{1}$ and $B_{2}$, when evaluating the fitness of $B_{1}$ it is checked for intersections with $B_{2}$ and equally when evaluating the fitness of $B_{2}$ $B_{2}$ is checked against $B_{1}$, thus buy storing the first result, the second check can be skipped.
 
         In reality, many curve segments are found repeatedly inside of populations and as such many more duplicate checks can be skipped through this method.
+  \item I implemented a recursion depth limit so as to introduce an upper bound in computation before the function returns false. Without this I found that often the checks would repeat until it was searching for intersections between infinitesimally small curve sections.
 \end{enumerate}
+
+I was also able to reduce the runtime of this function via the use of threading. Upon a subdivision two more threaded tasks are spawned and the disjunction of their results returned. The optimal case for this approach is that the intersection occurs early on in the curve as the task results must be fetched sequentially in the order that they were spawned. \todo{remove this sentence?}
 
 
 
@@ -188,5 +187,6 @@ My results were achieved by
 
 %TC:macro \todo 1
 %%% Local Variables:
+%%% mode: latex
 %%% TeX-master: "../report"
 %%% End:

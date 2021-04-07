@@ -76,7 +76,7 @@ function bezInt(
     end
 
     #n = floor(1.4 * max(B1 |> length, B2 |> length))
-    n = 15
+    n = 30
     main = bezInt(B1, B2, 1, n)
     return main
 end

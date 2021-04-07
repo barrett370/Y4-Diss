@@ -3,7 +3,6 @@
 \usepackage[utf8]{inputenc}
 \usepackage[main=english,russian]{babel}
 \usepackage{graphicx}
-\usepackage{csquotes}
 \usepackage[toc,page]{appendix}
 \usepackage[ruled,vlined]{algorithm2e}
 \setlength {\marginparwidth}{2cm}
@@ -18,6 +17,7 @@
 \usepackage{minted}
 \usepackage{caption,subcaption}
 \usetikzlibrary{shapes,arrows,calc,positioning,backgrounds,plotmarks,plothandlers}
+\usepackage{csquotes}
 
 
 \usepackage{titlesec}
@@ -70,28 +70,29 @@
 
 \todo[inline]{check onenote notebook for general ideas about discussion topics etc.}
 \chapter*{Abstract}\label{chap:Abs}
-\input{chapters/abstract.tex}
+\input{abstract.tex}
 \tableofcontents
 \chapter{Introduction}\label{chap:Intro}
-\input{chapters/introduction.tex}
+\input{introduction.tex}
 \chapter{Background}\label{chap:Background}
-\input{chapters/background.tex}
+\input{background.tex}
 \chapter{Literature Review}\label{chap:LitRev}
-\input{chapters/literature_review.tex}
+\input{literature_review.tex}
 \chapter{Approach}\label{chap:ClassicalApproach}
-\input{chapters/classical_approach.tex}
+\input{classical_approach.tex}
 \chapter{Evaluation}\label{chap:Eval}
-\input{chapters/evaluation.tex}
+\input{evaluation.tex}
 \chapter{Conclusion}\label{chap:Conclusion}
-\input{chapters/conclusion.tex}
+\input{conclusion.tex}
 \bibliographystyle{unsrt}
 \bibliography{lib}
-\input{chapters/appendices.tex}
+\input{appendices.tex}
 \end{document}
 
 
 
+%TC:macro \todo 1
 %%% Local Variables:
+%%% mode: latex
 %%% TeX-master: t
 %%% End:
-%TC:macro \todo 1
