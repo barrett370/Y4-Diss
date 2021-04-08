@@ -1,0 +1,95 @@
+#+TITLE: Report rough plan
+
+# Current word count:
+
+#+begin_src bash
+./wordcount.sh
+#+end_src
+#+RESULTS:
+: 5099
+
+* Sections [1/7]:
+** [ ] Abstract [1/1]
+#+begin_src bash
+texcount abstract.tex  \
+    | grep "Words in text:" \
+    | tail -1 \
+    | cut -d : -f2 \
+    | sed 's/ //g'
+#+end_src
+
+#+RESULTS:
+: 0
+
+** [ ] Introduction [0/0]
+#+begin_src bash
+texcount introduction.tex  \
+    | grep "Words in text:" \
+    | tail -1 \
+    | cut -d : -f2 \
+    | sed 's/ //g'
+#+end_src
+
+#+RESULTS:
+: 213
+
+** [X] Background [0/0]
+#+begin_src bash
+texcount background.tex  \
+    | grep "Words in text:" \
+    | tail -1 \
+    | cut -d : -f2 \
+    | sed 's/ //g'
+#+end_src
+
+#+RESULTS:
+: 1686
+
+** [-] Literature Review [0/1]
+#+begin_src bash
+texcount literature_review.tex  \
+    | grep "Words in text:" \
+    | tail -1 \
+    | cut -d : -f2 \
+    | sed 's/ //g'
+#+end_src
+
+#+RESULTS:
+: 972
+
+- [-] /FARN/ section
+** [-] Approach [0/0]
+#+begin_src bash
+texcount classical_approach.tex  \
+    | grep "Words in text:" \
+    | tail -1 \
+    | cut -d : -f2 \
+    | sed 's/ //g'
+#+end_src
+
+#+RESULTS:
+: 2254
+
+** [ ] Evaluation [0/0]
+#+begin_src bash
+texcount evaluation.tex  \
+    | grep "Words in text:" \
+    | tail -1 \
+    | cut -d : -f2 \
+    | sed 's/ //g'
+#+end_src
+
+#+RESULTS:
+: 182
+
+** [ ] Conclusion [0/0]
+#+begin_src bash
+texcount conclusion.tex  \
+    | grep "Words in text:" \
+    | tail -1 \
+    | cut -d : -f2 \
+    | sed 's/ //g'
+#+end_src
+
+#+RESULTS:
+: 0

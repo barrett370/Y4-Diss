@@ -27,7 +27,7 @@ function PCGA(
     for (start, goal) in zip(starts, goals)
         @debug start, goal, c
         if multi_thread
-            @warn "spawning task with c value $c"
+            @debug "spawning task with c value $c"
             append!(tasks,
                     [Threads.@spawn PCGA(start,goal,road,current_plans,i=deepcopy(c),
                                          n_gens=n_gens,n=n,selection_method=selection_method,mutation_method=mutation_method)])
@@ -86,7 +86,7 @@ function PCGA(start::Point,
         @error "ERROR, start of goal is outside of roadspace"
         return []
     end
-    @warn "Started thread with identifier $i"
+    @debug "Started thread with identifier $i"
     ngens_copy = deepcopy(n_gens)
     𝓕 = curry(curry(Fitness, road), other_routes) # Curry fitness function with road as this is a static attribute of the function. Allows for nicer piping of data.
     P = generatePopulation(n, start, goal, road)

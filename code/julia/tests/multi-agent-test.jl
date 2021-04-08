@@ -43,7 +43,7 @@ function multi_test_gensPopsize(n = 20, n_gens = 10)
     plans = [[] for i = 0:n_gens]
     for ng = 0:n_gens
         for n = 1:n
-            global previous_checks = Dict{Tuple{BezierCurve,BezierCurve},Tuple{Bool,Tuple{BezierCurve,BezierCurve}}}()
+            #global previous_checks = Dict{Tuple{BezierCurve,BezierCurve},Tuple{Bool,Tuple{BezierCurve,BezierCurve}}}()
             append!(plans[ng+1], [[]])
             "benchmarking with $ng generations over $n individuals" |> println
             append!(
