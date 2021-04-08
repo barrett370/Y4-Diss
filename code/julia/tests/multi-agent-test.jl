@@ -6,26 +6,31 @@ function multi_plot_benchmarks(benches, sf = true)
 
     means =
         map(ns -> map(b -> BenchmarkTools.mean(b).time * 10^-7, ns), benches[1])
-#    @show means
+    @show means
     mean_fitness = map(gen -> map(n -> mean(n), gen), benches[2])
     ns = vcat(1:length(benches[1][1]))
     ngens = vcat(1:length(benches[1]))
-#    @show ngens, ns, collect(Iterators.flatten(means))
+    @show ngens, ns, collect(Iterators.flatten(means))
+    layout = PlotlyJS.Layout(;
+        title = "Multi agent parallel planner, coloured by average fitness",
+        xaxis=attr(title= "Size of population"),
+        yaxis=attr(title = "Number of generations"),
+        zaxis=attr(title = "Time to plan /ms"),
+    )
     surf = PlotlyJS.surface(
         x = ns,
         y = ngens,
         z = means,
         surfacecolor = mean_fitness,
-    )
-    layout = PlotlyJS.Layout(;
-        title = "Multi agent parallel planner, coloured by average fitness",
-        xaxis_title = "Size of population",
-        yaxis_title = "Number of generations",
-        zaxis_title = "Time to plan /ms",
+        layout=layout
     )
 
     p = PlotlyJS.plot(surf, layout)
+    if sf
+        savehtml(p,"images/tmp_multi-agent-result.html")
+    end
     p
+
 end
 
 function multi_test_gensPopsize(n = 20, n_gens = 10)
