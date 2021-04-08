@@ -110,5 +110,5 @@ edgelabel = map(e -> "e$(e[1])$(e[2]): $(e[3])", LightGraphs.edges(light_rn).ite
 nodelabel = vcat(1:LightGraphs.nv(light_rn))
 
 
-GraphPlot.gplot(light_rn, edgelabel=edgelabel, nodelabel=nodelabel, linetype="curve")
+gp = GraphPlot.gplot(light_rn, edgelabel=edgelabel, nodelabel=nodelabel, linetype="curve")
 #GraphPlot.gplothtml(light_rn, edgelabel=edgelabel, nodelabel=nodelabel, linetype="curve")

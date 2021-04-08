@@ -195,6 +195,25 @@ In order to speedup my Bézier intersection function I implemented a number of t
 
 \end{enumerate}
 
+\section{Macro-Level Planning} \todo{Title?}
+
+The next stage in development is to attempt to implement the wrapper to solve Problem~\ref{prob:Spec} using the solution to Problem~\ref{prob:sub1}. I.e. to go from planning for multiple agents in a single section of road to planning for multiple agents across a network of interconnected roads.
+
+\subsection{Road Graph Construction }
+
+As specified in Problem~\ref{prob:Spec}, we require a description of the road space as a graph, $G= (V,E)$ of intersections, $V$ and road segments $E$.
+
+This is a malleable definition allowing for a lot of information to encapsulated whilst maintaining a canonical description compatible with a swathe of mathemaictics through graph theory.\todo[inline]{wordy?}
+
+
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[scale=0.4]{figures/demoGraph.png}
+  \caption{\label{fig:demoGraph} Example Road Graph }
+\end{figure}
+
+
 \section{Language Choice}\todo[inline]{decide whether to remove this, I am thinking yes but last para is interesting, maybe move to evaluation}
 
 I have chosen to implement my approach using the Julia language project\cite{JuliaProgrammingLanguage}.

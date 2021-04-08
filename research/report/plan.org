@@ -8,7 +8,7 @@
 #+RESULTS:
 : 5099
 
-* Sections [1/7]:
+* Sections [1/8]:
 ** [ ] Abstract [1/1]
 #+begin_src bash
 texcount abstract.tex  \
@@ -73,11 +73,18 @@ texcount classical_approach.tex  \
 - [X] Population encoding
 - [X] Population generation
 - [X] Fitness evaluation
-*** [ ] Multi-Agent Planning
-- [ ] Intersection Detection
-- [ ] Collision Detection
-- [ ]
-*** [ ] Macro-Level Planning
+*** [ ] Multi-Agent Planning [2/3]
+- [X] Intersection Detection
+- [X] Collision Detection
+*** [ ] Macro-Level Planning [0/4]
+- [ ] Graph construction & Edge weighting + possible extensions
+- [ ] Planning macro routes
+- [ ] grouping agents into concurrent plans
+- [ ] Possible extensions
+** [ ] Results [0/3]
+*** [ ] Single Agent
+*** [ ] Multi Agent
+*** [ ] Macro Level
 
 ** [ ] Evaluation [0/0]
 #+begin_src bash
