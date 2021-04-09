@@ -68,7 +68,7 @@ texcount classical_approach.tex  \
 #+end_src
 
 #+RESULTS:
-: 2254
+: 2509
 *** [X] Single Agent Planning [3/3]
 - [X] Population encoding
 - [X] Population generation
@@ -77,6 +77,9 @@ texcount classical_approach.tex  \
 - [X] Intersection Detection
 - [X] Collision Detection
 *** [ ] Macro-Level Planning [0/4]
+:LOGBOOK:
+CLOCK: [2021-04-09 Fri 10:36]--[2021-04-09 Fri 11:01] =>  0:25
+:END:
 - [ ] Graph construction & Edge weighting + possible extensions
 - [ ] Planning macro routes
 - [ ] grouping agents into concurrent plans

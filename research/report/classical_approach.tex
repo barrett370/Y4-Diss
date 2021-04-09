@@ -201,18 +201,24 @@ The next stage in development is to attempt to implement the wrapper to solve Pr
 
 \subsection{Road Graph Construction }
 
-As specified in Problem~\ref{prob:Spec}, we require a description of the road space as a graph, $G= (V,E)$ of intersections, $V$ and road segments $E$.
+As specified in Problem~\ref{prob:Spec}, we require a description of the road space as a graph, $\mathcal{R}= (V,E)$ of intersections, $V$ and road segments $E$\todo[inline]{Should I define it as $\mathcal{R} = (I, R)$?}
+.
 
-This is a malleable definition allowing for a lot of information to encapsulated whilst maintaining a canonical description compatible with a swathe of mathemaictics through graph theory.\todo[inline]{wordy?}
+This is a malleable definition allowing for a lot of information to encapsulated whilst maintaining an abstract canonical description compatible with a swathe of mathematics through graph theory.\todo[inline]{wordy?}
 
+I decided to use a mixture libraries to construct my road network: \texttt{Graphs.jl}\cite{JuliaAtticGraphsJl2021}, \texttt{LightGraphs.jl}\cite{Bromberger17}  and \texttt{SimpleWeightedGraphs.jl}\cite{JuliaGraphsSimpleWeightedGraphsJl2021}. The graph structures found in \texttt{Graphs.jl} allow for a lot of data (The entirety of the \texttt{Road} structure can be stored as edge metadata) to be encapsulated but do not offer the same functionality as those found in \texttt{LightGraphs.jl}, \texttt{SimpleWeightedGraphs.jl} utilises the \texttt{LightGraphs.jl} format but allows for weighted edges when applying the various standard graph-based algorithms (including Dijkstra), as such I created my own helper functions to convert between the two formats, which is a relatively simple process of filtering data into a new, more restrictive, structure.
+
+A visualisation of this format can be seen in Figure~\ref{fig:demoGraph} with edge names and their respective weights labelled.
 
 
 \begin{figure}[ht]
   \centering
   \includegraphics[scale=0.4]{figures/demoGraph.png}
-  \caption{\label{fig:demoGraph} Example Road Graph }
+  \caption{\label{fig:demoGraph} Example Road Graph, edge names take the form $e$<start><end>: <edgeweight> }
 \end{figure}
 
+
+With the graph constructed the next stage is to plan what I will refer to as the \textit{macro} routes, i.e. the set of edges the agent must travel along $\{e_{1},\ldots,e_{n}\} \subseteq E$ to reach its destination intersection, $d \in V$.
 
 \section{Language Choice}\todo[inline]{decide whether to remove this, I am thinking yes but last para is interesting, maybe move to evaluation}
 

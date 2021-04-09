@@ -17,16 +17,16 @@ Formally this top-level goal can be said to be to answer the question in Problem
                 \item A road system $\mathcal{R}$ represented as a graph $\mathcal{R} = (V,E)$
 
 
-                    Where each edge $e \in E$ is a section of road defined as the space between two vertices $V^1,V^2 \in V$ which is bounded by two functions $b_1(x)$ and $b_2(x)$ and augmented by a set of obstacles $O$ representing infeasible sections of road space
+                    Where each edge $e \in E$ is a section of road defined as the space between two vertices $v^1,v^2 \in V$ which is bounded by two functions $b_1(x)$ and $b_2(x)$ and augmented by a set of obstacles $O$ representing infeasible sections of road space
                 \item a set of agents, $A = \left\{ a_1,\ldots,a_n \right\}$
                 \item a set of vertex pairs representing start and goal points for each agent: 
 
-                    $\mathcal{V} = \left\{ (V_1^1,V_1^2),\ldots, (V_n^1, V_n^2) \right\}, V_{i \in [1 \ldots n]}^{j \in [1,2]} \in V$ 
+                    $\mathcal{V} = \left\{ (v_1^1,v_1^2),\ldots, (v_n^1, v_n^2) \right\}, v_{i \in [1 \ldots n]}^{j \in [1,2]} \in V$
 
-                where the route for agent $a_i$ is from vertex $V_i^1$ to $V_i^2$
+                where the route for agent $a_i$ is from vertex $v_i^1$ to $v_i^2$
             \end{itemize}
         }
-        \problemquestion{ What is the set of optimal routes $\mathcal{V}_{optimal}$, where the $i^{\text{th}}$ element  is defined as a set of linked Bézier curves connecting $V_i^1$ and $V_i^2$ through feasible space?}
+        \problemquestion{ What is the set of optimal routes $\mathcal{v}_{optimal}$, where the $i^{\text{th}}$ element  is defined as a set of linked Bézier curves connecting $v_i^1$ and $v_i^2$ through feasible space?}
         \end{problem}
 \end{figure}
 
@@ -85,6 +85,8 @@ The goal of this project was not to produce a production-ready system, but inste
 \end{enumerate}
 
 %TC:macro \todo 1
+
 %%% Local Variables:
-%%% TeX-master: "../report"
+%%% mode: latex
+%%% TeX-master: "report"
 %%% End:
