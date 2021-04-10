@@ -1,88 +1,109 @@
 include("parallelCGA.jl")
 
 
-function getPathGroups(
-    road_network::Graphs.GenericGraph,
-    agents::Array{Tuple{Int64,Int64}},
-    macroPaths
-)
+function getPathGroups(road_network::Graphs.GenericGraph, macroPaths)
 
-    runningTotalDistances = map(
-        p -> append!([0], collect(map(i -> sum(p[1:i]), 1:length(p)))),
+    roads = Dict()
+    map(
+        e -> roads["e$(e.source)$(e.target)"] = e.attributes["road"],
+        road_network.edges,
+    )
+    road_lengths = map(
+        p -> map(
+            i -> roads["e$(p[i])$(p[i+1])"].length,
+            collect(1:length(p)-1),
+        ),
         macroPaths,
+    )
+    @show runningTotalDistances = map(
+        p -> append!([0], collect(map(i -> sum(p[1:i]), 1:length(p)))),
+        road_lengths,
     )
 
     pathGroupings = Dict()
     for i = 1:length(macroPaths)
         @debug "checking for agent $(agents[i])"
         for j = 1:length(macroPaths[i])-1
-            try
-                pathGroupings[(macroPaths[i][j], macroPaths[i][j+1])]
-                @debug "already analysed"
-            catch e
-                continue
-            finally
+            if (macroPaths[i][j], macroPaths[i][j+1]) in pathGroupings |> keys
+                @warn "already analysed $(pathGroupings[(macroPaths[i][j], macroPaths[i][j+1])])"
+                pre_plan = pathGroupings[(macroPaths[i][j], macroPaths[i][j+1])]
+            end
 
-                #"checking for other plans going from $(macroPaths[i][j]) to $(macroPaths[i][j+1])  " |> println
-                microPlanAgents = [i]
-                for o = 1:length(macroPaths)
-                    if o != i
-                        #"checking against agent $(agents[o])" |> println
-                        if macroPaths[i][j] in macroPaths[o]# both routes pass through vertex at i,j at some point
-                            #"routes pass same vertex ($(macroPaths[i][j])) at some point" |> println |> println
-                            try
-                                if macroPaths[i][j+1] ==
-                                   macroPaths[o][findfirst(
+            #"checking for other plans going from $(macroPaths[i][j]) to $(macroPaths[i][j+1])  " |> println
+            microPlanAgents = [i]
+            min_end = runningTotalDistances[i][j+1]
+            for o = 1:length(macroPaths)
+                if o != i
+                    #"checking against agent $(agents[o])" |> println
+                    if macroPaths[i][j] in macroPaths[o]# both routes pass through vertex at i,j at some point
+                        @debug "routes pass same vertex ($(macroPaths[i][j])) at some point"
+                        try
+                            if macroPaths[i][j+1] == macroPaths[o][findfirst(
+                                x -> x == macroPaths[i][j],
+                                macroPaths[o],
+                            )+1] # both routes travel along same road at some point
+                                road = filter(
+                                    e ->
+                                        e.source == macroPaths[i][j] &&
+                                            e.target == macroPaths[i][j+1],
+                                    road_network.edges,
+                                )[1]
+                                @debug "routes $i, $o share an edge, $road, road: $(road.attributes["road"])"
+                                if runningTotalDistances[i][j] +
+                                   road.attributes["road"].length >
+                                   runningTotalDistances[o][findfirst(
                                     x -> x == macroPaths[i][j],
                                     macroPaths[o],
-                                )+1] # both routes travel along same road at some point
-                                    road = filter(
-                                        e ->
-                                            e.source == macroPaths[i][j] &&
-                                                e.target == macroPaths[i][j+1],
-                                        road_network.edges,
-                                    )[1]
-                                    #"routes share an edge, $road, road: $(road.attributes["road"])" |> println
-                                    if runningTotalDistances[i][j] +
-                                       road.attributes["road"].length >
-                                       runningTotalDistances[o][findfirst(
-                                        x -> x == macroPaths[i][j],
-                                        macroPaths[o],
-                                    )]
-                                        #"agent $i and agent $o are on road $(road.attributes["road"]) at the same time" |> println
-                                        append!(microPlanAgents, o)
-                                    else
-                                        #"agent $(agents[i]) leaves road before $(agents[o]) enters " |> println
-                                    end
+                                )]
 
+                                    @show o_end =
+                                        runningTotalDistances[o][findfirst(
+                                            x -> x == macroPaths[i][j],
+                                            macroPaths[o],
+                                        )+1]
+
+                                    min_end = max(min_end, o_end)
+                                    @debug "agent $i and agent $o are on road $(road.attributes["road"]) at the same time"
+                                    append!(microPlanAgents, o)
+                                    #TODO why does 4 appear in its own plan and along with 4,1 ?? 
+                                else
+                                    @debug "agent $(agents[i]) leaves road, $road before $(agents[o]) enters, $microPlanAgents "
+                                    # TODO how to handle this?
+                                    @show pre_plan
+                                    @show microPlanAgents =
+                                        append!(pre_plan, [microPlanAgents])[:]
                                 end
-                            catch e
-                                #"routes do not share a road, $e" |> println
+
                             end
+                        catch e #TODO remove this, bad practice
+                            #"routes do not share a road, $e" |> println
                         end
                     end
                 end
-                #"(($(macroPaths[i][j]), $(macroPaths[i][j+1])) ,$(microPlanAgents))" |> println
-                pathGroupings[(macroPaths[i][j], macroPaths[i][j+1])] =
-                    microPlanAgents
             end
-
+            @debug "(($(macroPaths[i][j]), $(macroPaths[i][j+1])) ,$(microPlanAgents))"
+            pathGroupings[(macroPaths[i][j], macroPaths[i][j+1])] =
+                [microPlanAgents]
         end
+
     end
     pathGroupings
 end
+
+
 function planRoutes(
     agents::Array{Tuple{Int64,Int64}},
     road_network::Graphs.GenericGraph,
-    multi_threaded=true
+    multi_threaded = true,
 )
     # Given a set of start and end goals on the macro road network, generate a series of sets of routes between roads.
 
     macroPaths = map(p -> macroPath(road_network, p[1], p[2]), agents)
-    pathGroupings= getPathGroups(road_network,agents,macroPaths)
+    pathGroupings = getPathGroups(road_network, macroPaths)
     @debug pathGroupings
 
     prev_positions = zeros(length(agents))
+    @warn prev_positions
     plans = []
     for agent in agents
         append!(plans, [[]])
@@ -98,88 +119,92 @@ function planRoutes(
                 @debug "plotting routes in $microPath"
                 # TODO work out intial starting coordinates a better way
                 # TODO work out goal coordinates a proper way
-                parallel_agents = pathGroupings[microPath]
-                @debug parallel_agents
-                road = filter(
-                    e ->
-                        e.source == microPath[1] &&
-                            e.target == microPath[2],
-                    road_network.edges,
-                )[1].attributes["road"]
-                starts::Array{Point} = []
-                goals::Array{Point} = []
-                initial_road_width = pointDistance(
-                    Point(0, road.boundary_2(0)),
-                    Point(0, road.boundary_1(0)),
-                )
-                final_road_width = pointDistance(
-                    Point(road.length, road.boundary_2(road.length)),
-                    Point(road.length, road.boundary_1(road.length)),
-                )
-                initial_starts = 0
-                c = 0
-                for agent in parallel_agents
-                    if prev_positions[agent] == 0 #Inital section of route, no known previous position
+                parallel_agent_sets= pathGroupings[microPath][1]
+                for parallel_agents in parallel_agent_sets
+                    @debug parallel_agents
+                    road = filter(
+                        e ->
+                            e.source == microPath[1] &&
+                                e.target == microPath[2],
+                        road_network.edges,
+                    )[1].attributes["road"]
+                    starts::Array{Point} = []
+                    goals::Array{Point} = []
+                    initial_road_width = pointDistance(
+                        Point(0, road.boundary_2(0)),
+                        Point(0, road.boundary_1(0)),
+                    )
+                    final_road_width = pointDistance(
+                        Point(road.length, road.boundary_2(road.length)),
+                        Point(road.length, road.boundary_1(road.length)),
+                    )
+                    initial_starts = 0
+                    c = 0
+                    for agent in parallel_agents
+                        @warn agent
+                        if prev_positions[agent] == 0 #Inital section of route, no known previous position
+                            append!(
+                                starts,
+                                [
+                                    Point(
+                                        0,
+                                        0.5 + (
+                                            initial_starts * (
+                                                initial_road_width /
+                                                length(parallel_agents)
+                                            )
+                                        ),
+                                    ),
+                                ],
+                            )
+                            initial_starts = initial_starts + 1
+                        else
+                            append!(starts, [Point(0, prev_positions[agent])])
+                        end
                         append!(
-                            starts,
+                            goals,
                             [
                                 Point(
-                                    0,
-                                    0.5 + (
-                                        initial_starts * (
-                                            initial_road_width /
+                                    road.length,
+                                    1 + (
+                                        c * (
+                                            final_road_width /
                                             length(parallel_agents)
                                         )
                                     ),
                                 ),
                             ],
                         )
-                        initial_starts = initial_starts + 1
-                    else
-                        append!(starts, [Point(0, prev_positions[agent])])
+                        c = c + 1
                     end
-                    append!(
-                        goals,
-                        [
-                            Point(
-                                road.length,
-                                1 + (
-                                    c * (
-                                        final_road_width /
-                                        length(parallel_agents)
-                                    )
-                                ),
-                            ),
-                        ],
-                    )
-                    c = c + 1
-                end
 
-                #@show starts,goals
-                #oldstd = stdout
-                #redirect_stdout(open("/dev/null","w"))
-                res = PCGA(
-                    starts,
-                    goals,
-                    road,
-                    multi_threaded,
-                    n_gens = 1,
-                    n = 5,
-                    selection_method = roulette,
-                    mutation_method = uniform,
-                )
-                #redirect_stdout(oldstd)
-                @debug "Planned for this goalset"
-                for agent in parallel_agents
-                    append!(
-                        plans[agent],
-                        [res[findfirst(x -> x == agent, parallel_agents)]],
+                    #@show starts,goals
+                    #oldstd = stdout
+                    #redirect_stdout(open("/dev/null","w"))
+                    res = PCGA(
+                        starts,
+                        goals,
+                        road,
+                        multi_threaded,
+                        n_gens = 1,
+                        n = 5,
+                        selection_method = roulette,
+                        mutation_method = uniform,
                     )
-                    prev_positions[agent] = plans[agent][end].phenotype.goal.y
+                    #redirect_stdout(oldstd)
+                    @debug "Planned for this goalset"
+                    for agent in parallel_agents
+                        append!(
+                            plans[agent],
+                            [res[findfirst(x -> x == agent, parallel_agents)]],
+                        )
+                        prev_positions[agent] =
+                            plans[agent][end].phenotype.goal.y
+                    end
+                    @debug "planned microPath $microPath, removing from pathGroupings"
+                    delete!(pathGroupings, microPath)
+                    #end
                 end
-                @debug "planned microPath $microPath, removing from pathGroupings"
-                delete!(pathGroupings, microPath)
-                #end
             else
                 @debug "microPath $microPath already planned"
 
@@ -190,23 +215,33 @@ function planRoutes(
     plans
 end
 
-function plot_road_network(routes, rn::Graphs.GenericGraph, paths::Array{Tuple{Int64,Int64}})
+function plot_road_network(
+    routes,
+    rn::Graphs.GenericGraph,
+    paths::Array{Tuple{Int64,Int64}},
+)
     plots = []
-    macroPaths = map(i -> macroPath(rn, i[1],i[2]), paths)
-    pathGroups = getPathGroups(rn,paths, macroPaths)
+    macroPaths = map(i -> macroPath(rn, i[1], i[2]), paths)
+    pathGroups = getPathGroups(rn, paths, macroPaths)
     c = 0
     for key in keys(pathGroups)
         @debug key
-        road = filter(e -> e.source == key[1] && e.target == key[2], rn.edges)[1].attributes["road"]
-        is :: Array{Individual}= []
+        road = filter(
+            e -> e.source == key[1] && e.target == key[2],
+            rn.edges,
+        )[1].attributes["road"]
+        is::Array{Individual} = []
         for i in pathGroups[key]
             @debug i
-            route_section = findfirst(x -> x==key[1], macroPaths[i])
+            route_section = findfirst(x -> x == key[1], macroPaths[i])
             append!(is, [routes[i][route_section]])
         end
 
-        append!(plots,[plot_generation_gif(road,is, c)])
-        c = c +1
+        append!(
+            plots,
+            [plot_generation_gif(road, is, c, "e$(key[1])$(key[2])")],
+        )
+        c = c + 1
     end
     plots
 end

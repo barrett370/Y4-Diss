@@ -24,7 +24,7 @@ road32 = Road(
     road32_b1,
     road32_b2,
     [],
-    14
+    50
 )
 
 road23_b1(x) = 0

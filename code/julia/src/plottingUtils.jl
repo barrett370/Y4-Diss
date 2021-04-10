@@ -167,7 +167,7 @@ function plot_control_points!(plt, c::BezierCurve)
     end
 end
 
-function plot_generation_gif(road::Road, P::Array{Individual}, i=-1)
+function plot_generation_gif(road::Road, P::Array{Individual}, i=-1, title=nothing)
     plt = Plots.plot()
     plt = draw_road(road,0,20)
     ci = 1
@@ -189,6 +189,9 @@ function plot_generation_gif(road::Road, P::Array{Individual}, i=-1)
             ci = ci + 1
             if ci > colours |> length
                 ci = 1
+            end
+            if title!= nothing
+                plot!(plt,title=title)
             end
         end
         ci = 1
