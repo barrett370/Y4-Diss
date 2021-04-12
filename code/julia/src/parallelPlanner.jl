@@ -124,18 +124,19 @@ function planRoutes(
     for agent in agents
         append!(plans, [[]])
     end
+    @show plans
 
-    for macroPath in macroPaths
-        @show macroPath
+    for mp in macroPaths
+        @warn "Planning macropath $mp"
         macroPath_plans = []
-        for i = 1:length(macroPath)-1
-            microPath = (macroPath[i], macroPath[i+1])
+        for i = 1:length(mp)-1
+            microPath = (mp[i], mp[i+1])
+            @warn "plotting routes in $microPath"
             if microPath in keys(pathGroupings)
                 #@async begin
-                @debug "plotting routes in $microPath"
                 # TODO work out intial starting coordinates a better way
                 # TODO work out goal coordinates a proper way
-                parallel_agent_sets = pathGroupings[microPath][1]
+                parallel_agent_sets = pathGroupings[microPath]
                 for parallel_agents in parallel_agent_sets
                     @debug parallel_agents
                     road = filter(
@@ -209,6 +210,8 @@ function planRoutes(
                     )
                     #redirect_stdout(oldstd)
                     @debug "Planned for this goalset"
+                    @show res
+                    @show plans
                     for agent in parallel_agents
                         append!(
                             plans[agent],
@@ -217,8 +220,10 @@ function planRoutes(
                         prev_positions[agent] =
                             plans[agent][end].phenotype.goal.y
                     end
+                    @show plans
                     @debug "planned microPath $microPath, removing from pathGroupings"
-                    delete!(pathGroupings, microPath)
+                    @warn pathGroupings, microPath, parallel_agents
+                    filter!(s -> s != parallel_agents, pathGroupings[microPath])
                     #end
                 end
             else
