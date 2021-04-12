@@ -55,17 +55,16 @@ function getPathGroups(road_network::Graphs.GenericGraph, macroPaths)
                                     x -> x == macroPaths[i][j],
                                     macroPaths[o],
                                 )]
+                                    @show runningTotalDistances[i][j] +
+                                          road.attributes["road"].length
+                                    @show runningTotalDistances[o][findfirst(
+                                        x -> x == macroPaths[i][j],
+                                        macroPaths[o],
+                                    )]
 
-                                    @show o_end =
-                                        runningTotalDistances[o][findfirst(
-                                            x -> x == macroPaths[i][j],
-                                            macroPaths[o],
-                                        )+1]
-
-                                    min_end = max(min_end, o_end)
                                     @debug "agent $i and agent $o are on road $(road.attributes["road"]) at the same time"
                                     append!(microPlanAgents, o)
-                                    #TODO why does 4 appear in its own plan and along with 4,1 ?? 
+                                    #TODO why does 4 appear in its own plan and along with 4,1 ??
                                 else
                                     @debug "agent $(agents[i]) leaves road, $road before $(agents[o]) enters, $microPlanAgents "
                                     # TODO how to handle this?
@@ -86,6 +85,23 @@ function getPathGroups(road_network::Graphs.GenericGraph, macroPaths)
                 [microPlanAgents]
         end
 
+    end
+    removeDupes(l) = map(
+        i -> map(j -> filter!(e -> e ∉ l[i], l[j]), i-1:-1:1),
+        length(l):-1:2,
+    )
+    for key in pathGroupings |> keys
+        if pathGroupings[key][1] == Int64
+            @debug "not nested"
+            groups = pathGroupings[key]
+            removeDupes([groups])
+            pathGroupings[key] = groups
+        elseif pathGroupings[key][1][1] |> typeof != Int64
+            @debug "nested"
+            @show groups = pathGroupings[key][1]
+            removeDupes(groups)
+            pathGroupings[key] = groups
+        end
     end
     pathGroupings
 end
@@ -119,7 +135,7 @@ function planRoutes(
                 @debug "plotting routes in $microPath"
                 # TODO work out intial starting coordinates a better way
                 # TODO work out goal coordinates a proper way
-                parallel_agent_sets= pathGroupings[microPath][1]
+                parallel_agent_sets = pathGroupings[microPath][1]
                 for parallel_agents in parallel_agent_sets
                     @debug parallel_agents
                     road = filter(
@@ -222,7 +238,7 @@ function plot_road_network(
 )
     plots = []
     macroPaths = map(i -> macroPath(rn, i[1], i[2]), paths)
-    pathGroups = getPathGroups(rn, paths, macroPaths)
+    pathGroups = getPathGroups(rn, macroPaths)
     c = 0
     for key in keys(pathGroups)
         @debug key
@@ -231,10 +247,12 @@ function plot_road_network(
             rn.edges,
         )[1].attributes["road"]
         is::Array{Individual} = []
-        for i in pathGroups[key]
-            @debug i
-            route_section = findfirst(x -> x == key[1], macroPaths[i])
-            append!(is, [routes[i][route_section]])
+        for group in pathGroups[key]
+            for i in group
+                @debug i
+                route_section = findfirst(x -> x == key[1], macroPaths[i])
+                append!(is, [routes[i][route_section]])
+            end
         end
 
         append!(
