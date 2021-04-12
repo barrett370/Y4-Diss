@@ -71,7 +71,7 @@ end
 
 function getGenotype(svec::SVector{2 * MAX_P,Float64})::BezierCurve
     ret::BezierCurve = []
-    for i = 1:2:6
+    for i = 1:2:(svec|> length)
         append!(ret, [ControlPoint(svec[i], svec[i+1])])
     end
     ret
@@ -224,7 +224,7 @@ function Fitness(r::Road, i::Individual)
 
     # Curve Fitness
 
-    α = 300# Infeasible path Penalty weight
+    α = 20# Infeasible path Penalty weight
     β = 5 # Min safe distance break penalty weight
     l = bezLength(i.phenotype.genotype)
     l1 = infeasible_distance(r, i.phenotype.genotype)

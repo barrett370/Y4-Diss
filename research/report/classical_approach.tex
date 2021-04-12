@@ -253,19 +253,56 @@ When planning for multiple agents across multiple road spaces, routes may share 
 
 In the above example, it is trivial to see that agents $a_{1}$ and $a_{3}$ will share the same road at each stage of their route as they are following the same abstract path. We however, must also be able to determine whether agents $a_{1}$ and $a_{4}$ share road $e25$, it occurs in both of their routes but one agent may have left that stretch of road before the other enters.
 
-\begin{algorithm}
-  \caption{Path Grouping}
-  \textbf{Input:}
-  \begin{itemize}
-    \item a road network graph $G = (V,E)$
-    \item a macro-path for each agent.
-  \end{itemize}
+This problem is solved using the algorithm seen in Algorithm~\ref{alg:pathgrouping}. For instance, on the example input above, we would expect to see the following grouping:
 
-  \For{each macro-path}{
+\begin{align*}
+  (3,2) &\mapsto \{ \{ a_4,a_1,a_3 \}  \}, \\
+  (4,5) &\mapsto \{ \{ a_2 \}  \}, \\
+  (2,5) &\mapsto \{ \{ a_3,a_1 \}, \{ a_4 \}   \}, \\
+  (5,2) &\mapsto \{ \{ a_2 \}  \} , \\
+  (1,3) &\mapsto \{ \{ a_3,a_1 \}  \} , \\
+  (5,4) &\mapsto \{ \{ a_3,a_1 \}  \}
+\end{align*}
+
+\begin{algorithm}
+  \caption{Path Grouping}\label{alg:pathgrouping}
+  \KwIn{
+  \begin{itemize}
+    \item a road network graph $\mathcal{R} = (V,E)$
+    \item a macro-path for each agent, $\mathcal{V}$.
+  \end{itemize}
+}
+Initialise map of roads, \texttt{roads}
+
+\For{each road, $r \in E$}{
+  \texttt{roads}[$r$] = [  ] \tcp*{Initialise list of agent groups}
+}
+
+\For{each agent's macro-path, $i \in \mathcal{V}$}{
     Construct a running total of distance for each edge.
+
+    \For{each edge, $e \in E$ in the macro-path}{
+
+      \tcp*{Initialise routes sharing edge $e$ with agent $i$}
+      microPlanAgents = [ i ]
+
+      \For{each other agent's macro-path, $o \in \mathcal{V}\backslash i$}{
+        \If{$e \in o$ }{ \tcp*{routes $i$ and $o$ share an edge ($e$) at some point}
+
+          \uIf{length of $i$ from origin to end of $e$ $>$ length of $o$ from origin to start of $e$}{
+            \tcp*{routes $i$ and $o$ occupy the edge $e$ at the same time}
+              append(microPlanAgents, o)
+          }\Else{
+            \tcp*{route $i$ exits edge $e$ before $o$ enters}
+            continue
+          }
+        }
+      }
+      append(\texttt{roads}[$e$], microPlanAgents)
+    }
   }
 
-  Construct a dictionary mapping each edge to a list of agents which occupy it at the same time.
+  \KwRet{roads}\tcp*{A map of edges to a list of lists of routes sharing that edge at the same time.}
 \end{algorithm}
 
 
@@ -273,7 +310,7 @@ In the above example, it is trivial to see that agents $a_{1}$ and $a_{3}$ will 
 
 I have chosen to implement my approach using the Julia language project\cite{JuliaProgrammingLanguage}.
 
-Julia is a relatively new language first developed in 2012 by Jeff Bezanson, Stefan Karpinski and Viral Shah. It is a multi-paradigm language allowing for functional, object oriented and meta programming approaches to problems. I will mainly be using it for it's functional and OO capabilities.
+Julia is a relatively new language first developed in 2012 by Jeff Bezanson, Stefan Karpinski and Viral Shah. It is a multi-paradigm language allowing for functional, object oriented (OO) and meta programming approaches to problems. I will mainly be using it for it's functional and OO capabilities.
 
 Julia operates using multiple dispatch similar to languages such as Haskell. It interoperates with C and Fortran codebases without the need of middle-man bloat. This fact allows it to utilise the extensive high performance C libraries for floating point operations. Julia is eagerly evaluated, uses a Just in time compiler and has a garbage collector.
 
@@ -286,6 +323,7 @@ Julia also has distributed computation facilities. This sort of functionality co
 
 
 %TC:macro \todo 1
+
 
 
 %%% Local Variables:
