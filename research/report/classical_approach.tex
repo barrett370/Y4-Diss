@@ -143,6 +143,7 @@ Once the initial population is generated, the main algorithmic loop can begin, t
 The final set of routes is finally filtered by the predicate $\texttt{infeasible-distance}(i) = 0 $
 
 \section{Multi-agent Approach}
+\label{sec:maa}
 
 So far we have only concerned ourselves with planning a route through a road-space for a single agent. However, in the real world, roads are seldom occupied by a single vehicle and as such we must consider how to efficiently plan a set of routes for a set of agents between between a set of coordinate pairs, such that, our agents do not collide at any point in time.
 
@@ -239,10 +240,12 @@ Would yield the following abstract routes for the agents:
 
 
 \begin{align*}
+  P &= \{ \\
   a_{1} &\mapsto \{ 1,3,2,5,4 \}, \\
   a_{2} &\mapsto \{ 4,5,2 \}, \\
   a_{3} &\mapsto \{ 1,3,2,5,4 \} ,\\
-  a_{4} &\mapsto \{ 3,2,5 \}
+  a_{4} &\mapsto \{ 3,2,5 \} \\
+          \}
 \end{align*}
 
 The next stage in the process is to group them into \textit{planning groups} i.e. group by which agents will occupy the same road at the same time thus requiring cooperative planning.
@@ -265,11 +268,11 @@ This problem is solved using the algorithm seen in Algorithm~\ref{alg:pathgroupi
 \end{align*}
 
 \begin{algorithm}
-  \caption{Path Grouping}\label{alg:pathgrouping}
+  \caption{Path Grouping, \texttt{getPathGroupings} }\label{alg:pathgrouping}
   \KwIn{
   \begin{itemize}
     \item a road network graph $\mathcal{R} = (V,E)$
-    \item a macro-path for each agent, $\mathcal{V}$.
+    \item a macro-path for each agent, $P$.
   \end{itemize}
 }
 Initialise map of roads, \texttt{roads}
@@ -278,7 +281,7 @@ Initialise map of roads, \texttt{roads}
   \texttt{roads}[$r$] = [  ] \tcp*{Initialise list of agent groups}
 }
 
-\For{each agent's macro-path, $i \in \mathcal{V}$}{
+\For{each agent's macro-path, $i \in P$}{
     Construct a running total of distance for each edge.
 
     \For{each edge, $e \in E$ in the macro-path}{
@@ -286,7 +289,7 @@ Initialise map of roads, \texttt{roads}
       \tcp*{Initialise routes sharing edge $e$ with agent $i$}
       microPlanAgents = [ i ]
 
-      \For{each other agent's macro-path, $o \in \mathcal{V}\backslash i$}{
+      \For{each other agent's macro-path, $o \in P\backslash i$}{
         \If{$e \in o$ }{ \tcp*{routes $i$ and $o$ share an edge ($e$) at some point}
 
           \uIf{length of $i$ from origin to end of $e$ $>$ length of $o$ from origin to start of $e$}{
@@ -304,6 +307,54 @@ Initialise map of roads, \texttt{roads}
 
   \KwRet{roads}\tcp*{A map of edges to a list of lists of routes sharing that edge at the same time.}
 \end{algorithm}
+
+Once these grouping have been constructed, the next stage is to plan the low-level curves representing the paths each agent must take through each road segment, avoiding any agents it shares a given road segment with.
+
+\subsection{Multi-agent route planning}\todo{title?}
+
+This process is a wrapper around the previously implemented parallel planner described in~\ref{sec:maa}. It follows the algorithm outlined in Algorithm
+
+\begin{algorithm}
+  \caption{Macro-route planner}\label{alg:mrp}
+  \KwIn{
+    \begin{itemize}
+      \item set of start-goal pairs for each agent, $\mathcal{V}$
+      \item a graph representing a road network, $\mathcal{R}$
+    \end{itemize}
+  }
+
+  $P$ = $djikstraShortestPath(\mathcal{R},\mathcal{V})$
+
+  pathGroupings = $\texttt{getPathGroupings}(\mathcal{R}, P)$
+
+  routes = [] \tcp*{initialise routes array as list of paths through each road segment specified by macro-route in $P$}
+
+  \For{each macro-path, $p\in P$}{
+    \For{each edge $e \in p$}{
+      concurrentAgentSets = pathGroupings[$e$]
+
+      \For{concurrentAgents $\in$ concurrentAgentSets}{
+
+        construct start and goal positions for each agent. This process requires further thought/ research \textbf{better way to talk about this?}
+
+        paths = parallelPlanner(startPositions, goalPositions, $e$) \tcp*{Parallel planner, solution to Problem~\ref{prob:sub1}}
+
+        \For{each agent $a_{i} \in \mathcal{V}$}{
+          append(routes[$i$], paths[$i$])
+        }
+
+      }
+    }
+  }
+
+  \Return{routes}
+
+\end{algorithm}\todo{phrasing about s/e position calculation on alg~\ref{alg:mrp}}
+
+
+This approach vastly simplifies the problem of intersection navigation and linking the routes between road segments, essentially assuming all road segments are sections of a single long road which line up exactly. Papers such as ``Automated Optimization of Intersections Using a Genetic Algorithm'' by Cruz-Piris et al.\cite{cruz-pirisAutomatedOptimizationIntersections2019} begin to tackle this problem through the use of cellular automata (building on the work of Maerivoet and De Moor\cite{maerivoetCellularAutomataModels2005}\todo[inline]{necessary?}
+) and GAs but substantial work would be required to link our two systems together.
+
 
 
 \section{Language Choice}\todo[inline]{decide whether to remove this, I am thinking yes but last para is interesting, maybe move to evaluation}
@@ -323,7 +374,6 @@ Julia also has distributed computation facilities. This sort of functionality co
 
 
 %TC:macro \todo 1
-
 
 
 %%% Local Variables:

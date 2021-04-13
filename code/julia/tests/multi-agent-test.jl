@@ -2,7 +2,7 @@ include("../src/parallelCGA.jl")
 import BenchmarkTools
 import PlotlyJS
 
-function multi_plot_benchmarks(benches, sf = true)
+function multi_plot_benchmarks(benches, sf = true, zlims = nothing)
 
     means =
         map(ns -> map(b -> BenchmarkTools.mean(b).time * 10^-7, ns), benches[1])
@@ -13,36 +13,48 @@ function multi_plot_benchmarks(benches, sf = true)
     @show ngens, ns, collect(Iterators.flatten(means))
     layout = PlotlyJS.Layout(;
         title = "Multi agent parallel planner \n z=Planning time (left) | Average Fitness (right)",
-        xaxis=attr(title= "Size of population"),
-        yaxis=attr(title = "Number of generations"),
-        zaxis=attr(title = "Time to plan /ms")
+        xaxis = attr(title = "Size of population"),
+        yaxis = attr(title = "Number of generations"),
+        zaxis = attr(title = "Time to plan /ms"),
     )
     layout2 = PlotlyJS.Layout(;
-        xaxis=attr(title= "Size of population"),
-        yaxis=attr(title = "Number of generations"),
-        zaxis=attr(title = "Fitness (length of route)")
+        xaxis = attr(title = "Size of population"),
+        yaxis = attr(title = "Number of generations"),
+        zaxis = attr(title = "Fitness (length of route)"),
     )
     surf = PlotlyJS.surface(
         x = ns,
         y = ngens,
         z = means,
         #surfacecolor = mean_fitness,
-        layout=layout
+        layout = layout,
     )
+    if zlims != nothing
+        mean_fitness= map(gen -> map(e -> begin
+            if e > zlims[2]
+                e = zlims[2]
+            elseif e < zlims[1]
+                e = zlims[1]
+            else
+                e
+            end
+        end, gen), mean_fitness)
+    end
 
     surf2 = PlotlyJS.surface(
         x = ns,
         y = ngens,
         z = mean_fitness,
+        zlims = (0, 60),
         #surfacecolor = mean_fitness,
-        layout=layout
+        layout = layout2,
     )
     p = PlotlyJS.plot(surf, layout)
 
     if sf
-        savehtml(p,"images/tmp_multi-agent-result.html")
+        savehtml(p, "images/tmp_multi-agent-result.html")
     end
-    [p, PlotlyJS.plot(surf2,layout2)]
+    [p, PlotlyJS.plot(surf2, layout2), PlotlyJS.addtraces(p,data= mean_fitness)]
 
 end
 
