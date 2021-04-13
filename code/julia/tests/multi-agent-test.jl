@@ -26,7 +26,7 @@ function multi_plot_benchmarks(benches, sf = true, zlims = nothing)
         x = ns,
         y = ngens,
         z = means,
-        #surfacecolor = mean_fitness,
+        surfacecolor = mean_fitness,
         layout = layout,
     )
     if zlims != nothing
@@ -46,7 +46,7 @@ function multi_plot_benchmarks(benches, sf = true, zlims = nothing)
         y = ngens,
         z = mean_fitness,
         zlims = (0, 60),
-        #surfacecolor = mean_fitness,
+        surfacecolor = means,
         layout = layout2,
     )
     p = PlotlyJS.plot(surf, layout)
@@ -54,7 +54,7 @@ function multi_plot_benchmarks(benches, sf = true, zlims = nothing)
     if sf
         savehtml(p, "images/tmp_multi-agent-result.html")
     end
-    [p, PlotlyJS.plot(surf2, layout2), PlotlyJS.addtraces(p,data= mean_fitness)]
+    [p, PlotlyJS.plot(surf2, layout2)]
 
 end
 
