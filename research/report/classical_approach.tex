@@ -27,7 +27,7 @@ In this approach, the genotype is abstractly represented as a Bézier curve (Sec
 	\caption{\label{fig:GA_Genotype} Individual genotype as real-valued string }
 \end{figure}
 
-In the above form the descriptions of genetic operators found in Section~\ref{subsec:GAOps} should be sufficiently detailed to re-implement.\todo{Phrasing?  Correct? should I elaborate?}
+In the above form the descriptions of genetic operators found in Section~\ref{subsec:GAOps} should be sufficiently detailed to re-implement.\todo[inline]{Phrasing?  Correct? should I elaborate? Could talk more about implementation for GA operators, design decisions etc. Ready to talk about performance in next section}
 
 Initially my Phenotype contained no additional information. However, I still created the distinction to allow for additional properties to be encapsulated during development.
 
@@ -136,7 +136,8 @@ A similar process is performed to determine how much of a curve passes too close
     \caption{Stage 5}
   \end{subfigure}
   \caption{\label{fig:ifspace-illustration} Illustration of finding infeasible section of curve}
-\end{figure}\todo{Remove hand-drawn figure and move descriptions to paragraph instead of caption}
+\end{figure}\todo{Remove hand-drawn figure and move descriptions to paragraph instead of caption}\todo{Technically this has very slightly changed in implementation, is it worth redoing or just leave as is?}
+
 
 Once the initial population is generated, the main algorithmic loop can begin, this is the repeated application of the selection, crossover, mutation and evaluation operators (See Section~\ref{subsec:GAOps}) until set termination criteria are met or the maximum number of generations is completed, seen in Algorithm~\ref{alg:GenericGA}.
 

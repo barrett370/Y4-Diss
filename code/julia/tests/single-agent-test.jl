@@ -37,7 +37,7 @@ function plot_benchmarks(benches, sf = true)
         layout = layout2,
     )
 
-    p= Plotly.plot(surf, layout)
+    p= PlotlyJS.plot(surf, layout)
     [p, PlotlyJS.plot(surf2, layout2)]
 end
 
