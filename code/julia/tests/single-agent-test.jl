@@ -11,20 +11,34 @@ function plot_benchmarks(benches, sf = true)
     ns = vcat(1:length(benches[1][1]))
     ngens = vcat(1:length(benches[1]))
     @show ngens, ns, collect(Iterators.flatten(means))
+    layout = PlotlyJS.Layout(;
+        title = "Singlew agent planner \n z=Planning time (left) | Average Fitness (right)",
+        xaxis = attr(title = "Size of population"),
+        yaxis = attr(title = "Number of generations"),
+        zaxis = attr(title = "Time to plan /ms"),
+    )
+    layout2 = PlotlyJS.Layout(;
+        xaxis = attr(title = "Size of population"),
+        yaxis = attr(title = "Number of generations"),
+        zaxis = attr(title = "Fitness (length of route)"),
+    )
     surf = PlotlyJS.surface(
         x = ns,
         y = ngens,
         z = means,
-        surfacecolor = mean_fitness
+        surfacecolor = mean_fitness,
+        layout = layout,
     )
-    @show layout = Layout(;
-        title = "Single agent planner, coloured by fitness",
-        xaxis_title = "Size of population",
-        yaxis_title = "Number of generations",
-        zaxis_title = "Time to plan /ms"
+    surf2 = PlotlyJS.surface(
+        x = ns,
+        y = ngens,
+        z = mean_fitness,
+        surfacecolor = means,
+        layout = layout2,
     )
 
     p= Plotly.plot(surf, layout)
+    [p, PlotlyJS.plot(surf2, layout2)]
 end
 
 function test_gensPopsize(n = 20, n_gens = 10)
@@ -54,6 +68,7 @@ function test_gensPopsize(n = 20, n_gens = 10)
                                 $road,
                                 n_gens = $ng,
                                 n = $n,
+                                selection_method=ranked
                             )[1].fitness,
                         ],
                     )

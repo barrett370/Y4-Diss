@@ -15,7 +15,7 @@ function getPathGroups(road_network::Graphs.GenericGraph, macroPaths)
         ),
         macroPaths,
     )
-    @show runningTotalDistances = map(
+    runningTotalDistances = map(
         p -> append!([0], collect(map(i -> sum(p[1:i]), 1:length(p)))),
         road_lengths,
     )
@@ -25,13 +25,12 @@ function getPathGroups(road_network::Graphs.GenericGraph, macroPaths)
         @debug "checking for agent $(agents[i])"
         for j = 1:length(macroPaths[i])-1
             if (macroPaths[i][j], macroPaths[i][j+1]) in pathGroupings |> keys
-                @warn "already analysed $(pathGroupings[(macroPaths[i][j], macroPaths[i][j+1])])"
+                @debug "already analysed $(pathGroupings[(macroPaths[i][j], macroPaths[i][j+1])])"
                 pre_plan = pathGroupings[(macroPaths[i][j], macroPaths[i][j+1])]
             end
 
             #"checking for other plans going from $(macroPaths[i][j]) to $(macroPaths[i][j+1])  " |> println
             microPlanAgents = [i]
-            min_end = runningTotalDistances[i][j+1]
             for o = 1:length(macroPaths)
                 if o != i
                     #"checking against agent $(agents[o])" |> println
@@ -55,21 +54,13 @@ function getPathGroups(road_network::Graphs.GenericGraph, macroPaths)
                                     x -> x == macroPaths[i][j],
                                     macroPaths[o],
                                 )]
-                                    @show runningTotalDistances[i][j] +
-                                          road.attributes["road"].length
-                                    @show runningTotalDistances[o][findfirst(
-                                        x -> x == macroPaths[i][j],
-                                        macroPaths[o],
-                                    )]
-
                                     @debug "agent $i and agent $o are on road $(road.attributes["road"]) at the same time"
                                     append!(microPlanAgents, o)
                                     #TODO why does 4 appear in its own plan and along with 4,1 ??
                                 else
                                     @debug "agent $(agents[i]) leaves road, $road before $(agents[o]) enters, $microPlanAgents "
                                     # TODO how to handle this?
-                                    @show pre_plan
-                                    @show microPlanAgents =
+                                    microPlanAgents =
                                         append!(pre_plan, [microPlanAgents])[:]
                                 end
 
@@ -98,7 +89,7 @@ function getPathGroups(road_network::Graphs.GenericGraph, macroPaths)
             pathGroupings[key] = groups
         elseif pathGroupings[key][1][1] |> typeof != Int64
             @debug "nested"
-            @show groups = pathGroupings[key][1]
+            groups = pathGroupings[key][1]
             removeDupes(groups)
             pathGroupings[key] = groups
         end
@@ -119,19 +110,18 @@ function planRoutes(
     @debug pathGroupings
 
     prev_positions = zeros(length(agents))
-    @warn prev_positions
     plans = []
     for agent in agents
         append!(plans, [[]])
     end
-    @show plans
+    plans
 
-    for mp in macroPaths
-        @warn "Planning macropath $mp"
+    for mp in macroPaths    # TODO make sure all routes being planned have their pre-requisites planned already.
+        @debug "Planning macropath $mp"
         macroPath_plans = []
         for i = 1:length(mp)-1
             microPath = (mp[i], mp[i+1])
-            @warn "plotting routes in $microPath"
+            @debug "plotting routes in $microPath"
             if microPath in keys(pathGroupings)
                 #@async begin
                 # TODO work out intial starting coordinates a better way
@@ -158,7 +148,6 @@ function planRoutes(
                     initial_starts = 0
                     c = 0
                     for agent in parallel_agents
-                        @warn agent
                         if prev_positions[agent] == 0 #Inital section of route, no known previous position
                             append!(
                                 starts,
@@ -210,8 +199,6 @@ function planRoutes(
                     )
                     #redirect_stdout(oldstd)
                     @debug "Planned for this goalset"
-                    @show res
-                    @show plans
                     for agent in parallel_agents
                         append!(
                             plans[agent],
@@ -220,9 +207,7 @@ function planRoutes(
                         prev_positions[agent] =
                             plans[agent][end].phenotype.goal.y
                     end
-                    @show plans
                     @debug "planned microPath $microPath, removing from pathGroupings"
-                    @warn pathGroupings, microPath, parallel_agents
                     filter!(s -> s != parallel_agents, pathGroupings[microPath])
                     #end
                 end

@@ -25,7 +25,7 @@ function CGA(
 
 end
 
-function CGA(start::Point, goal::Point, road::Road, other_routes::Array{Individual}; n_gens::Real=1, n::Real=10, selection_method="roulette")::Array{Individual}
+function CGA(start::Point, goal::Point, road::Road, other_routes::Array{Individual}; n_gens::Real=1, n::Real=10, selection_method::SelectionMethod)::Array{Individual}
     # Initialise population
     if start.y < road.boundary_1(start.x) || start.y > road.boundary_2(start.y) || goal.y < road.boundary_1(goal.x) || goal.y > road.boundary_2(goal.x)
         @error ("ERROR, start of goal is outside of roadspace")
@@ -53,7 +53,7 @@ function CGA(start::Point, goal::Point, road::Road, other_routes::Array{Individu
     P
 end
 
-function GA(start::Point, goal::Point, road::Road; n_gens::Real=1, n::Real=10, selection_method="roulette")::Array{Individual}
+function GA(start::Point, goal::Point, road::Road; n_gens::Real=1, n::Real=10, selection_method::SelectionMethod)::Array{Individual}
     # Initialise population
     if start.y < road.boundary_1(start.x) || start.y > road.boundary_2(start.y) || goal.y < road.boundary_1(goal.x) || goal.y > road.boundary_2(goal.x)
         @error "ERROR, start of goal is outside of roadspace"

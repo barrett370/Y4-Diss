@@ -18,6 +18,10 @@ function PCGA(
 )
 
     global MT = multi_thread
+    if CACHE
+        global previous_checks = Dict{Tuple{BezierCurve,BezierCurve},Tuple{Bool,Tuple{BezierCurve,BezierCurve}}}()
+    end
+
 
     current_plans = SharedArray{SVector{2*MAX_P,Float64}}(length(starts)) # Length of 12 as this is the max number of control points *2
     ret::Array{Individual} = []
