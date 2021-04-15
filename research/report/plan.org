@@ -6,7 +6,7 @@
 ./wordcount.sh
 #+end_src
 #+RESULTS:
-: 5099
+: 6002
 
 * Sections [1/8]:
 ** [ ] Abstract [1/1]
@@ -68,7 +68,7 @@ texcount classical_approach.tex  \
 #+end_src
 
 #+RESULTS:
-: 2509
+: 3179
 *** [X] Single Agent Planning [3/3]
 - [X] Population encoding
 - [X] Population generation
@@ -76,13 +76,16 @@ texcount classical_approach.tex  \
 *** [ ] Multi-Agent Planning [2/3]
 - [X] Intersection Detection
 - [X] Collision Detection
-*** [ ] Macro-Level Planning [0/4]
+*** [ ] Macro-Level Planning [3/4]
 :LOGBOOK:
+CLOCK: [2021-04-15 Thu 14:13]--[2021-04-15 Thu 14:38] =>  0:25
+CLOCK: [2021-04-10 Sat 15:05]--[2021-04-10 Sat 15:30] =>  0:25
+CLOCK: [2021-04-10 Sat 14:35]--[2021-04-10 Sat 15:00] =>  0:25
 CLOCK: [2021-04-09 Fri 10:36]--[2021-04-09 Fri 11:01] =>  0:25
 :END:
-- [ ] Graph construction & Edge weighting + possible extensions
-- [ ] Planning macro routes
-- [ ] grouping agents into concurrent plans
+- [X] Graph construction & Edge weighting + possible extensions
+- [X] Planning macro routes
+- [X] grouping agents into concurrent plans
 - [ ] Possible extensions
 ** [ ] Results [0/3]
 *** [ ] Single Agent

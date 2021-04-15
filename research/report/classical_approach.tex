@@ -136,7 +136,7 @@ A similar process is performed to determine how much of a curve passes too close
     \caption{Stage 5}
   \end{subfigure}
   \caption{\label{fig:ifspace-illustration} Illustration of finding infeasible section of curve}
-\end{figure}\todo{Remove hand-drawn figure and move descriptions to paragraph instead of caption}\todo{Technically this has very slightly changed in implementation, is it worth redoing or just leave as is?}
+\end{figure}\todo[inline]{Technically this infeasible distance calculation has very slightly changed in implementation, is it worth redoing or just leave as is?}
 
 
 Once the initial population is generated, the main algorithmic loop can begin, this is the repeated application of the selection, crossover, mutation and evaluation operators (See Section~\ref{subsec:GAOps}) until set termination criteria are met or the maximum number of generations is completed, seen in Algorithm~\ref{alg:GenericGA}.
@@ -154,7 +154,50 @@ My initial approach to a collaborative planning system was somewhat inefficient.
 
 This system was very inefficient with the final routes requiring a large number of checks to be carried out by my \texttt{bezInt} function, which itself suffered from \todo[inline]{verify this} exponential time (and space) complexity.
 
-This system was improved upon by splitting the process over multiple threads, each agent being given a separate thread, communicating their most up-to-date plans via a shared array, $S$. Agent $i$ will store its current fittest route in $S[i]$, the fitness of any candidate checks for collisions with each route in $S$. This system may conduct more checks but it removes the problem of prioritising the first route to the planned and reduces the overall runtime of the system approximately proportionally to the number of threads available.
+This system was improved upon by splitting the process over multiple threads, each agent being given a separate thread, communicating their most up-to-date plans via a shared array, $S$. Agent $i$ will store its current fittest route in $S[i]$, the fitness of any candidate checks for collisions with each route in $S$. This system may conduct more checks but it removes the problem of prioritising the first route to the planned and reduces the overall runtime of the system approximately proportionally to the number of threads available, an abstract view of the topology can be seen in Figure~\ref{fig:PCGA}.\todo{is this clear/ necessary?}
+
+\begin{figure}
+  \centering
+\begin{tikzpicture}
+  \node[draw,rectangle] (A1) {$a_{1}$};
+  \node[draw,rectangle, below of=A1] (A2) {$a_{2}$};
+  \node[below of=A2] (ellipses) {$\vdots$};
+  \node[draw,rectangle, below of=ellipses] (An) {$a_{n}$};
+
+  \node[draw,rectangle, right= of A1] (GA1) {$GA$};
+  \node[draw,rectangle, right= of A2] (GA2) {$GA$};
+  \node[below of=GA2] (ellipses2) {$\vdots$};
+  \node[draw,rectangle, right= of An] (GAn) {$GA$};
+
+  \coordinate[right of = GA1] (rGA1);
+  \coordinate[right of = GA2] (rGA2);
+  \coordinate[right of = GAn] (rGAn);
+
+  \node[draw, rectangle, right= of rGA2] (result) {routes};
+
+  \node[above = of GA1] (lthreads) {Threads};
+  \node[above = of A1] (lagents) {Agents, $\mathcal{V}$};
+
+
+  \draw[->] (A1) -> (GA1);
+  \draw[->] (A2) -> (GA2);
+  \draw[->] (An) -> (GAn);
+
+  \draw[->] (GA1) -> (result);
+  \draw[->] (GA2) -> (result);
+  \draw[->] (GAn) -> (result);
+
+
+  \draw[thick,<->] (rGAn) -> node[left] {\tiny Shared Array} (rGA1);
+
+
+  \node[draw=red, fit=(GA1) (GAn) (rGAn)]  {};
+  \node[draw=blue, fit=(A1) (An)]  {};
+
+
+\end{tikzpicture}
+\caption{\label{fig:PCGA} Parallel Cooperative Genetic Algorithm abstract topology}
+\end{figure}
 
 \subsection{Collision Detection}
 \label{subsec:col-detection}
@@ -313,7 +356,7 @@ Once these grouping have been constructed, the next stage is to plan the low-lev
 
 \subsection{Multi-agent route planning}\todo{title?}
 
-This process is a wrapper around the previously implemented parallel planner described in~\ref{sec:maa}. It follows the algorithm outlined in Algorithm
+This process is a wrapper around the previously implemented parallel planner described in~\ref{sec:maa}. It follows the algorithm outlined in Algorithm~\ref{alg:mrp}.
 
 \begin{algorithm}
   \caption{Macro-route planner}\label{alg:mrp}
@@ -353,8 +396,8 @@ This process is a wrapper around the previously implemented parallel planner des
 \end{algorithm}\todo{phrasing about s/e position calculation on alg~\ref{alg:mrp}}
 
 
-This approach vastly simplifies the problem of intersection navigation and linking the routes between road segments, essentially assuming all road segments are sections of a single long road which line up exactly. Papers such as ``Automated Optimization of Intersections Using a Genetic Algorithm'' by Cruz-Piris et al.\cite{cruz-pirisAutomatedOptimizationIntersections2019} begin to tackle this problem through the use of cellular automata (building on the work of Maerivoet and De Moor\cite{maerivoetCellularAutomataModels2005}\todo[inline]{necessary?}
-) and GAs but substantial work would be required to link our two systems together.
+My approach vastly simplifies the problem of intersection navigation and linking the routes between road segments, essentially assuming all road segments are sections of a single long road which line up exactly. Papers such as ``Automated Optimization of Intersections Using a Genetic Algorithm'' by Cruz-Piris et al.\cite{cruz-pirisAutomatedOptimizationIntersections2019} begin to tackle this problem through the use of cellular automata (building on the work of Maerivoet and De Moor\cite{maerivoetCellularAutomataModels2005}\todo[inline]{necessary?}
+) and GAs (See Section~\ref{subsec:lit_rev-GACoopRoutes}) but substantial work would be required to link our two systems together.
 
 
 
@@ -375,7 +418,6 @@ Julia also has distributed computation facilities. This sort of functionality co
 
 
 %TC:macro \todo 1
-
 
 
 %%% Local Variables:
