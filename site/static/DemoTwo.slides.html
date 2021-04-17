@@ -15213,7 +15213,7 @@ M1538.25 1198.61 L1538.24 1197.16 L1538.22 1195.71 L1538.19 1194.26 L1538.14 119
 <div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <h2 id="Evaluation">Evaluation<a class="anchor-link" href="#Evaluation">&#182;</a></h2><p>I have started to collect data to evaluate my single agent planner. It will not be the focus of my evaluation as it has become a subsection of my larger project.  I indend to collect similar results varying the genetic operators and parameter values used. I will also vary the number and size of any obstacles.</p>
-<p><a href="../images/single-agent-result.html">Fitness landscape of single agent planning</a></p>
+<p><a href="https://sambarrett.online/Y4-Diss/single-agent-result-1404-col">Fitness landscape of single agent planning</a></p>
 
 </div>
 </div></section></section><section><section>
@@ -15277,204 +15277,11 @@ M1538.25 1198.61 L1538.24 1197.16 L1538.22 1195.71 L1538.19 1194.26 L1538.14 119
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <p>These include:</p>
 <ul>
-<li>Implementing the logic that if no points in a random sample along a curve lie inside the bounded box of another curve, and vice virsa, they (likely) cannot intersect and deeper checking can be skipped. This is seen in the following code:</li>
+<li>Implementing the logic that if the bounding boxes for two curves do not intersect, they (likely) cannot intersect and deeper checking can be skipped. </li>
 </ul>
 
 </div>
 </div></section><section>
-<div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-
-</div>
-</div></section><section>
-<div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>Initally, I did not have the random sample. instead checking each point in the convex hulls, However this failed to detect the intersection in the edge case below $\downarrow$</p>
-
-</div>
-</div><div class="fragment"><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[5]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-julia"><pre><span></span><span class="n">plt</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-<div class="jp-Cell-outputWrapper">
-
-
-<div class="jp-OutputArea jp-Cell-outputArea">
-
-<div class="jp-OutputArea-child">
-
-    
-    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[5]:</div>
-
-
-
-<div class="jp-RenderedSVG jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="image/svg+xml">
-<?xml version="1.0" encoding="utf-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="600" height="400" viewBox="0 0 2400 1600">
-<defs>
-  <clipPath id="clip960">
-    <rect x="0" y="0" width="2400" height="1600"/>
-  </clipPath>
-</defs>
-<path clip-path="url(#clip960)" d="
-M0 1600 L2400 1600 L2400 0 L0 0  Z
-  " fill="#ffffff" fill-rule="evenodd" fill-opacity="1"/>
-<defs>
-  <clipPath id="clip961">
-    <rect x="480" y="0" width="1681" height="1600"/>
-  </clipPath>
-</defs>
-<path clip-path="url(#clip960)" d="
-M147.478 1486.45 L2352.76 1486.45 L2352.76 47.2441 L147.478 47.2441  Z
-  " fill="#ffffff" fill-rule="evenodd" fill-opacity="1"/>
-<defs>
-  <clipPath id="clip962">
-    <rect x="147" y="47" width="2206" height="1440"/>
-  </clipPath>
-</defs>
-<polyline clip-path="url(#clip962)" style="stroke:#000000; stroke-width:2; stroke-opacity:0.1; fill:none" points="
-  209.891,1486.45 209.891,47.2441 
-  "/>
-<polyline clip-path="url(#clip962)" style="stroke:#000000; stroke-width:2; stroke-opacity:0.1; fill:none" points="
-  903.375,1486.45 903.375,47.2441 
-  "/>
-<polyline clip-path="url(#clip962)" style="stroke:#000000; stroke-width:2; stroke-opacity:0.1; fill:none" points="
-  1596.86,1486.45 1596.86,47.2441 
-  "/>
-<polyline clip-path="url(#clip962)" style="stroke:#000000; stroke-width:2; stroke-opacity:0.1; fill:none" points="
-  2290.34,1486.45 2290.34,47.2441 
-  "/>
-<polyline clip-path="url(#clip960)" style="stroke:#000000; stroke-width:4; stroke-opacity:1; fill:none" points="
-  147.478,1486.45 2352.76,1486.45 
-  "/>
-<polyline clip-path="url(#clip960)" style="stroke:#000000; stroke-width:4; stroke-opacity:1; fill:none" points="
-  209.891,1486.45 209.891,1469.18 
-  "/>
-<polyline clip-path="url(#clip960)" style="stroke:#000000; stroke-width:4; stroke-opacity:1; fill:none" points="
-  903.375,1486.45 903.375,1469.18 
-  "/>
-<polyline clip-path="url(#clip960)" style="stroke:#000000; stroke-width:4; stroke-opacity:1; fill:none" points="
-  1596.86,1486.45 1596.86,1469.18 
-  "/>
-<polyline clip-path="url(#clip960)" style="stroke:#000000; stroke-width:4; stroke-opacity:1; fill:none" points="
-  2290.34,1486.45 2290.34,1469.18 
-  "/>
-<path clip-path="url(#clip960)" d="M 0 0 M209.891 1515.64 Q206.28 1515.64 204.452 1519.2 Q202.646 1522.75 202.646 1529.87 Q202.646 1536.98 204.452 1540.55 Q206.28 1544.09 209.891 1544.09 Q213.526 1544.09 215.331 1540.55 Q217.16 1536.98 217.16 1529.87 Q217.16 1522.75 215.331 1519.2 Q213.526 1515.64 209.891 1515.64 M209.891 1511.93 Q215.702 1511.93 218.757 1516.54 Q221.836 1521.12 221.836 1529.87 Q221.836 1538.6 218.757 1543.21 Q215.702 1547.79 209.891 1547.79 Q204.081 1547.79 201.003 1543.21 Q197.947 1538.6 197.947 1529.87 Q197.947 1521.12 201.003 1516.54 Q204.081 1511.93 209.891 1511.93 Z" fill="#000000" fill-rule="evenodd" fill-opacity="1" /><path clip-path="url(#clip960)" d="M 0 0 M893.757 1543.18 L901.396 1543.18 L901.396 1516.82 L893.086 1518.49 L893.086 1514.23 L901.35 1512.56 L906.026 1512.56 L906.026 1543.18 L913.664 1543.18 L913.664 1547.12 L893.757 1547.12 L893.757 1543.18 Z" fill="#000000" fill-rule="evenodd" fill-opacity="1" /><path clip-path="url(#clip960)" d="M 0 0 M1591.51 1543.18 L1607.83 1543.18 L1607.83 1547.12 L1585.89 1547.12 L1585.89 1543.18 Q1588.55 1540.43 1593.13 1535.8 Q1597.74 1531.15 1598.92 1529.81 Q1601.16 1527.28 1602.04 1525.55 Q1602.95 1523.79 1602.95 1522.1 Q1602.95 1519.34 1601 1517.61 Q1599.08 1515.87 1595.98 1515.87 Q1593.78 1515.87 1591.33 1516.63 Q1588.9 1517.4 1586.12 1518.95 L1586.12 1514.23 Q1588.94 1513.09 1591.4 1512.51 Q1593.85 1511.93 1595.89 1511.93 Q1601.26 1511.93 1604.45 1514.62 Q1607.65 1517.31 1607.65 1521.8 Q1607.65 1523.93 1606.84 1525.85 Q1606.05 1527.74 1603.94 1530.34 Q1603.36 1531.01 1600.26 1534.23 Q1597.16 1537.42 1591.51 1543.18 Z" fill="#000000" fill-rule="evenodd" fill-opacity="1" /><path clip-path="url(#clip960)" d="M 0 0 M2294.59 1528.49 Q2297.95 1529.2 2299.82 1531.47 Q2301.72 1533.74 2301.72 1537.07 Q2301.72 1542.19 2298.2 1544.99 Q2294.68 1547.79 2288.2 1547.79 Q2286.03 1547.79 2283.71 1547.35 Q2281.42 1546.93 2278.97 1546.08 L2278.97 1541.56 Q2280.91 1542.7 2283.22 1543.28 Q2285.54 1543.86 2288.06 1543.86 Q2292.46 1543.86 2294.75 1542.12 Q2297.07 1540.38 2297.07 1537.07 Q2297.07 1534.02 2294.91 1532.31 Q2292.78 1530.57 2288.97 1530.57 L2284.94 1530.57 L2284.94 1526.73 L2289.15 1526.73 Q2292.6 1526.73 2294.43 1525.36 Q2296.26 1523.97 2296.26 1521.38 Q2296.26 1518.72 2294.36 1517.31 Q2292.48 1515.87 2288.97 1515.87 Q2287.04 1515.87 2284.84 1516.29 Q2282.65 1516.7 2280.01 1517.58 L2280.01 1513.42 Q2282.67 1512.68 2284.98 1512.31 Q2287.32 1511.93 2289.38 1511.93 Q2294.71 1511.93 2297.81 1514.37 Q2300.91 1516.77 2300.91 1520.89 Q2300.91 1523.76 2299.27 1525.75 Q2297.62 1527.72 2294.59 1528.49 Z" fill="#000000" fill-rule="evenodd" fill-opacity="1" /><polyline clip-path="url(#clip962)" style="stroke:#000000; stroke-width:2; stroke-opacity:0.1; fill:none" points="
-  147.478,1445.72 2352.76,1445.72 
-  "/>
-<polyline clip-path="url(#clip962)" style="stroke:#000000; stroke-width:2; stroke-opacity:0.1; fill:none" points="
-  147.478,1203.26 2352.76,1203.26 
-  "/>
-<polyline clip-path="url(#clip962)" style="stroke:#000000; stroke-width:2; stroke-opacity:0.1; fill:none" points="
-  147.478,960.809 2352.76,960.809 
-  "/>
-<polyline clip-path="url(#clip962)" style="stroke:#000000; stroke-width:2; stroke-opacity:0.1; fill:none" points="
-  147.478,718.355 2352.76,718.355 
-  "/>
-<polyline clip-path="url(#clip962)" style="stroke:#000000; stroke-width:2; stroke-opacity:0.1; fill:none" points="
-  147.478,475.902 2352.76,475.902 
-  "/>
-<polyline clip-path="url(#clip962)" style="stroke:#000000; stroke-width:2; stroke-opacity:0.1; fill:none" points="
-  147.478,233.448 2352.76,233.448 
-  "/>
-<polyline clip-path="url(#clip960)" style="stroke:#000000; stroke-width:4; stroke-opacity:1; fill:none" points="
-  147.478,1486.45 147.478,47.2441 
-  "/>
-<polyline clip-path="url(#clip960)" style="stroke:#000000; stroke-width:4; stroke-opacity:1; fill:none" points="
-  147.478,1445.72 173.941,1445.72 
-  "/>
-<polyline clip-path="url(#clip960)" style="stroke:#000000; stroke-width:4; stroke-opacity:1; fill:none" points="
-  147.478,1203.26 173.941,1203.26 
-  "/>
-<polyline clip-path="url(#clip960)" style="stroke:#000000; stroke-width:4; stroke-opacity:1; fill:none" points="
-  147.478,960.809 173.941,960.809 
-  "/>
-<polyline clip-path="url(#clip960)" style="stroke:#000000; stroke-width:4; stroke-opacity:1; fill:none" points="
-  147.478,718.355 173.941,718.355 
-  "/>
-<polyline clip-path="url(#clip960)" style="stroke:#000000; stroke-width:4; stroke-opacity:1; fill:none" points="
-  147.478,475.902 173.941,475.902 
-  "/>
-<polyline clip-path="url(#clip960)" style="stroke:#000000; stroke-width:4; stroke-opacity:1; fill:none" points="
-  147.478,233.448 173.941,233.448 
-  "/>
-<path clip-path="url(#clip960)" d="M 0 0 M51.3625 1446.17 L81.0383 1446.17 L81.0383 1450.1 L51.3625 1450.1 L51.3625 1446.17 Z" fill="#000000" fill-rule="evenodd" fill-opacity="1" /><path clip-path="url(#clip960)" d="M 0 0 M95.1586 1459.06 L111.478 1459.06 L111.478 1463 L89.5336 1463 L89.5336 1459.06 Q92.1956 1456.31 96.7789 1451.68 Q101.385 1447.02 102.566 1445.68 Q104.811 1443.16 105.691 1441.42 Q106.594 1439.66 106.594 1437.97 Q106.594 1435.22 104.649 1433.48 Q102.728 1431.75 99.6261 1431.75 Q97.4271 1431.75 94.9734 1432.51 Q92.5428 1433.27 89.7651 1434.82 L89.7651 1430.1 Q92.5891 1428.97 95.0428 1428.39 Q97.4965 1427.81 99.5335 1427.81 Q104.904 1427.81 108.098 1430.5 Q111.293 1433.18 111.293 1437.67 Q111.293 1439.8 110.483 1441.72 Q109.696 1443.62 107.589 1446.21 Q107.01 1446.88 103.909 1450.1 Q100.807 1453.3 95.1586 1459.06 Z" fill="#000000" fill-rule="evenodd" fill-opacity="1" /><path clip-path="url(#clip960)" d="M 0 0 M50.9921 1203.71 L80.6679 1203.71 L80.6679 1207.65 L50.9921 1207.65 L50.9921 1203.71 Z" fill="#000000" fill-rule="evenodd" fill-opacity="1" /><path clip-path="url(#clip960)" d="M 0 0 M91.5706 1216.61 L99.2095 1216.61 L99.2095 1190.24 L90.8993 1191.91 L90.8993 1187.65 L99.1632 1185.98 L103.839 1185.98 L103.839 1216.61 L111.478 1216.61 L111.478 1220.54 L91.5706 1220.54 L91.5706 1216.61 Z" fill="#000000" fill-rule="evenodd" fill-opacity="1" /><path clip-path="url(#clip960)" d="M 0 0 M99.5335 946.607 Q95.9224 946.607 94.0937 950.172 Q92.2882 953.714 92.2882 960.843 Q92.2882 967.95 94.0937 971.515 Q95.9224 975.056 99.5335 975.056 Q103.168 975.056 104.973 971.515 Q106.802 967.95 106.802 960.843 Q106.802 953.714 104.973 950.172 Q103.168 946.607 99.5335 946.607 M99.5335 942.904 Q105.344 942.904 108.399 947.51 Q111.478 952.094 111.478 960.843 Q111.478 969.57 108.399 974.177 Q105.344 978.76 99.5335 978.76 Q93.7234 978.76 90.6447 974.177 Q87.5892 969.57 87.5892 960.843 Q87.5892 952.094 90.6447 947.51 Q93.7234 942.904 99.5335 942.904 Z" fill="#000000" fill-rule="evenodd" fill-opacity="1" /><path clip-path="url(#clip960)" d="M 0 0 M91.5706 731.7 L99.2095 731.7 L99.2095 705.335 L90.8993 707.001 L90.8993 702.742 L99.1632 701.075 L103.839 701.075 L103.839 731.7 L111.478 731.7 L111.478 735.635 L91.5706 735.635 L91.5706 731.7 Z" fill="#000000" fill-rule="evenodd" fill-opacity="1" /><path clip-path="url(#clip960)" d="M 0 0 M95.1586 489.247 L111.478 489.247 L111.478 493.182 L89.5336 493.182 L89.5336 489.247 Q92.1956 486.492 96.7789 481.862 Q101.385 477.21 102.566 475.867 Q104.811 473.344 105.691 471.608 Q106.594 469.849 106.594 468.159 Q106.594 465.404 104.649 463.668 Q102.728 461.932 99.6261 461.932 Q97.4271 461.932 94.9734 462.696 Q92.5428 463.46 89.7651 465.011 L89.7651 460.288 Q92.5891 459.154 95.0428 458.576 Q97.4965 457.997 99.5335 457.997 Q104.904 457.997 108.098 460.682 Q111.293 463.367 111.293 467.858 Q111.293 469.988 110.483 471.909 Q109.696 473.807 107.589 476.4 Q107.01 477.071 103.909 480.288 Q100.807 483.483 95.1586 489.247 Z" fill="#000000" fill-rule="evenodd" fill-opacity="1" /><path clip-path="url(#clip960)" d="M 0 0 M104.348 232.094 Q107.705 232.812 109.58 235.08 Q111.478 237.349 111.478 240.682 Q111.478 245.798 107.959 248.599 Q104.441 251.4 97.9595 251.4 Q95.7836 251.4 93.4688 250.96 Q91.1771 250.543 88.7234 249.687 L88.7234 245.173 Q90.6678 246.307 92.9826 246.886 Q95.2974 247.464 97.8206 247.464 Q102.219 247.464 104.51 245.728 Q106.825 243.992 106.825 240.682 Q106.825 237.627 104.672 235.914 Q102.543 234.178 98.7234 234.178 L94.6956 234.178 L94.6956 230.335 L98.9085 230.335 Q102.358 230.335 104.186 228.969 Q106.015 227.58 106.015 224.988 Q106.015 222.326 104.117 220.914 Q102.242 219.479 98.7234 219.479 Q96.8021 219.479 94.603 219.895 Q92.4039 220.312 89.7651 221.191 L89.7651 217.025 Q92.4271 216.284 94.7419 215.914 Q97.0798 215.543 99.14 215.543 Q104.464 215.543 107.566 217.974 Q110.668 220.381 110.668 224.502 Q110.668 227.372 109.024 229.363 Q107.381 231.33 104.348 232.094 Z" fill="#000000" fill-rule="evenodd" fill-opacity="1" /><polyline clip-path="url(#clip962)" style="stroke:#009af9; stroke-width:4; stroke-opacity:1; fill:none" points="
-  209.891,960.809 230.696,943.527 251.5,926.594 272.305,910.01 293.109,893.775 313.914,877.89 334.718,862.353 355.523,847.166 376.328,832.328 397.132,817.839 
-  417.937,803.699 438.741,789.908 459.546,776.467 480.35,763.374 501.155,750.631 521.959,738.236 542.764,726.191 563.568,714.495 584.373,703.149 605.177,692.151 
-  625.982,681.502 646.786,671.203 667.591,661.253 688.395,651.651 709.2,642.399 730.004,633.497 750.809,624.943 771.613,616.738 792.418,608.883 813.222,601.376 
-  834.027,594.219 854.831,587.411 875.636,580.952 896.44,574.842 917.245,569.082 938.049,563.67 958.854,558.608 979.658,553.894 1000.46,549.53 1021.27,545.515 
-  1042.07,541.849 1062.88,538.532 1083.68,535.565 1104.49,532.946 1125.29,530.677 1146.09,528.757 1166.9,527.186 1187.7,525.964 1208.51,525.091 1229.31,524.567 
-  1250.12,524.393 1270.92,524.567 1291.73,525.091 1312.53,525.964 1333.33,527.186 1354.14,528.757 1374.94,530.677 1395.75,532.946 1416.55,535.565 1437.36,538.532 
-  1458.16,541.849 1478.97,545.515 1499.77,549.53 1520.58,553.894 1541.38,558.608 1562.18,563.67 1582.99,569.082 1603.79,574.842 1624.6,580.952 1645.4,587.411 
-  1666.21,594.219 1687.01,601.376 1707.82,608.883 1728.62,616.738 1749.43,624.943 1770.23,633.497 1791.03,642.399 1811.84,651.651 1832.64,661.253 1853.45,671.203 
-  1874.25,681.502 1895.06,692.151 1915.86,703.149 1936.67,714.495 1957.47,726.191 1978.27,738.236 1999.08,750.631 2019.88,763.374 2040.69,776.467 2061.49,789.908 
-  2082.3,803.699 2103.1,817.839 2123.91,832.328 2144.71,847.166 2165.52,862.353 2186.32,877.89 2207.12,893.775 2227.93,910.01 2248.73,926.594 2269.54,943.527 
-  2290.34,960.809 
-  "/>
-<circle clip-path="url(#clip962)" cx="209.891" cy="960.809" r="14" fill="#e26f46" fill-rule="evenodd" fill-opacity="1" stroke="#000000" stroke-opacity="1" stroke-width="3.2"/>
-<circle clip-path="url(#clip962)" cx="1250.12" cy="87.9763" r="14" fill="#3da44d" fill-rule="evenodd" fill-opacity="1" stroke="#000000" stroke-opacity="1" stroke-width="3.2"/>
-<circle clip-path="url(#clip962)" cx="2290.34" cy="960.809" r="14" fill="#c271d2" fill-rule="evenodd" fill-opacity="1" stroke="#000000" stroke-opacity="1" stroke-width="3.2"/>
-<polyline clip-path="url(#clip962)" style="stroke:#ac8d18; stroke-width:4; stroke-opacity:1; fill:none" points="
-  209.891,233.448 230.696,257.451 251.5,280.969 272.305,304.002 293.109,326.55 313.914,348.614 334.718,370.192 355.523,391.286 376.328,411.894 397.132,432.018 
-  417.937,451.656 438.741,470.81 459.546,489.479 480.35,507.663 501.155,525.362 521.959,542.577 542.764,559.306 563.568,575.55 584.373,591.31 605.177,606.584 
-  625.982,621.374 646.786,635.679 667.591,649.499 688.395,662.833 709.2,675.683 730.004,688.049 750.809,699.929 771.613,711.324 792.418,722.235 813.222,732.66 
-  834.027,742.601 854.831,752.056 875.636,761.027 896.44,769.513 917.245,777.514 938.049,785.03 958.854,792.061 979.658,798.607 1000.46,804.669 1021.27,810.245 
-  1042.07,815.337 1062.88,819.943 1083.68,824.065 1104.49,827.702 1125.29,830.854 1146.09,833.521 1166.9,835.703 1187.7,837.4 1208.51,838.612 1229.31,839.34 
-  1250.12,839.582 1270.92,839.34 1291.73,838.612 1312.53,837.4 1333.33,835.703 1354.14,833.521 1374.94,830.854 1395.75,827.702 1416.55,824.065 1437.36,819.943 
-  1458.16,815.337 1478.97,810.245 1499.77,804.669 1520.58,798.607 1541.38,792.061 1562.18,785.03 1582.99,777.514 1603.79,769.513 1624.6,761.027 1645.4,752.056 
-  1666.21,742.601 1687.01,732.66 1707.82,722.235 1728.62,711.324 1749.43,699.929 1770.23,688.049 1791.03,675.683 1811.84,662.833 1832.64,649.499 1853.45,635.679 
-  1874.25,621.374 1895.06,606.584 1915.86,591.31 1936.67,575.55 1957.47,559.306 1978.27,542.577 1999.08,525.362 2019.88,507.663 2040.69,489.479 2061.49,470.81 
-  2082.3,451.656 2103.1,432.018 2123.91,411.894 2144.71,391.286 2165.52,370.192 2186.32,348.614 2207.12,326.55 2227.93,304.002 2248.73,280.969 2269.54,257.451 
-  2290.34,233.448 
-  "/>
-<polyline clip-path="url(#clip962)" style="stroke:#000000; stroke-width:4; stroke-opacity:1; fill:none" points="
-  209.891,960.809 1250.12,87.9763 
-  "/>
-<polyline clip-path="url(#clip962)" style="stroke:#000000; stroke-width:4; stroke-opacity:1; fill:none" points="
-  209.891,960.809 2290.34,960.809 
-  "/>
-<polyline clip-path="url(#clip962)" style="stroke:#000000; stroke-width:4; stroke-opacity:1; fill:none" points="
-  1250.12,87.9763 2290.34,960.809 
-  "/>
-<polyline clip-path="url(#clip962)" style="stroke:#000000; stroke-width:4; stroke-opacity:1; fill:none" points="
-  209.891,233.448 1250.12,1445.72 
-  "/>
-<polyline clip-path="url(#clip962)" style="stroke:#000000; stroke-width:4; stroke-opacity:1; fill:none" points="
-  209.891,233.448 2290.34,233.448 
-  "/>
-<polyline clip-path="url(#clip962)" style="stroke:#000000; stroke-width:4; stroke-opacity:1; fill:none" points="
-  1250.12,1445.72 2290.34,233.448 
-  "/>
-<circle clip-path="url(#clip962)" cx="209.891" cy="233.448" r="14" fill="#9b7fe8" fill-rule="evenodd" fill-opacity="1" stroke="#000000" stroke-opacity="1" stroke-width="3.2"/>
-<circle clip-path="url(#clip962)" cx="1250.12" cy="1445.72" r="14" fill="#608cf6" fill-rule="evenodd" fill-opacity="1" stroke="#000000" stroke-opacity="1" stroke-width="3.2"/>
-<circle clip-path="url(#clip962)" cx="2290.34" cy="233.448" r="14" fill="#f05f73" fill-rule="evenodd" fill-opacity="1" stroke="#000000" stroke-opacity="1" stroke-width="3.2"/>
-</svg>
-
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-</div></div><div class="fragment">
-<div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>This is as although the curves clearly intersect, none of the points in their convex hulls lie in the space defined by the convex hull of the other curve</p>
-
-</div>
-</div></div></section><section>
 <div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <ul>
@@ -15616,7 +15423,7 @@ M147.478 1486.45 L2352.76 1486.45 L2352.76 47.2441 L147.478 47.2441  Z
 <div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <h2 id="Evaluation">Evaluation<a class="anchor-link" href="#Evaluation">&#182;</a></h2><p>I am also intending to collect data varying genetic operators, parameter values as well as the number of obstacles and agents being planned for.</p>
-<p><a href="../images/multi-agent-result.html">Fitness landscape for multi-agent planning</a></p>
+<p><a href="https://sambarrett.online/Y4-Diss/multi-agent-resultsp">Fitness landscape for multi-agent planning</a></p>
 
 </div>
 </div></section><section>
