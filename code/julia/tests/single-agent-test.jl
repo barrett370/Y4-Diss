@@ -5,14 +5,14 @@ using PlotlyJS
 function plot_benchmarks(benches, sf = true)
 
     means =
-        map(ns -> map(b -> BenchmarkTools.mean(b).time * 10^-7, ns), benches[1])
+        map(ns -> map(b -> BenchmarkTools.mean(b).time * 10^-9, ns), benches[1])
     @show means
     @show mean_fitness = benches[2]
     ns = vcat(1:length(benches[1][1]))
     ngens = vcat(1:length(benches[1]))
     @show ngens, ns, collect(Iterators.flatten(means))
     layout = PlotlyJS.Layout(;
-        title = "Singlew agent planner \n z=Planning time (left) | Average Fitness (right)",
+        title = "Singlew agent planner \n z=Planning time (left) /s | Average Fitness (right)",
         xaxis = attr(title = "Size of population"),
         yaxis = attr(title = "Number of generations"),
         zaxis = attr(title = "Time to plan /ms"),

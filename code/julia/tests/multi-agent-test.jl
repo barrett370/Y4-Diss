@@ -5,14 +5,14 @@ import PlotlyJS
 function multi_plot_benchmarks(benches, sf = true, zlims = nothing)
 
     means =
-        map(ns -> map(b -> BenchmarkTools.mean(b).time * 10^-7, ns), benches[1])
+        map(ns -> map(b -> BenchmarkTools.mean(b).time * 10^-9, ns), benches[1])
     @show means
     mean_fitness = map(gen -> map(n -> mean(n), gen), benches[2])
     ns = vcat(1:length(benches[1][1]))
     ngens = vcat(1:length(benches[1]))
     @show ngens, ns, collect(Iterators.flatten(means))
     layout = PlotlyJS.Layout(;
-        title = "Multi agent parallel planner \n z=Planning time (left) | Average Fitness (right)",
+        title = "Multi agent parallel planner \n z=Planning time /s (left) | Average Fitness (right) | Planning time overlayed with Average Fitness",
         xaxis = attr(title = "Size of population"),
         yaxis = attr(title = "Number of generations"),
         zaxis = attr(title = "Time to plan /ms"),
@@ -26,7 +26,7 @@ function multi_plot_benchmarks(benches, sf = true, zlims = nothing)
         x = ns,
         y = ngens,
         z = means,
-        surfacecolor = mean_fitness,
+        #surfacecolor = mean_fitness,
         layout = layout,
     )
     if zlims != nothing
@@ -46,7 +46,7 @@ function multi_plot_benchmarks(benches, sf = true, zlims = nothing)
         y = ngens,
         z = mean_fitness,
         zlims = (0, 60),
-        surfacecolor = means,
+        #surfacecolor = means,
         layout = layout2,
     )
     p = PlotlyJS.plot(surf, layout)
@@ -54,7 +54,7 @@ function multi_plot_benchmarks(benches, sf = true, zlims = nothing)
     if sf
         savehtml(p, "images/tmp_multi-agent-result.html")
     end
-    [p, PlotlyJS.plot(surf2, layout2)]
+    [p, PlotlyJS.plot(surf2, layout2),PlotlyJS.plot([surf,surf2], layout2)]
 
 end
 
