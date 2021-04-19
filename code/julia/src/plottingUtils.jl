@@ -24,7 +24,7 @@ function plotGeneration(P::Array{Individual}, n = 100)
     for i = 1:length(P)
         plot_curve!(plt, i, P[i].phenotype.genotype, n)
     end
-    display(plt)
+    plt
 end
 
 function plotGeneration!(plt, P::Array{Individual}, road::Road; n = 100, g = -1)
@@ -158,7 +158,7 @@ function plot_curve!(plt, i::Integer, c::BezierCurve, n::Integer)
         append!(ps_x, C.x)
         append!(ps_y, C.y)
     end
-    plot!(plt, ps_x, ps_y, label = string("Individual-", i))
+    plot!(plt, ps_x, ps_y, label = string("Individual-", i),ylims=(0,15),xlims=(0,10))
 end
 
 function plot_control_points!(plt, c::BezierCurve)

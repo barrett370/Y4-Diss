@@ -112,7 +112,11 @@ function bbox(b::BezierCurve)
 
 end
 
-function bezInt(B1::BezierCurve, B2::BezierCurve, rdepth::Int, rdepth_max)
+function bezInt(B1::BezierCurve, B2::BezierCurve, rdepth::Int, rdepth_max, c=[])
+	if BEZPLOT
+		p = plotGeneration([Individual(Phenotype(B1[1],B1,B1[end]),0),Individual(Phenotype(B2[1],B2,B2[end]),0)], 100)
+		savefig(p,"bezint-$rdepth$c.png")
+	end
     if rdepth + 1 > rdepth_max
         @debug "rdepth reached"
 		if CACHE
@@ -169,6 +173,7 @@ function bezInt(B1::BezierCurve, B2::BezierCurve, rdepth::Int, rdepth_max)
                                 B2,
                                 rdepth + 1,
                                 rdepth_max,
+								[c,1]
                             )
                         ],
                     )
@@ -180,6 +185,7 @@ function bezInt(B1::BezierCurve, B2::BezierCurve, rdepth::Int, rdepth_max)
                                 B2,
                                 rdepth + 1,
                                 rdepth_max,
+								[c,2]
                             )
                         ],
                     )
@@ -193,6 +199,7 @@ function bezInt(B1::BezierCurve, B2::BezierCurve, rdepth::Int, rdepth_max)
                                 B2_1,
                                 rdepth + 1,
                                 rdepth_max,
+								[c,3]
                             )
                         ],
                     )
@@ -204,6 +211,7 @@ function bezInt(B1::BezierCurve, B2::BezierCurve, rdepth::Int, rdepth_max)
                                 B2_2,
                                 rdepth + 1,
                                 rdepth_max,
+								[c,4]
                             )
                         ],
                     )
