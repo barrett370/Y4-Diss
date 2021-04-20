@@ -1,0 +1,75 @@
+#+TITLE: Code-base Setup
+
+** Julia Installation
+
+Installation instructions for Julia can be found [[https://julialang.org/downloads/][here]]. My project requires version 1.5 or above.
+It is also hosted by most major package managers (~homebrew~, ~pacman~, ~apt~, etc.)
+
+** Dependency Installation
+
+Once Julia is installed, navigate to the julia code directory (~./code/julia/~) and run julia with either:
+
+#+begin_src bash
+julia
+#+end_src
+
+or
+
+#+begin_src bash
+julia -t auto
+#+end_src
+
+to enable multi-threading
+
+
+All dependencies are stored in a Julia environment, enabling it will cause Julia to install all required libraries. From inside the code directory inside of the Julia REPL run:
+
+#+begin_src julia
+using Pkg
+Pkg.activate("./env/")
+#+end_src
+
+or
+
+#+begin_src julia
+] activate env/
+#+end_src
+
+(Note ']' enters the REPL into ~Pkg~ mode.)
+
+
+** Running Single Agent Planner
+
+#+begin_src julia
+include("src/quickstart.jl") # Instantiates toy example road and start-goal 
+P = GA(start_point,goal_point,road,n_gens=4,n=7,selection_method=ranked)
+#+end_src
+
+~P~ will then store the population after 4 generations, ordered in increasing fitness, (ordered best to worst)
+
+
+** Running Multi-agent planner
+
+#+begin_src julia
+include("src/quickstart.jl") # Instantiates toy example road and start-goal pairs
+P = PCGA(starts,goals,road,true,n_gens=4,n=8,selection_method=ranked,mutation_method=gaussian)
+#+end_src
+
+    ~P~ will contain the best routes for each of the agents.
+
+*** Visualising
+
+If you would like to visualise the results of the above:
+
+As a gif:
+#+begin_src julia
+include("src/plottingUtils.jl")
+plot_generation_gif(road,P)
+#+end_src
+
+As a still image:
+    #+begin_src julia
+include("src/plottingUtils.jl")
+rg = draw_road(road,0,25)
+plotGeneration(rg,P,road)
+    #+end_src
