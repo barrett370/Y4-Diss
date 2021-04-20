@@ -27,7 +27,8 @@ In this approach, the genotype is abstractly represented as a Bézier curve (Sec
 	\caption{\label{fig:GA_Genotype} Individual genotype as real-valued string }
 \end{figure}
 
-In the above form the descriptions of genetic operators found in Section~\ref{subsec:GAOps} should be sufficiently detailed to re-implement.\todo[inline]{Phrasing?  Correct? should I elaborate? Could talk more about implementation for GA operators, design decisions etc. Ready to talk about performance in next section}
+In the above form the descriptions of genetic operators found in Section~\ref{subsec:GAOps} should be sufficiently detailed to re-implement.
+\todo[inline]{Replace with detailed description of implementation of operators, decisions e.g. allowed range for mutation of control points.}
 
 Initially my Phenotype contained no additional information. However, I still created the distinction to allow for additional properties to be encapsulated during development.
 
@@ -154,7 +155,7 @@ My initial approach to a collaborative planning system was somewhat inefficient.
 
 This system was very inefficient with the final routes requiring a large number of checks to be carried out by my \texttt{bezInt} function, which itself suffered from \todo[inline]{verify this} exponential time (and space) complexity.
 
-This system was improved upon by splitting the process over multiple threads, each agent being given a separate thread, communicating their most up-to-date plans via a shared array, $S$. Agent $i$ will store its current fittest route in $S[i]$, the fitness of any candidate checks for collisions with each route in $S$. This system may conduct more checks but it removes the problem of prioritising the first route to the planned and reduces the overall runtime of the system approximately proportionally to the number of threads available, an abstract view of the topology can be seen in Figure~\ref{fig:PCGA}.\todo{is this clear/ necessary?}
+This system was improved upon by splitting the process over multiple threads, each agent being given a separate thread, communicating their most up-to-date plans via a shared array, $S$. Agent $i$ will store its current fittest route in $S[i]$, the fitness of any candidate checks for collisions with each route in $S$. This system may conduct more checks but it removes the problem of prioritising the first route to the planned and reduces the overall runtime of the system approximately proportionally to the number of threads available, an abstract view of the topology can be seen in Figure~\ref{fig:PCGA}.\feedback{is this clear/ necessary?}
 
 \begin{figure}
   \centering
@@ -247,7 +248,7 @@ An illustration of the recursive subdivision method described above can be seen 
 \input{bezIntDiagram.tex}
 \end{turn}
 \caption{\label{fig:bezIntIllustration} Illustration of Bezier Intersection recursive subdivision method (Recursion depth =6)}
-\end{figure}\todo{Move to appendix?}
+\end{figure}\feedback{Is this figure clear enough? Should I move it to appendix?}
 
 \section{Macro-Level Planning} \todo{Title?}
 
@@ -309,7 +310,7 @@ When planning for multiple agents across multiple road spaces, routes may share 
 
 In the above example, it is trivial to see that agents $a_{1}$ and $a_{3}$ will share the same road at each stage of their route as they are following the same abstract path. We however, must also be able to determine whether agents $a_{1}$ and $a_{4}$ share road $e25$, it occurs in both of their routes but one agent may have left that stretch of road before the other enters.
 
-This problem is solved using the algorithm seen in Algorithm~\ref{alg:pathgrouping}\todo{do I need to make it more obvious that these algorithms are my own work?}
+This problem is solved using the algorithm seen in Algorithm~\ref{alg:pathgrouping}\feedback{do I need to make it more obvious that these algorithms are my own work? Are they clear enough?}
 . For instance, on the example input above, we would expect to see the following grouping:
 
 \begin{align*}
@@ -430,6 +431,7 @@ Julia also has distributed computation facilities. This sort of functionality co
 
 
 %TC:macro \todo 1
+
 
 
 %%% Local Variables:

@@ -2,6 +2,6 @@
 
 * PROJ Dissertation Tasks
 ** DONE Look into parallel cooperative planning approaches
-** TODO Look into representing project requirements in Linear Temporal Logic
-** TODO Implement a wider variety of genetic operators (of the same shape as the current ones)
-** TODO Start to collect data about efficiency, accuracy, etc.
+** DONE Look into representing project requirements in Linear Temporal Logic
+** DONE Implement a wider variety of genetic operators (of the same shape as the current ones)
+** DONE Start to collect data about efficiency, accuracy, etc.
