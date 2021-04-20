@@ -1,1 +1,0 @@
-[{"Julia":"1.5.3","BenchmarkTools":"0.4.3"},[["BenchmarkTools.Trial",{"allocs":116559713,"gctimes":[6.9072159e8,1.463874852e9],"memory":4008040560,"params":["BenchmarkTools.Parameters",{"gctrial":true,"time_tolerance":0.05,"samples":10000,"evals":1,"gcsample":false,"seconds":5.0,"overhead":0.0,"memory_tolerance":0.01}],"times":[3.284085156e9,6.816356338e9]}]]]
