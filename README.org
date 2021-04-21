@@ -5,6 +5,19 @@
 Installation instructions for Julia can be found [[https://julialang.org/downloads/][here]]. My project requires version 1.5 or above.
 It is also hosted by most major package managers (~homebrew~, ~pacman~, ~apt~, etc.)
 
+Alternatively, you can install ~vagrant~ and run:
+
+#+begin_src bash
+vagrant up
+vagrant ssh
+cd /vagrant/code/julia
+#+end_src
+
+This will create a local VM with all dependencies (minus julia libs) pre-installed
+
+**Note this will be much slower than a local install as only 1 core and 1GB of RAM is allocated!**
+
+
 ** Dependency Installation
 
 Once Julia is installed, navigate to the julia code directory (~./code/julia/~) and run julia with either:
@@ -27,12 +40,14 @@ All dependencies are stored in a Julia environment, enabling it will cause Julia
 #+begin_src julia
 using Pkg
 Pkg.activate("./env/")
+Pkg.instantiate()
 #+end_src
 
 or
 
 #+begin_src julia
 ] activate env/
+instantiate
 #+end_src
 
 (Note ']' enters the REPL into ~Pkg~ mode.)

@@ -338,3 +338,4 @@ geckodriver.log
 .vscode
 *.prv/
 themes/
+.vagrant/
