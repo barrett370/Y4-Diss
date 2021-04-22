@@ -37,11 +37,11 @@ function plot_benchmarks(benches, sf = true)
         layout = layout2,
     )
 
-    p= PlotlyJS.plot(surf, layout)
+    p = PlotlyJS.plot(surf, layout)
     [p, PlotlyJS.plot(surf2, layout2)]
 end
 
-function test_gensPopsize(n = 20, n_gens = 10)
+function test_gensPopsize(n = 20, n_gens = 10; road_difficulty=1)
     start = Point(0, 5)
     goal = Point(20, 8)
 
@@ -49,7 +49,19 @@ function test_gensPopsize(n = 20, n_gens = 10)
     b2(x) = 12
     l = 20
     obstacles = []
-    road = Road(b1, b2, obstacles, l)
+    road1 = Road(b1, b2, obstacles, l)
+
+    o1 = Rectangle(1, 10, Point(3, 6))
+    append!(obstacles, [o1])
+    road2 = Road(b1, b2, obstacles, l)
+
+
+    o2 = Rectangle(3, 10, Point(3, 4))
+    append!(obstacles, [o2])
+    road3 = Road(b1, b2, obstacles, l)
+
+    roads = [road1, road2, road3]
+    road = roads[road_difficulty]
     res = [[] for i = 0:n_gens]
     plans = [[] for i = 0:n_gens]
     for ng = 0:n_gens
@@ -68,7 +80,7 @@ function test_gensPopsize(n = 20, n_gens = 10)
                                 $road,
                                 n_gens = $ng,
                                 n = $n,
-                                selection_method=ranked
+                                selection_method = ranked,
                             )[1].fitness,
                         ],
                     )
@@ -81,10 +93,39 @@ function test_gensPopsize(n = 20, n_gens = 10)
     (res, av_fitnesses)
 end
 
+function test_roadDifficulty()
+    start = Point(0, 5)
+    goal = Point(20, 8)
+
+
+    plans = []
+    ng = 5
+    n = 7
+
+    for road in roads
+        "benchmarking for road $road" |> println
+        BenchmarkTools.@benchmark append!(
+            $plans,
+            [
+                GA(
+                    $start,
+                    $goal,
+                    $road,
+                    n_gens = $ng,
+                    n = $n,
+                    selection_method = ranked,
+                )[1].fitness,
+            ],
+        )
+    end
+    @show plans
+    av_fitnesses = map(gen -> map(n -> mean(n), gen), plans)
+    (res, av_fitnesses)
+end
 
 function save_res(res, dir)
-    for gen in 1:length(res[1])
-        for n in 1:length(res[1][gen])
+    for gen = 1:length(res[1])
+        for n = 1:length(res[1][gen])
             open("$dir/bench-$gen-$n", "w") do f
                 println(f, BenchmarkTools.mean(res[1][gen][n]).time)
                 println(f, res[2][gen][n])

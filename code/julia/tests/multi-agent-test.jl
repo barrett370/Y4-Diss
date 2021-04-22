@@ -58,7 +58,7 @@ function multi_plot_benchmarks(benches, sf = true, zlims = nothing)
 
 end
 
-function multi_test_gensPopsize(n = 20, n_gens = 10)
+function multi_test_gensPopsize(n = 20, n_gens = 10; road_difficulty=1)
     starts = [Point(0, 5), Point(0, 8), Point(0, 6)]
 
     goals = [Point(20, 8), Point(18, 3), Point(15, 5)]
@@ -68,7 +68,20 @@ function multi_test_gensPopsize(n = 20, n_gens = 10)
     b2(x) = 12
     l = 20
     obstacles = []
-    road = Road(b1, b2, obstacles, l)
+    road1 = Road(b1, b2, obstacles, l)
+
+    o1 = Rectangle(1, 10, Point(3, 6))
+    append!(obstacles, [o1])
+    road2 = Road(b1, b2, obstacles, l)
+
+
+    o2 = Rectangle(3, 10, Point(3, 4))
+    append!(obstacles, [o2])
+    road3 = Road(b1, b2, obstacles, l)
+
+    roads = [road1,road2,road3]
+    road = roads[road_difficulty]
+
     res = [[] for i = 0:n_gens]
     plans = [[] for i = 0:n_gens]
     for ng = 0:n_gens

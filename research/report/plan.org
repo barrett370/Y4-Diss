@@ -44,6 +44,7 @@ texcount background.tex  \
 
 #+RESULTS:
 : 1686
+- [ ] Make sure all techniques used are properly documented in this section
 
 ** [-] Literature Review [0/1]
 #+begin_src bash
@@ -68,7 +69,7 @@ texcount classical_approach.tex  \
 #+end_src
 
 #+RESULTS:
-: 3179
+: 3245
 *** [X] Single Agent Planning [3/3]
 - [X] Population encoding
 - [X] Population generation
@@ -89,8 +90,20 @@ CLOCK: [2021-04-09 Fri 10:36]--[2021-04-09 Fri 11:01] =>  0:25
 - [ ] Possible extensions
 ** [ ] Results [0/3]
 *** [ ] Single Agent
+- [ ] population size
+- [ ] number of generations
+- [ ] number of obstacles / difficulty of road space
 *** [ ] Multi Agent
+- [ ] population size
+- [ ] number of generations
+- [ ] number of obstacles / difficulty of road space
+- [ ] number of concurrently planned agents
 *** [ ] Macro Level
+- [ ] population size
+- [ ] number of generations
+- [ ] number of obstacles / difficulty of road space
+- [ ] number of concurrently planned agents
+- [ ] sparsity of graph
 
 ** [ ] Evaluation [0/0]
 #+begin_src bash
