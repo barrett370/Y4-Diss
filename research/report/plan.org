@@ -90,12 +90,12 @@ CLOCK: [2021-04-09 Fri 10:36]--[2021-04-09 Fri 11:01] =>  0:25
 - [ ] Possible extensions
 ** [ ] Results [0/3]
 *** [ ] Single Agent
-- [ ] population size
-- [ ] number of generations
+- [X] population size
+- [X] number of generations
 - [ ] number of obstacles / difficulty of road space
 *** [ ] Multi Agent
-- [ ] population size
-- [ ] number of generations
+- [X] population size
+- [X] number of generations
 - [ ] number of obstacles / difficulty of road space
 - [ ] number of concurrently planned agents
 *** [ ] Macro Level
@@ -105,7 +105,7 @@ CLOCK: [2021-04-09 Fri 10:36]--[2021-04-09 Fri 11:01] =>  0:25
 - [ ] number of concurrently planned agents
 - [ ] sparsity of graph
 
-** [ ] Evaluation [0/0]
+** [ ] Evaluation [0/4]
 #+begin_src bash
 texcount evaluation.tex  \
     | grep "Words in text:" \
@@ -114,8 +114,17 @@ texcount evaluation.tex  \
     | sed 's/ //g'
 #+end_src
 
+
 #+RESULTS:
 : 182
+*** [ ] Bezier Curves
+- [ ] Advantages
+- [-] Disadvantages
+- [-] Alternatives
+
+*** [ ] Single agent approach
+*** [ ] Multi-agent approach
+*** [ ] macro level approach
 
 ** [ ] Conclusion [0/0]
 #+begin_src bash
