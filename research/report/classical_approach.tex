@@ -6,9 +6,9 @@ The goal of this section was to design a system that fulfilled the requirements 
 The general shape of a GA as seen in Algorithm~\ref{alg:GenericGA} is the same for almost all problems. But each individual operator implementation is domain specific.
 
 \subsection{Individual Encoding}
-As such, I first had to implement a method to generate an initial population. In order to do this, I had to define my programmatic representations of the phenotypes and genotypes of my individuals. I decided to base my genotypic structure on the that described by Kala\cite{kalaOnroadIntelligentVehicles2016}.
+As such, I first had to implement a method to generate an initial population. In order to do this, I had to define my programmatic representations of the phenotypes and genotypes of my individuals. I decided to base my pheno and genotypic structure on the that described by Kala\cite{kalaOnroadIntelligentVehicles2016}.
 
-In this approach, the genotype is abstractly represented as a Bézier curve (Section~\ref{sec:back-bezier-curves}). This is more concretely translated into a real-valued string, interleaving the $x$ and $y$ coordinates of each control point. Taking the form:
+In this approach, the phenotype is abstractly represented as a Bézier curve (Section~\ref{sec:back-bezier-curves}). This is more concretely translated into a genotype encoded as a real-valued string, interleaving the $x$ and $y$ coordinates of each control point. Taking the form:
 
 \begin{figure}[ht]
 	\centering
