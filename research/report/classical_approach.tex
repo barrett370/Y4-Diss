@@ -142,7 +142,107 @@ A similar process is performed to determine how much of a curve passes too close
 
 Once the initial population is generated, the main algorithmic loop can begin, this is the repeated application of the selection, crossover, mutation and evaluation operators (See Section~\ref{subsec:GAOps}) until set termination criteria are met or the maximum number of generations is completed, seen in Algorithm~\ref{alg:GenericGA}.
 
-The final set of routes is finally filtered by the predicate $\texttt{infeasible-distance}(i) = 0 $
+The final set of routes is finally filtered by the predicate $\texttt{infeasible-distance}(i) = 0, \forall i \in P $
+
+\subsection{Genetic Operators}
+
+The abstract goal of each genetic operator has already been discussed in Section~\ref{subsec:GAOps}. Here I will discuss their concrete implementation with respect to my task.
+
+\subsubsection{Selection}
+
+My selection procedure follows very closely to the method outlined in Section~\ref{subsec:GAOps}, relying on the fitness function to duplicate fit individuals, replacing the less fit ones with a certain chance or reasoning.
+
+An example of ranked selection on a sample population can be seen in Figure~\ref{fig:selection_eg}
+
+\begin{figure}
+  \centering
+  \begin{subfigure}[b]{0.44\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{figures/init_pop.png}
+    \caption{Initially generated population, size 10}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.44\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{figures/post_selection_pop.png}
+    \caption{Population after (ranked) selection procedure}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.44\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{figures/post_selection_pop_unique.png}
+    \caption{Population after (ranked) selection procedure, duplicates removed}
+  \end{subfigure}
+  \caption{\label{fig:selection_eg} Example of ranked selection}
+\end{figure}
+
+
+\subsubsection{Mutation}
+
+The variants of the mutation operator that I have implemented are Uniform and Gaussian. Both attempt to achieve the same effect via different methods.
+
+Abstractly, my mutation operators select a control point with a random probability and mutate within fixed bounds. These bounds are tied to the size and shape of the road.
+
+In my Gaussian mutation operator, the range of $x$ values for the mutation of a randomly selected point $ p \in B = \{ p_{1}, \ldots, p_{n} \}, n\in \mathbb{Z}^{\geq 2 }$ are:
+
+\begin{equation}
+\mathcal{X} = \left[p_{1_{x}}, p_{n_{x}}\right]
+\end{equation}
+
+I.e. a mutated control point cannot lie before or after the start or end points respectively. The range of $y$ values a mutated point can take is within:
+
+\begin{equation}
+  \mathcal{Y} = \left[ - 1.3 \cdot \frac{b_{1}(x_{1}) + b_{2}(x_{2})}{2}, 1.3 \cdot \frac{b_{2}(x_{1}) + b_{2}(x_{2})}{2} \right]
+\end{equation}
+
+Meaning $-1.3$ times the average $y$ coordinate of the bottom road boundary to $1.3$ times the average of the top road boundary across the range of permitted $x$ values. $\pm 1.3$ was used after experimenting with values ranging from $\pm 2 to \pm 0.5$, 1.3 offers the procedure the chance to significantly affect the course of a route whilst minimising the chance that the mutated route will be infeasible.
+
+A pair standard deviations as previously outlined in the Background section is defined as:
+
+\begin{equation}
+\sigma_{x} = \frac{\mathcal{X}_{1}-\mathcal{X}_{2}}{10}
+\end{equation}
+
+\begin{equation}
+\sigma_{y} = \frac{\mathcal{Y}_{1}-\mathcal{Y}_{2}}{10}
+\end{equation}
+
+A new point, $p'$, is then constructed as follows:
+
+\begin{align}
+  p'_{x}  &= \min(\max(\mathcal{N}(p_{x},\sigma_{x}),\mathcal{X}_{1}),\mathcal{X}_{2})\\
+  p'_{y}  &= \min(\max(\mathcal{N}(p_{y},\sigma_{y}),\mathcal{Y}_{1}),\mathcal{Y}_{2})
+\end{align}
+
+Point $p \in B$ is then replaced with our new point $p'$.
+
+The result of the operation being applied to a example curve can be seen in Figure~\ref{fig:gauss_mutation_eg}
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[scale=0.4]{figures/gauss_mutation_eg.png}
+  \caption{\label{fig:gauss_mutation_eg} Example of Gaussian mutation on a Bézier curve}
+\end{figure}
+
+\subsubsection{Crossover}
+
+Simple crossover is implemented as it is described in Section~\ref{subsec:GAOps}, two parents are randomly selected and exchange genotypic information about a random point. I have been careful not to choose a crossover point which splits a control point. The result of this operation is appended to the current population, only the top $n$ individuals are carried forward to the next generation.
+Once used to create offspring, an individual cannot again participate in crossover, however, duplicate individuals created via the selection process may effectively reproduce multiple times.
+
+The result of a single (simple) crossover operation can be seen in Figure~\ref{fig:crossover_eg}
+
+\begin{figure}
+  \centering
+  \begin{subfigure}[b]{0.44\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{figures/init_pop.png}
+    \caption{Initially generated population, size 10}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.44\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{figures/post_selection_pop.png}
+    \caption{Population after crossover operation is applied}
+  \end{subfigure}
+  \caption{\label{fig:crossover_eg} Example of simple crossover}
+\end{figure}
 
 \section{Multi-agent Approach}
 \label{sec:maa}
@@ -247,7 +347,7 @@ An illustration of the recursive subdivision method described above can be seen 
 \begin{turn}{90}
 \input{bezIntDiagram.tex}
 \end{turn}
-\caption{\label{fig:bezIntIllustration} Illustration of Bezier Intersection recursive subdivision method (Recursion depth =6)}
+\caption{\label{fig:bezIntIllustration} Illustration of Bezier Intersection recursive subdivision method (Recursion depth =2)}
 \end{figure}\feedback{Is this figure clear enough? Should I move it to appendix?}
 
 \section{Macro-Level Planning} \todo{Title?}

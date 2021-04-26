@@ -44,7 +44,7 @@ diagrams overlap. Can you reduce the recursion depth you're
 representing, say to 3 or at most 4, and increase the size of the
 individual diagrams? I assume the tiny labels (both the names for the
 curves and the numbers associated with the tickson the axes) are not
-actually relevant here; if that's correct, then leave them out.
+actually relevant here; if that's correct, then leave them out. 
 
 Again, a more detailed caption or explanation in the text would be
 useful here. You could for example link different steps in the figure to

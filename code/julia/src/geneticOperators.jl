@@ -67,7 +67,7 @@ function gaussian_mutation!(P::Array{Individual}, road::Road)::Array{Individual}
     for i in P
         if Distributions.sample([true, false], Weights([μ, 1 - μ])) # Do we mutate this candidate ?
             new_i = deepcopy(i)
-            c_index = rand(1:length(new_i.phenotype.genotype))
+            c_index = rand(2:length(new_i.phenotype.genotype)-1)
             cᵢ = new_i.phenotype.genotype[c_index] # randomly selected gene
             x_bound = sort([new_i.phenotype.source.x, new_i.phenotype.goal.x])
             y_bound = [
@@ -89,8 +89,8 @@ function gaussian_mutation!(P::Array{Individual}, road::Road)::Array{Individual}
 
 
             # standard deviation
-            σᵢ_x = abs(x_bound[1] - x_bound[2])# TODO make sure this is correct
-            σᵢ_y = abs(y_bound[1] - y_bound[2])# TODO make sure this is correct
+            σᵢ_x = 0.1*abs(x_bound[1] - x_bound[2])# TODO make sure this is correct
+            σᵢ_y = 0.1*abs(y_bound[1] - y_bound[2])# TODO make sure this is correct
 
             cᵢ′ = Point(
                 min(
@@ -113,7 +113,7 @@ function gaussian_mutation!(P::Array{Individual}, road::Road)::Array{Individual}
     P
 end
 
-function simple_crossover(P::Array{Individual})
+function simple_crossover(P::Array{Individual})::Array{Individual}
     n = length(P)
     start = P[1].phenotype.source
     goal = P[1].phenotype.goal
@@ -153,7 +153,7 @@ function simple_crossover(P::Array{Individual})
 end
 
 
-function selection(P::Array{Individual}; method::SelectionMethod = roulette)
+function selection(P::Array{Individual}; method::SelectionMethod = roulette)::Array{Individual}
 
     #@match method begin
     #    roulette => return roulette_selection(P)

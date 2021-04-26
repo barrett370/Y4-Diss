@@ -158,7 +158,7 @@ function plot_curve!(plt, i::Integer, c::BezierCurve, n::Integer)
         append!(ps_x, C.x)
         append!(ps_y, C.y)
     end
-    plot!(plt, ps_x, ps_y, label = string("Individual-", i),ylims=(0,15),xlims=(0,10))
+    plot!(plt, ps_x, ps_y, label = string("Individual-", i))
 end
 
 function plot_control_points!(plt, c::BezierCurve)

@@ -113,8 +113,9 @@ function bbox(b::BezierCurve)
 end
 
 function bezInt(B1::BezierCurve, B2::BezierCurve, rdepth::Int, rdepth_max, c=[])
-	if BEZPLOT
+	if BEZPLOT && rdepth < 5
 		p = plotGeneration([Individual(Phenotype(B1[1],B1,B1[end]),0),Individual(Phenotype(B2[1],B2,B2[end]),0)], 100)
+		plot!(p,leg=false,ticks=false)
 		savefig(p,"bezint-$rdepth$c.png")
 	end
     if rdepth + 1 > rdepth_max
