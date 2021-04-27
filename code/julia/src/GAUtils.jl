@@ -161,7 +161,7 @@ function infeasible_distance(road::Road, curve::BezierCurve)
                 deCasteljau(curve, intersects[1][3])[2],
                 intersects[end][3],
             )[2] |> bezLength
-            l += pre_ob - post_ob  
+            l += pre_ob - post_ob
         end
     end
     for i = 1:length(curve_values[1])-1
@@ -273,7 +273,7 @@ function Fitness(r::Road, os::SharedArray, i::Individual) # Given knowledge of o
             else
                 if collisionDetection(i.phenotype.genotype, o |> getGenotype)
                     @debug "Detected collision!"
-                    base_fitness = base_fitness * 5 # TODO tune this
+                    base_fitness = base_fitness * 10 # TODO tune this
                 end
             end
         end
@@ -324,29 +324,35 @@ function ft_collisionDetection(c1::BezierCurve, c2::BezierCurve)::Bool
 
 end
 function collisionDetection(c1::BezierCurve, c2::BezierCurve)::Bool
-    (b, ps) = bezInt(c1, c2)
-    @debug (b, ps)
+    (b, ts) = bezInt(c1, c2)
+    @debug (b, ts)
     if b # if they do intersect
         @debug "Intersection"
-        c1_to_intersect = deepcopy(c1)
-        for i = 1:length(c1)
-            if c1[i].x > ps[1][1].x # TODO tweak this
-                c1_to_intersect = c1_to_intersect[1:i]
-                append!(c1_to_intersect, ps[1][2:end])
-                break
-            end
-        end
+#        c1_to_intersect = deepcopy(c1)
+#        for i = 1:length(c1)
+#            if c1[i].x > ps[1][1].x # TODO tweak this
+#                c1_to_intersect = c1_to_intersect[1:i]
+#                append!(c1_to_intersect, ps[1][2:end])
+#                break
+#            end
+#        end
+#
+#        c2_to_intersect = deepcopy(c2)
+#        for i = 1:length(c2) # for each control point
+#            if c2[i].x > ps[2][1].x # TODO tweak this | if the x position of the control point is greater than the x value of the inital point in the section of the curve that insersects
+#                c2_to_intersect = c2_to_intersect[1:i] # restrict the intersection to this section of c2
+#                append!(c2_to_intersect, ps[2][2:end]) # append the rest of the intersected section creating a curve that goes from c2 start to end of intersection section
+#                break
+#            end
+#        end
+#        @debug bezLength(c1_to_intersect)
+#        @debug c1_to_intersect
+#        @debug bezLength(c2_to_intersect)
+#        @debug c2_to_intersect
+#        @debug abs(bezLength(c1_to_intersect) - bezLength(c2_to_intersect))
 
-        c2_to_intersect = deepcopy(c2)
-        for i = 1:length(c2) # for each control point
-            if c2[i].x > ps[2][1].x # TODO tweak this | if the x position of the control point is greater than the x value of the inital point in the section of the curve that insersects
-                c2_to_intersect = c2_to_intersect[1:i] # restrict the intersection to this section of c2
-                append!(c2_to_intersect, ps[2][2:end]) # append the rest of the intersected section creating a curve that goes from c2 start to end of intersection section
-                break
-            end
-        end
-        return abs(bezLength(c1_to_intersect) - bezLength(c2_to_intersect)) <
-               0.7 # TODO tweak pessimistic fuzz to this comparison
+        return abs(bezLength(deCasteljau(c1,ts[1])[1]) - bezLength(deCasteljau(c2,ts[2])[1])) <
+               1.5  # TODO tweak pessimistic fuzz to this comparison
     # If the distance between (c1 origin -> end of c1 intersection section) -  distance between (c2 origin -> end of c2 intersection section)
     # is less than <val>, we say they reached approx the same point at approx the same time => collision!
     else

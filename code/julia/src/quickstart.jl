@@ -2,7 +2,7 @@ include("roadNetwork.jl")
 include("parallelCGA.jl")
 global CACHE = true
 global BEZPLOT=false
-global previous_checks = Dict{Tuple{BezierCurve,BezierCurve},Tuple{Bool,Tuple{BezierCurve,BezierCurve}}}()
+global previous_checks = Dict{Tuple{BezierCurve,BezierCurve},Tuple{Bool,Tuple{Real,Real}}}()
 include("GA.jl")
 boundary1(x) = 0
 boundary2(x) = 12

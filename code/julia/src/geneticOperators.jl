@@ -63,10 +63,13 @@ end
 
 function gaussian_mutation!(P::Array{Individual}, road::Road)::Array{Individual}
     # Interval bounds
-    μ = 0.6 # TODO tweak probability of selecting individual
+    μ = 0.7 # TODO tweak probability of selecting individual
     for i in P
         if Distributions.sample([true, false], Weights([μ, 1 - μ])) # Do we mutate this candidate ?
             new_i = deepcopy(i)
+            if i.phenotype.genotype |> length < 3
+                break
+            end
             c_index = rand(2:length(new_i.phenotype.genotype)-1)
             cᵢ = new_i.phenotype.genotype[c_index] # randomly selected gene
             x_bound = sort([new_i.phenotype.source.x, new_i.phenotype.goal.x])
@@ -89,8 +92,8 @@ function gaussian_mutation!(P::Array{Individual}, road::Road)::Array{Individual}
 
 
             # standard deviation
-            σᵢ_x = 0.1*abs(x_bound[1] - x_bound[2])# TODO make sure this is correct
-            σᵢ_y = 0.1*abs(y_bound[1] - y_bound[2])# TODO make sure this is correct
+            σᵢ_x = 0.15*abs(x_bound[1] - x_bound[2])# TODO make sure this is correct
+            σᵢ_y = 0.15*abs(y_bound[1] - y_bound[2])# TODO make sure this is correct
 
             cᵢ′ = Point(
                 min(

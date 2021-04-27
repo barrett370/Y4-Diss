@@ -19,7 +19,7 @@ function PCGA(
 
     global MT = multi_thread
     if CACHE
-        global previous_checks = Dict{Tuple{BezierCurve,BezierCurve},Tuple{Bool,Tuple{BezierCurve,BezierCurve}}}()
+        global previous_checks = Dict{Tuple{BezierCurve,BezierCurve},Tuple{Bool,Tuple{Real,Real}}}()
     end
 
 

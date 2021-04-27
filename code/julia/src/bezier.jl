@@ -69,14 +69,14 @@ toRealArray = i -> [[float(p.x), float(p.y)] for p in i]
 function bezInt(
     B1::BezierCurve,
     B2::BezierCurve,
-)::Tuple{Bool,Tuple{BezierCurve,BezierCurve}}
+)::Tuple{Bool,Tuple{Real,Real}}
     @debug "bezInt called"
     if B2 |> toRealArray == zeros(B2 |> length)
-        return (false, ([], []))
+        return (false, (-1,-1))
     end
 
     #n = floor(1.4 * max(B1 |> length, B2 |> length))
-    n = 30
+    n = 10
     main = bezInt(B1, B2, 1, n)
     return main
 end
@@ -111,7 +111,16 @@ function bbox(b::BezierCurve)
 	box
 
 end
-
+function flatten(l)
+           res = []
+           if l |> length == 1
+               return l
+           elseif l |> length == 0
+               return res |> reverse
+           else
+               return append!(append!(res,flatten(l[1])),l[2])
+           end
+           end
 function bezInt(B1::BezierCurve, B2::BezierCurve, rdepth::Int, rdepth_max, c=[])
 	if BEZPLOT && rdepth < 5
 		p = plotGeneration([Individual(Phenotype(B1[1],B1,B1[end]),0),Individual(Phenotype(B2[1],B2,B2[end]),0)], 100)
@@ -121,18 +130,18 @@ function bezInt(B1::BezierCurve, B2::BezierCurve, rdepth::Int, rdepth_max, c=[])
     if rdepth + 1 > rdepth_max
         @debug "rdepth reached"
 		if CACHE
-	        previous_checks[(B1, B2)] = (false, ([], []))
+	        previous_checks[(B1, B2)] = (false, (-1, -1))
 		end
-        return (false, ([], []))
+        return (false, (-1, -1))
     end
-    ε = 2 # TODO tune param
+    ε = 2.5 # TODO tune param
     toLuxPoints = b -> map(p -> lx.Point(p[1], p[2]), b)
     if length(B1) < 2 || length(B2) < 2
         @error "error not enough control points"
 		if CACHE
-	        previous_checks[(B1, B2)] = (false, ([], []))
+	        previous_checks[(B1, B2)] = (false, (-1, -1))
 		end
-        return (false, ([], []))
+        return (false, (-1, -1))
     else
 		if CACHE
 	        if (B1, B2) in keys(previous_checks)
@@ -158,10 +167,20 @@ function bezInt(B1::BezierCurve, B2::BezierCurve, rdepth::Int, rdepth_max, c=[])
             # B1 and B2 are a "candidate pair"
             @debug "B1 and B2 are a candidate pair"
             if diam(B1 ∪ B2) < ε
-				if CACHE
-	                previous_checks[(B1, B2)] = (true, (B1, B2))
+					c = c |> flatten
+					B1_t = 1
+					B2_t = 1
+				for each in c
+					if each == 1
+						B1_t /= 2
+					elseif each == 3
+						B2_t /= 2
+					end
 				end
-                return (true, (B1, B2))
+				if CACHE
+	                previous_checks[(B1, B2)] = (true, (B1_t, B2_t))
+				end
+                return (true, (B1_t, B2_t))
             else # subdivides the curve with the larger diameter
                 tasks::Array{Task} = []
                 if diam(B1) >= diam(B2)
@@ -227,19 +246,19 @@ function bezInt(B1::BezierCurve, B2::BezierCurve, rdepth::Int, rdepth_max, c=[])
                     end
                 end
 				if CACHE
-	                previous_checks[(B1, B2)] = (false, ([], []))
+	                previous_checks[(B1, B2)] = (false, (-1,-1))
 				end
-                return (false, ([], []))
+                return (false, (-1,-1))
 
             end
         else
             @debug "B1 and B2 are not candidates therefore, cannot intersect."
 			if CACHE
-	            previous_checks[(B1, B2)] = (false, ([], []))
+	            previous_checks[(B1, B2)] = (false, (-1,-1))
 			end
-            return (false, ([], []))
+            return (false, (-1,-1))
         end
     end
 	@error "bezInt default return"
-	return (false,([],[]))
+	return (false,(-1,-1))
 end
