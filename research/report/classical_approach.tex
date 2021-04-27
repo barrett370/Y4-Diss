@@ -40,12 +40,18 @@ As such we want to ensure that both the number of control points as well as thei
 
 The first and last control points \textbf{must} be the starting and goal position for the agent. In a Bézier curve these are the only two points that the curve definitely passes through. We must also ensure that the $x$ coordinates of the control points are in order, so as to avoid routes which \textit{double back} on themselves. This can also occur as the result of other operators such as crossover and mutation, we can fix this using a simple repair operator which re-orders points based on their $x$ positions.
 
+Once the initial population is generated, the main algorithmic loop can begin, this is the repeated application of the selection, crossover, mutation and evaluation operators (See Section~\ref{subsec:GAOps}) until set termination criteria are met or the maximum number of generations is completed, seen in Algorithm~\ref{alg:GenericGA}.
 
 \subsection{Fitness assessment}
+
+\todo[inline]{Have I actually explicitly stated the construction of my fitness function \& referenced Kala for inspiration?}
+
 
 The foundation of my Fitness function is the length of each route, i.e. the length of a given $n$ degree Bézier curve. This calculation can be accurately approximated using Equation~\ref{eq:bezlength} as the true calculation is expensive and does not generalise nicely to $n$ degrees\cite{gravesenAdaptiveSubdivisionLength1997}.
 
 Minimising the length of a route is a good way of ensuring generated routes are direct, however, other values and heuristics are required to maintain other requirements such as to make sure changes in direction are not too severe or that a route does not pass through infeasible space (avoiding obstacles etc.).
+
+\subsubsection{Road Section Definition}
 
 I initially experimented with an alternative coordinate space which enabled me to completely enclose the search space within the area of the road, eliminating the possibility of generating routes that left the \textit{road}. This was inspired by the ``Road coordinate axis system'' described by Kala in~\cite{kalaOptimizationBasedPlanning2016}. However I abandoned this concept as it did not appear to increase performance and introduced overhead when visualising or generating the routes.
 
@@ -139,10 +145,26 @@ A similar process is performed to determine how much of a curve passes too close
   \caption{\label{fig:ifspace-illustration} Illustration of finding infeasible section of curve}
 \end{figure}\todo[inline]{Technically this infeasible distance calculation has very slightly changed in implementation, is it worth redoing or just leave as is?}
 
+Now with the ability to calculate the length of a route as well as the distance it travels through/ too close to infeasible space, I can define my Fitness function:
 
-Once the initial population is generated, the main algorithmic loop can begin, this is the repeated application of the selection, crossover, mutation and evaluation operators (See Section~\ref{subsec:GAOps}) until set termination criteria are met or the maximum number of generations is completed, seen in Algorithm~\ref{alg:GenericGA}.
+\begin{multline}
+  \mathcal{F}(i) = \\
+  L_{i} +\\
+  \alpha \cdot \texttt{infeasible distance}(i) + \beta \cdot \texttt{high-proximity distance}(i)
+\end{multline}\todo{formatting}
 
-The final set of routes is finally filtered by the predicate $\texttt{infeasible-distance}(i) = 0, \forall i \in P $
+Where:
+\begin{itemize}
+  \item $L_{i}$ is the length of candidate $i$'s route
+  \item \(\alpha\) and \(\beta\) are weighting parameters s.t.
+
+        $\alpha > \beta > 1$
+
+        therefore penalising infeasible distance harder than distance which is \textit{too close} to infeasible space, guiding the GA to prioritise avoiding infeasible space.
+\end{itemize}
+
+This function is inspired by Kala\cite{kalaOptimizationBasedPlanning2016} and proves to be a good basis for a naive single agent planner, futher augmentation is required to support multiple agents or variable velocity profiles.
+
 
 \subsection{Genetic Operators}
 
@@ -184,18 +206,18 @@ Abstractly, my mutation operators select a control point with a random probabili
 In my Gaussian mutation operator, the range of $x$ values for the mutation of a randomly selected point $ p \in B = \{ p_{1}, \ldots, p_{n} \}, n\in \mathbb{Z}^{\geq 2 }$ are:
 
 \begin{equation}
-\mathcal{X} = \left[p_{1_{x}}, p_{n_{x}}\right]
+\mathcal{X} = \left[p_{1_{x}}, p_{n_{x}}\right], p_{1}, p_{n} \in B
 \end{equation}
 
 I.e. a mutated control point cannot lie before or after the start or end points respectively. The range of $y$ values a mutated point can take is within:
 
 \begin{equation}
-  \mathcal{Y} = \left[ - 1.3 \cdot \frac{b_{1}(x_{1}) + b_{2}(x_{2})}{2}, 1.3 \cdot \frac{b_{2}(x_{1}) + b_{2}(x_{2})}{2} \right]
+  \mathcal{Y} = \left[ - 1.3 \cdot \frac{b_{1}(\mathcal{X}_{1}) + b_{2}(\mathcal{X}_{2})}{2}, 1.3 \cdot \frac{b_{2}(\mathcal{X}_{1}) + b_{2}(\mathcal{X}_{2})}{2} \right]
 \end{equation}
 
-Meaning $-1.3$ times the average $y$ coordinate of the bottom road boundary to $1.3$ times the average of the top road boundary across the range of permitted $x$ values. $\pm 1.3$ was used after experimenting with values ranging from $\pm 2 to \pm 0.5$, 1.3 offers the procedure the chance to significantly affect the course of a route whilst minimising the chance that the mutated route will be infeasible.
+Meaning $-1.3$ times the average $y$ coordinate of the bottom road boundary to $1.3$ times the average of the top road boundary across the range of permitted $x$ values. $\pm 1.3$ was used after experimenting with values ranging from $\pm 2$ to $\pm 0.5$, 1.3 offers the procedure the chance to significantly affect the course of a route whilst minimising the chance that the mutated route will be infeasible.
 
-A pair standard deviations as previously outlined in the Background section is defined as:
+A pair standard deviations as previously outlined in the Background section are defined as:
 
 \begin{equation}
 \sigma_{x} = \frac{\mathcal{X}_{1}-\mathcal{X}_{2}}{10}
@@ -255,47 +277,41 @@ My initial approach to a collaborative planning system was somewhat inefficient.
 
 This system was very inefficient with the final routes requiring a large number of checks to be carried out by my \texttt{bezInt} function, which itself suffered from \todo[inline]{verify this} exponential time (and space) complexity.
 
-This system was improved upon by splitting the process over multiple threads, each agent being given a separate thread, communicating their most up-to-date plans via a shared array, $S$. Agent $i$ will store its current fittest route in $S[i]$, the fitness of any candidate checks for collisions with each route in $S$. This system may conduct more checks but it removes the problem of prioritising the first route to the planned and reduces the overall runtime of the system approximately proportionally to the number of threads available, an abstract view of the topology can be seen in Figure~\ref{fig:PCGA}.\feedback{is this clear/ necessary?}
+This system was improved upon by splitting the process over multiple threads, each agent being given a separate thread, communicating their most up-to-date plans via a shared array, $S$. Agent $i$ will store its current fittest route in $S[i]$, the calculation for fitness of any candidate checks for collisions with each route in $S$. This system may conduct more checks but it removes the problem of prioritising the first route to the planned and reduces the overall runtime of the system approximately proportionally to the number of threads available, an abstract view of the topology can be seen in Figure~\ref{fig:PCGA} with each agent $a_{k}, k \in [1,n]$ being mapped to a separate threaded instance of my GA planner. Each instance has access to the shared array which stores the fittest route after generation $i \in [1,m]$ with $m$ being the maximum number of generations for each agent.
+
+Updates to the shared array happen as and when each thread reaches the end of a generation. This can mean that routes that terminate before others have to adapt less to other routes, but this trade-off cannot be avoided without instituting constant communication between threads, which in and of itself introduces overhead and slows down planning.
 
 \begin{figure}
   \centering
 \begin{tikzpicture}
-  \node[draw,rectangle] (A1) {$a_{1}$};
-  \node[draw,rectangle, below of=A1] (A2) {$a_{2}$};
-  \node[below of=A2] (ellipses) {$\vdots$};
-  \node[draw,rectangle, below of=ellipses] (An) {$a_{n}$};
+  \node[] (V) {$\{ a_{1}, a_{2}, \ldots, a_{n} \} $};
 
-  \node[draw,rectangle, right= of A1] (GA1) {$GA$};
-  \node[draw,rectangle, right= of A2] (GA2) {$GA$};
-  \node[below of=GA2] (ellipses2) {$\vdots$};
-  \node[draw,rectangle, right= of An] (GAn) {$GA$};
+  \node[draw, rectangle, above right= of V] (ga1) {$\texttt{GA}(a_{1})$};
+  \node[draw, rectangle, below = of ga1] (ga2) {$\texttt{GA}(a_{2})$};
+  \node[below = of ga2] (gael) {$\vdots$};
+  \node[draw, rectangle, below = of gael] (gan) {$\texttt{GA}(a_{n})$};
 
-  \coordinate[right of = GA1] (rGA1);
-  \coordinate[right of = GA2] (rGA2);
-  \coordinate[right of = GAn] (rGAn);
+  \coordinate[right = 0.12of ga1.east] (rGA1);
+  \coordinate[right = 0.2cm of rGA1] (rrGA1);
+  \coordinate[right = 0.12cm of gan.east] (rGAn);
 
-  \node[draw, rectangle, right= of rGA2] (result) {routes};
+  \node[below = 1cm of rGAn] (sa) {$\{ B_{a_{1}}^{i}, b_{a_{2}}^{i}, \ldots, B_{a_{n}}^{i} \}, i \in [1,m] $};
+  \node[right = 2cm of gael] (res) {$\{ B_{a_{1}}^{m}, b_{a_{2}}^{m}, \ldots, B_{a_{n}}^{m} \}$};
 
-  \node[above = of GA1] (lthreads) {Threads};
-  \node[above = of A1] (lagents) {Agents, $\mathcal{V}$};
+  \node[draw=black, fit=(rGA1) (rGAn), label={[rotate=-90]center:\tiny Shared Array}]  {};
+  \node[draw=red, fit=(ga1) (gan) (rrGA1)]  {};
 
+  \draw[->] (V) -> (ga1);
+  \draw[->] (V) -> (ga2);
+  \draw[->] (V) -> (gael);
+  \draw[->] (V) -> (gan);
 
-  \draw[->] (A1) -> (GA1);
-  \draw[->] (A2) -> (GA2);
-  \draw[->] (An) -> (GAn);
+  \draw[->] (sa) -> (rGAn);
 
-  \draw[->] (GA1) -> (result);
-  \draw[->] (GA2) -> (result);
-  \draw[->] (GAn) -> (result);
-
-
-  \draw[thick,<->] (rGAn) -> node[left] {\tiny Shared Array} (rGA1);
-
-
-  \node[draw=red, fit=(GA1) (GAn) (rGAn)]  {};
-  \node[draw=blue, fit=(A1) (An)]  {};
-
-
+  \draw[->] (ga1) -> (res);
+  \draw[->] (ga2) -> (res);
+  \draw[->] (gael) -> (res);
+  \draw[->] (gan) -> (res);
 \end{tikzpicture}
 \caption{\label{fig:PCGA} Parallel Cooperative Genetic Algorithm abstract topology}
 \end{figure}
@@ -309,7 +325,7 @@ Simply detecting intersections is not enough as two routes can intersect but onl
 
 I made the assumption that each agent in my system travels at a uniform constant speed. To remove this assumption we would need to include a velocity-time profile in the genotype of each individual, this is an area for further research.
 
-With this assumption, we can now say that two routes collide if they intersect and the distance from their respective origins and the point of intersection is the same. We have now reduced this problem to finding a point of intersection between two Bézier curves, this is still a non-trivial task.
+With this assumption, we can now say that two routes collide if they intersect and the distance from their respective origins and the point of intersection is the same (or below a threshold). We have now reduced this problem to finding a point of intersection between two Bézier curves, this is still a non-trivial task.
 
 \subsubsection{Bézier Curve intersection}
 
@@ -341,6 +357,8 @@ In order to speedup my Bézier intersection function I implemented a number of t
 
 \end{enumerate}
 
+My method keeps track of the division made and using this keeps track of the $t$ value which maps $P_{n}$ from the subcurve to the initial curve. The values of $t$ are then returned if a intersection is found, this allows for the distances from the origin points to the point of intersection to be easily calculated using De Casteljau's algorithm along with my function for finding the length of a Bézier curve.
+
 An illustration of the recursive subdivision method described above can be seen in Figure~\ref{fig:bezIntIllustration}
 
 \begin{figure}
@@ -348,7 +366,7 @@ An illustration of the recursive subdivision method described above can be seen 
 \input{bezIntDiagram.tex}
 \end{turn}
 \caption{\label{fig:bezIntIllustration} Illustration of Bezier Intersection recursive subdivision method (Recursion depth =2)}
-\end{figure}\feedback{Is this figure clear enough? Should I move it to appendix?}
+\end{figure}
 
 \section{Macro-Level Planning} \todo{Title?}
 

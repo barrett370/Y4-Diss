@@ -1,6 +1,6 @@
 \section{Genetic Algorithms}
 
-\subsection{History}
+\subsection{History}\todo{Decide whether to keep this section}
 
 Genetic algorithms (GAs) are a type of meta-heuristic optimisation technique that employ the same rationale as classical evolution seen in nature.
 
@@ -193,11 +193,11 @@ They are defined recursively as follows:
 
 \begin{equation}
     \textbf{B}_{P_0,P_1,\ldots,P_n}(t) = (1-t)\textbf{B}_{P_0,P_1,\ldots,P_{n-1}}(t) + t\textbf{B}_{P_1,P_2,\ldots,P_n}(t)
-\end{equation}
+  \end{equation}
 
-Where the parameter $t$ is in the range of $[0,1]$. Therefore, the smoothness of the curve is determined by the granularity of the parameter when realising the curve.
+  Where the initial curve $B = B_{P_{0},P_{1},\ldots,P_{n}}$ and the parameter $t$ is a real number in the range of $[0,1]$. Therefore, the smoothness of the curve is determined by the granularity of the parameter when realising the curve.
 
-An example of how the parameter $t$ is realised over the curve can be seen in Figure~\ref{fig:bezexample}, the red numbers indicate the value for $t$ that corresponds to the green points on the curve and the purple points correspond to the control points.
+An example of how the parameter $t$ corresponds to points on the curve can be seen in Figure~\ref{fig:bezexample}, the red numbers indicate the value for $t$ that corresponds to the green points on the curve and the purple points correspond to the control points. I.e. $B(0.37)$ produces the coordinates for the first labelled point seen, where the curve shown is $B$.
 
 \begin{figure}[ht]
   \centering

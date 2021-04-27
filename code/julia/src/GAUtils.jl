@@ -349,8 +349,7 @@ function collisionDetection(c1::BezierCurve, c2::BezierCurve)::Bool
 #        @debug c1_to_intersect
 #        @debug bezLength(c2_to_intersect)
 #        @debug c2_to_intersect
-#        @debug abs(bezLength(c1_to_intersect) - bezLength(c2_to_intersect))
-
+        @debug abs(bezLength(deCasteljau(c1,ts[1])[1]) - bezLength(deCasteljau(c2,ts[2])[1])) 
         return abs(bezLength(deCasteljau(c1,ts[1])[1]) - bezLength(deCasteljau(c2,ts[2])[1])) <
                1.5  # TODO tweak pessimistic fuzz to this comparison
     # If the distance between (c1 origin -> end of c1 intersection section) -  distance between (c2 origin -> end of c2 intersection section)
@@ -361,38 +360,6 @@ function collisionDetection(c1::BezierCurve, c2::BezierCurve)::Bool
 
 end
 
-
-#function collisionDetection(i1::Individual, i2::Individual)::Bool
-#
-#    @debug "Detecting Collisions"
-#
-#    (b, ps) = bezInt(i1.phenotype.genotype, i2.phenotype.genotype)
-#    if b # if they do intersect
-#        @debug "Intersection"
-#        i1_to_intersect = i1.phenotype.genotype
-#        for i = 1:length(i1.phenotype.genotype)
-#            if i1.phenotype.genotype[i].x > ps[1][1].x # TODO tweak this
-#                i1_to_intersect = i1_to_intersect[1:i]
-#                append!(i1_to_intersect, ps[1][2:end])
-#                break
-#            end
-#        end
-#
-#        i2_to_intersect = i2.phenotype.genotype
-#        for i = 1:length(i2.phenotype.genotype)
-#            if i2.phenotype.genotype[i].x > ps[2][1].x # TODO tweak this
-#                i2_to_intersect = i2_to_intersect[1:i]
-#                append!(i2_to_intersect, ps[2][2:end])
-#                break
-#            end
-#        end
-#        @debug abs(bezLength(i1_to_intersect) - bezLength(i2_to_intersect))
-#        return abs(bezLength(i1_to_intersect) - bezLength(i2_to_intersect)) <
-#               1.5 # TODO tweak pessimistic fuzz to this comparison
-#    else
-#        return false
-#    end
-#end
 
 function get_curve(c::BezierCurve, n = 500)
     ps_x, ps_y = [], []
