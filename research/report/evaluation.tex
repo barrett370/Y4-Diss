@@ -1,4 +1,4 @@
-\subsection{Genetic Algorithms}
+\section{Genetic Algorithms}
 
 The core of my approach to solving the problems outlined in Chapter~\ref{chap:Intro} was creating a Genetic algorithm to evolve populations of candidate routes, returning the fittest once the termination criteria are met.
 
@@ -32,9 +32,49 @@ An example of a relatively large control point mutation leading to a minor direc
 
 It is possible that an approach incorporating Simulated Annealing could help to broadly explore the search space in early generations before refining solutions in a found minima in latter generations.
 
-In a single generation, over the same 3 sets of 15 individuals, my Gaussian mutation operator ran 3 times totalling $1.8 ms$ runtime, an average of $601 \mu s$. This is an insignificant amount of time when compared to the overall runtime of this task which stands at $38.8s$.
+In a single generation, over the same 3 sets of 15 individuals, my Gaussian mutation operator ran 3 times totalling $1.8 ms$ runtime, an average of $601 \mu s$. This is an insignificant amount of time when compared to the overall runtime of this task which stands at $34.3$.
 
-\subsection{Bézier Curves}
+\subsubsection{Crossover}
+
+I only implemented a single form of crossover: simple (one point) crossover.
+
+\todo{Implement another crossover operator to talk about ?}
+
+\subsubsection{Fitness}
+
+As previously mentioned the most important operator, and the one I spend the most time working on, is the fitness function.
+
+This acts as the objective function for the algorithm as it seeks to minimise its value across multiple agents over multiple generations.
+
+This operation, especially when modified to detect collisions, was the source of most of the runtime of my project. In the toy example of 3 sets of 15 agents across a single generation, the fitness function accounted for almost 100\% of the $34.3s$ runtime at $34.1$ across 3 calls, an average of $11.4$ seconds per invocation. This is after all my attempts to speedup the process (See Section~\ref{subsec:approach:bezInt}).
+
+The final incarnation of my fitness function can be thought of as two separate parts:
+
+\begin{enumerate}
+  \item The \textit{base\_fitness} i.e. the fitness when considered in isolation in the road space.
+
+        This calculation again can be thought of as being comprised of 3 parts as outlined in Equation~\ref{eq:basefitness}:
+
+        In total this portion of the function ran in an average of $105ms$ or $0.00092$\% of the fitness function runtime
+
+        \begin{enumerate}
+          \item Route length
+
+                This procedure had an average runtime of around $6.24 \mu s$ or $5.47\times 10^{-8}$\% of the fitness function
+                runtime
+          \item infeasible distance length taking an average of $59.5ms$ to run
+          \item Close proximity distance length
+
+        \end{enumerate}
+
+
+  \item The collision penalty
+
+        Collision detection as previously stated was a major source for complexity in my project. However, after a lot of tweaking and time saving measures, in this toy example the runtime for the collision detection stands at an average of $34.9ms$, less than the average runtime of the infeasible distance calculation.
+\end{enumerate}
+
+
+\section{Bézier Curves}
 \todo[inline]{expand on this section, talk about issues of finding intersection, possible GPU applications}
 
 Bézier curves have been utilised in this project to encode and represent the route of a vehicle. As mentioned in Section~\ref{sec:back-bezier-curves}, there are many reasons I originally selected them for this task. However, over the course of implementation and testing, a number of downsides have been presented.

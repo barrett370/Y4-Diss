@@ -70,12 +70,12 @@ texcount classical_approach.tex  \
 
 #+RESULTS:
 : 3892
-*** [X] Single Agent Planning [3/4]
+*** [ ] Single Agent Planning [3/4]
 - [X] Population encoding
 - [X] Population generation
 - [X] Fitness evaluation
 - [-] Genetic operators
-*** [ ] Multi-Agent Planning [2/3]
+*** [X] Multi-Agent Planning [2/2]
 - [X] Intersection Detection
 - [X] Collision Detection
 *** [ ] Macro-Level Planning [3/4]
@@ -126,9 +126,9 @@ texcount evaluation.tex  \
 - [X] Disadvantages
 - [X] Alternatives
 *** [ ] Genetic Algorithms
-- [ ] Evaluation of currently implemented operators
+- [-] Evaluation of currently implemented operators
 - [ ] Other operators and how they may improve
-- [ ] Performance
+- [-] Performance
 - [ ] Reliability
 - [ ] Reproducibility
 - [ ]

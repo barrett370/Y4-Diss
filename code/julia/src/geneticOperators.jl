@@ -63,7 +63,7 @@ end
 
 function gaussian_mutation!(P::Array{Individual}, road::Road)::Array{Individual}
     # Interval bounds
-    μ = 0.7 # TODO tweak probability of selecting individual
+    μ = 0.5 # TODO tweak probability of selecting individual
     for i in P
         if Distributions.sample([true, false], Weights([μ, 1 - μ])) # Do we mutate this candidate ?
             new_i = deepcopy(i)
@@ -79,21 +79,21 @@ function gaussian_mutation!(P::Array{Individual}, road::Road)::Array{Individual}
                         road.boundary_1(x_bound[1]) +
                         road.boundary_1(x_bound[2])
                     ) / 2
-                ) * 1.3, # TODO tweak, y can be from the average y of the road bottom *1.5 to :
+                ) * 2, # TODO tweak, y can be from the average y of the road bottom *1.5 to :
                 (
                     (
                         road.boundary_2(x_bound[1]) +
                         road.boundary_2(x_bound[2])
                     ) / 2
-                ) * 1.3, # TODO tweak, average yo fo road top * 1.5
+                ) * 2, # TODO tweak, average yo fo road top * 1.5
             ]
 
 
 
 
             # standard deviation
-            σᵢ_x = 0.15*abs(x_bound[1] - x_bound[2])# TODO make sure this is correct
-            σᵢ_y = 0.15*abs(y_bound[1] - y_bound[2])# TODO make sure this is correct
+            σᵢ_x = 0.4* abs(x_bound[1] - x_bound[2])# TODO make sure this is correct
+            σᵢ_y = 0.4* abs(y_bound[1] - y_bound[2])# TODO make sure this is correct
 
             cᵢ′ = Point(
                 min(
@@ -114,6 +114,59 @@ function gaussian_mutation!(P::Array{Individual}, road::Road)::Array{Individual}
         end
     end
     P
+end
+
+function k_point_crossover(P::Array{Individual})::Array{Individual}
+    n = P |> length
+    start = P[1].phenotype.source
+    goal = P[1].phenotype.goal
+    offspring::Array{Individual} = []
+    P_copy = deepcopy(P)
+    while n > 2
+        p1_i = rand(1:n) # randomly select parent 1
+        p1 = P_copy[p1_i]
+        deleteat!(P_copy, p1_i)
+        n -= 1
+        p2_i = rand(1:n)# randomly select parent 2
+        p2 = P_copy[p2_i]
+        deleteat!(P_copy, p2_i)
+        n -= 1
+        p1 = p1 |> p -> p.phenotype.genotype |> getGenotypeString
+        p2 = p2 |> p -> p.phenotype.genotype |> getGenotypeString
+    @show    n1, n2 = length(p1), length(p2)
+        if n1 > 6 && n2 > 6
+
+
+            k = rand(1:Int64(ceil(min(n1,n2)/ 2)))
+
+
+            @show is = vcat(3:2:min(n1, n2)-2)
+
+            @show ks = append!(rand(is,k) |> sort )
+            o1::Array{Real} =p1[1:2]
+            o2::Array{Real}= p2[1:2]
+            for i in 2:k-1
+
+                append!(o1, p1[ks[i-1]:ks[i]], p2[ks[i]:ks[i+1]])
+                append!(o2, p2[ks[i-1]:ks[i]], p1[ks[i]:ks[i+1]])
+                i += 1
+
+            end
+
+
+
+        append!(
+            offspring,
+            [Individual(Phenotype(start, append!(o1 |> getGenotype, [goal]), goal), 0)],
+        )
+        append!(
+            offspring,
+            [Individual(Phenotype(start,append!( o2 |> getGenotype,[goal]), goal), 0)],
+        )
+
+        end
+    end
+    offspring
 end
 
 function simple_crossover(P::Array{Individual})::Array{Individual}
@@ -156,7 +209,10 @@ function simple_crossover(P::Array{Individual})::Array{Individual}
 end
 
 
-function selection(P::Array{Individual}; method::SelectionMethod = roulette)::Array{Individual}
+function selection(
+    P::Array{Individual};
+    method::SelectionMethod = roulette,
+)::Array{Individual}
 
     #@match method begin
     #    roulette => return roulette_selection(P)

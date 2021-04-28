@@ -40,13 +40,13 @@ function PCGA(
         else
             @warn "Not running in multithreaded mode"
             if TIMEIT
-            append!(ret,timeit_PCGA(start,goal,road,current_plans,i=deepcopy(c),
+                append!(ret,timeit_PCGA(start,goal,road,current_plans,i=deepcopy(c),
                                          n_gens=n_gens,n=n,selection_method=selection_method,mutation_method=mutation_method))
-        else
+            else
 
-            append!(ret,timeit_PCGA(start,goal,road,current_plans,i=deepcopy(c),
-                                         n_gens=n_gens,n=n,selection_method=selection_method,mutation_method=mutation_method))
-        end
+                append!(ret,PCGA(start,goal,road,current_plans,i=deepcopy(c),
+                                             n_gens=n_gens,n=n,selection_method=selection_method,mutation_method=mutation_method))
+            end
         end
 
         if c + 1 <= length(starts)
@@ -59,12 +59,8 @@ function PCGA(
             append!(ret, fetch(task))
             @debug "fetched result $ret"
         end
-        @show current_plans
-        @show ret[1] |> toSVector in current_plans
-        @show ret[2] |> toSVector in current_plans
-        @show ret[3] |> toSVector in current_plans
     end
-
+    map(route -> route.fitness =  Fitness(road,filter(r -> r != route, ret), route),ret)
     ret
 end
 
@@ -97,7 +93,7 @@ function PCGA(start::Point,
     # Initialise population
     i = deepcopy(i)
     @show Threads.threadid()
-    
+
     @debug "Size of other_routes = $(length(other_routes))"
     if start.y < road.boundary_1(start.x) || start.y > road.boundary_2(start.y) || goal.y < road.boundary_1(goal.x) || goal.y > road.boundary_2(goal.x)
         @error "ERROR, start of goal is outside of roadspace"
@@ -189,7 +185,7 @@ function timeit_PCGA(start::Point,
     other_routes[i] = P[1] |> toSVector
     while n_gens > 0 && length(P) > 0# Replace with stopping criteria
         # savefig(plotGeneration!(draw_road(road,0,20),P,road,100,100-n_gens),string("./gifgen/gen-",100-n_gens))
-        
+
             @timeit to "selection" P |> P -> selection(P, method=selection_method)  # Selection operator
             @timeit to "crossover" P |> simple_crossover |> new_pop -> append!(P, new_pop)  ## Crossover operator & Add newly generated individuals to population
             @timeit to "mutation" P |> P -> mutation!(P,road,method=mutation_method) # apply mutation operator
@@ -219,6 +215,6 @@ function timeit_PCGA(start::Point,
     #    return PCGA(start,goal,road,other_routes, i, ngens_copy,n)
     # end
     #
-    return P 
+    return P
 
 end

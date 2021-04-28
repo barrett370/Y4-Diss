@@ -147,7 +147,7 @@ A similar process is performed to determine how much of a curve passes too close
 
 Now with the ability to calculate the length of a route as well as the distance it travels through/ too close to infeasible space, I can define my Fitness function:
 
-\begin{multline}
+\begin{multline}\label{eq:basefitness}
   \mathcal{F}(i) = \\
   L_{i} +\\
   \alpha \cdot \texttt{infeasible distance}(i) + \beta \cdot \texttt{high-proximity distance}(i)
@@ -239,6 +239,8 @@ Point $p \in B$ is then replaced with our new point $p'$.
 
 The result of the operation being applied to a example curve can be seen in Figure~\ref{fig:gauss_mutation_eg}
 
+\todo{Talk about implmentation of Uniform mutation operator }
+
 \begin{figure}[ht]
   \centering
   \includegraphics[scale=0.4]{figures/gauss_mutation_eg.png}
@@ -329,6 +331,7 @@ I made the assumption that each agent in my system travels at a uniform constant
 With this assumption, we can now say that two routes collide if they intersect and the distance from their respective origins and the point of intersection is the same (or below a threshold). We have now reduced this problem to finding a point of intersection between two Bézier curves, this is still a non-trivial task.
 
 \subsubsection{Bézier Curve intersection}
+\label{subsec:approach:bezInt}
 
 The commonly employed technique for finding intersections between two $n$-degree Bézier curves is repeated recursive subdivision. Whilst it is possible to precisely calculate the point of intersection it is very difficult and computationally expensive and does not generalise well to $n$ degrees. For example, to numerically find the intersection two curves of degree 3 we must solve a $9^{th}$ order equation, producing unstable results. This is described by Bézout's theorem which states that two planar algebraic curves of degrees $d_{1}$ and $d_{2}$ will have up to $d_{1}d_{2}$ intersection points.\todo{cite this or remove it}
 
