@@ -171,6 +171,7 @@ This function is inspired by Kala\cite{kalaOptimizationBasedPlanning2016} and pr
 The abstract goal of each genetic operator has already been discussed in Section~\ref{subsec:GAOps}. Here I will discuss their concrete implementation with respect to my task.
 
 \subsubsection{Selection}
+\label{subsec:approach:selection}
 
 My selection procedure follows very closely to the method outlined in Section~\ref{subsec:GAOps}, relying on the fitness function to duplicate fit individuals, replacing the less fit ones with a certain chance or reasoning.
 
@@ -353,11 +354,11 @@ In order to speedup my Bézier intersection function I implemented a number of t
         In reality, many curve segments are found repeatedly inside of populations and as such many more duplicate checks can be skipped through this method.
   \item I implemented a recursion depth limit so as to introduce an upper bound in computation before the function returns false. Without this I found that often the checks would repeat until it was searching for intersections between infinitesimally small curve sections.
 
-  \item I was also able to reduce the runtime of this function via the use of threading. Upon a subdivision two more threaded tasks are spawned and the disjunction of their results returned. The optimal case for this approach is that the intersection occurs early on in the curve as the task results must be fetched sequentially in the order that they were spawned. \todo{remove this sentence?}
+  \item I was also able to reduce the runtime of this function via the use of threading. Upon a subdivision two more threaded tasks are spawned and the lazy disjunction of their results returned. The optimal case for this approach is that the intersection occurs early on in the curve as the task results must be fetched sequentially in the order that they were spawned. \todo{remove this sentence?}
 
 \end{enumerate}
 
-My method keeps track of the division made and using this keeps track of the $t$ value which maps $P_{n}$ from the subcurve to the initial curve. The values of $t$ are then returned if a intersection is found, this allows for the distances from the origin points to the point of intersection to be easily calculated using De Casteljau's algorithm along with my function for finding the length of a Bézier curve.
+My method keeps track of the divisions made and using this keeps track of the $t$ value which maps $P_{n}$ from the subcurve to the initial curve. The values of $t$ are then returned if a intersection is found, this allows for the distances from the origin points to the point of intersection to be easily calculated using De Casteljau's algorithm along with my function for finding the length of a Bézier curve.
 
 An illustration of the recursive subdivision method described above can be seen in Figure~\ref{fig:bezIntIllustration}
 

@@ -5,6 +5,7 @@ using Distributed
 using SharedArrays
 using StaticArrays
 import Base.Threads
+using TimerOutputs
 
 function PCGA(
     starts::Array{Point},
@@ -17,7 +18,7 @@ function PCGA(
     mutation_method::MutationMethod
 )
 
-    global MT = multi_thread
+    global MT = true
     if CACHE
         global previous_checks = Dict{Tuple{BezierCurve,BezierCurve},Tuple{Bool,Tuple{Real,Real}}}()
     end
@@ -35,11 +36,17 @@ function PCGA(
             append!(tasks,
                     [Threads.@spawn PCGA(start,goal,road,current_plans,i=deepcopy(c),
                                          n_gens=n_gens,n=n,selection_method=selection_method,mutation_method=mutation_method)])
-            sleep(0.1)
+            sleep(0.4)
         else
             @warn "Not running in multithreaded mode"
-            append!(ret,PCGA(start,goal,road,current_plans,i=deepcopy(c),
+            if TIMEIT
+            append!(ret,timeit_PCGA(start,goal,road,current_plans,i=deepcopy(c),
                                          n_gens=n_gens,n=n,selection_method=selection_method,mutation_method=mutation_method))
+        else
+
+            append!(ret,timeit_PCGA(start,goal,road,current_plans,i=deepcopy(c),
+                                         n_gens=n_gens,n=n,selection_method=selection_method,mutation_method=mutation_method))
+        end
         end
 
         if c + 1 <= length(starts)
@@ -52,6 +59,10 @@ function PCGA(
             append!(ret, fetch(task))
             @debug "fetched result $ret"
         end
+        @show current_plans
+        @show ret[1] |> toSVector in current_plans
+        @show ret[2] |> toSVector in current_plans
+        @show ret[3] |> toSVector in current_plans
     end
 
     ret
@@ -85,12 +96,14 @@ function PCGA(start::Point,
               mutation_method::MutationMethod)::Array{Individual}
     # Initialise population
     i = deepcopy(i)
+    @show Threads.threadid()
+    
     @debug "Size of other_routes = $(length(other_routes))"
     if start.y < road.boundary_1(start.x) || start.y > road.boundary_2(start.y) || goal.y < road.boundary_1(goal.x) || goal.y > road.boundary_2(goal.x)
         @error "ERROR, start of goal is outside of roadspace"
         return []
     end
-    @debug "Started thread with identifier $i"
+    @warn "Started thread with identifier $i"
     ngens_copy = deepcopy(n_gens)
     𝓕 = curry(curry(Fitness, road), other_routes) # Curry fitness function with road as this is a static attribute of the function. Allows for nicer piping of data.
     P = generatePopulation(n, start, goal, road)
@@ -150,5 +163,62 @@ function PCGA(start::Point,
 
     end
     @error "$i No valid results"
+
+end
+
+function timeit_PCGA(start::Point,
+              goal::Point,
+              road::Road,
+              other_routes::SharedArray; i::Integer=0,
+              n_gens::Real=1, n::Real=10,
+              selection_method::SelectionMethod,
+              mutation_method::MutationMethod)::Array{Individual}
+    # Initialise population
+    @warn "running timeit version of function"
+    i = deepcopy(i)
+    @debug "Size of other_routes = $(length(other_routes))"
+    if start.y < road.boundary_1(start.x) || start.y > road.boundary_2(start.y) || goal.y < road.boundary_1(goal.x) || goal.y > road.boundary_2(goal.x)
+        @error "ERROR, start of goal is outside of roadspace"
+        return []
+    end
+    @debug "Started thread with identifier $i"
+    ngens_copy = deepcopy(n_gens)
+    𝓕 = curry(curry(timeit_Fitness, road), other_routes) # Curry fitness function with road as this is a static attribute of the function. Allows for nicer piping of data.
+    P = generatePopulation(n, start, goal, road)
+    #map(p -> p.fitness = p |> 𝓕, P) # Calculate fitness for initial population, map 𝓕 over all Individuals
+    other_routes[i] = P[1] |> toSVector
+    while n_gens > 0 && length(P) > 0# Replace with stopping criteria
+        # savefig(plotGeneration!(draw_road(road,0,20),P,road,100,100-n_gens),string("./gifgen/gen-",100-n_gens))
+        
+            @timeit to "selection" P |> P -> selection(P, method=selection_method)  # Selection operator
+            @timeit to "crossover" P |> simple_crossover |> new_pop -> append!(P, new_pop)  ## Crossover operator & Add newly generated individuals to population
+            @timeit to "mutation" P |> P -> mutation!(P,road,method=mutation_method) # apply mutation operator
+            @timeit to "fitness" P |> P -> begin map(p -> p.fitness = p |> 𝓕, P); P end # recalculate fitness of population after mutation
+            @timeit to "repair" P |> P -> map(repair, P)  # attempt repair of invalid solutions
+            P |> P -> sort(P, by=p -> p.fitness) # Sort my fitness
+            P |> P -> filter(isValid, P) # remove invalid solutions
+            P |> P -> P[1:minimum([n,length(P)])]# take top n
+
+        #P_filtered = filter(c -> FinalCheck(c, other_routes, i), P)
+        #P_2filtered = filter(ind -> high_proximity_distance(road, ind.phenotype.genotype) == 0, filter(ind -> infeasible_distance(road, ind.phenotype.genotype) == 0, P_filtered))
+        #if (n_gens -1 == 0 && P_2filtered |> length != 0) || n_gens -1 != 0
+            n_gens -= 1
+        #else
+        #    @warn "extending gens, no valid routes found"
+        #end
+        @debug "accessing routes at $i"
+        other_routes[i] = P[1] |> toSVector
+        #TODO is this good?
+        if P[1].fitness / √((start.x - goal.x)^2 + (start.y - goal.y)^2)  < 1.1
+            @warn "Exiting early, within 10% of straight line fitness"
+            break
+        end
+    end
+#    savefig(plotGeneration!(draw_road(road,0,20),P,road,100),string("./gen-",n_gens))
+    # if length(P) == 0
+    #    return PCGA(start,goal,road,other_routes, i, ngens_copy,n)
+    # end
+    #
+    return P 
 
 end

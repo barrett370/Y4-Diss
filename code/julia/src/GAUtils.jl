@@ -119,7 +119,7 @@ end
 
 function infeasible_distance(road::Road, curve::BezierCurve)
     l = 0
-    curve_values = get_curve(curve)
+    curve_values = get_curve(curve,100)
     for obstacle in road.obstacles
         intersects = []
         if typeof(obstacle) == Circle
@@ -235,6 +235,21 @@ function Fitness(r::Road, i::Individual)
     l + α * l1 + β * l2
 end
 
+function timeit_Fitness(r::Road, i::Individual)
+
+    # Curve Fitness
+
+    α = 20# Infeasible path Penalty weight
+    β = 5 # Min safe distance break penalty weight
+    l = @timeit to "bezlength" bezLength(i.phenotype.genotype)
+    l1 = @timeit to "infeasible_distance" infeasible_distance(r, i.phenotype.genotype)
+    l2 = @timeit to "hgih_prox_distance" high_proximity_distance(r, i.phenotype.genotype) # length of path in which min safe distance is broken
+
+
+    #@show l + α * l1 + β * l2
+    l + α * l1 + β * l2
+end
+
 function Fitness(r::Road, os::Array{Individual}, i::Individual) # Given knowledge of other individuals in the roadspace penalise intersections
 
     cd = true# for testing, collision detection flag
@@ -272,6 +287,32 @@ function Fitness(r::Road, os::SharedArray, i::Individual) # Given knowledge of o
                 end
             else
                 if collisionDetection(i.phenotype.genotype, o |> getGenotype)
+                    @debug "Detected collision!"
+                    base_fitness = base_fitness * 10 # TODO tune this
+                end
+            end
+        end
+    end
+
+    return base_fitness
+end
+function timeit_Fitness(r::Road, os::SharedArray, i::Individual) # Given knowledge of other individuals in the roadspace penalise intersections
+
+    base_fitness =@timeit to "base_fitness" timeit_Fitness(r, i)
+    # if bezInt(i.phenotype.genotype, o.phenotype.genotype)
+    #    base_fitness = base_fitness * 5
+    #
+    for o in os
+        if o != SVector{2 * MAX_P,Float64}(zeros(o |> length))
+            @debug "Testing fitness of $i, wrt. $o, parallel"
+            if !MT
+                if ft_collisionDetection(i.phenotype.genotype, o |> getGenotype)
+                    @debug "Detected collision!"
+                    base_fitness = base_fitness * 5 # TODO tune this
+                end
+            else
+                col = @timeit  to "collisionDetection" collisionDetection(i.phenotype.genotype, o |> getGenotype)
+                if col
                     @debug "Detected collision!"
                     base_fitness = base_fitness * 10 # TODO tune this
                 end
@@ -324,6 +365,7 @@ function ft_collisionDetection(c1::BezierCurve, c2::BezierCurve)::Bool
 
 end
 function collisionDetection(c1::BezierCurve, c2::BezierCurve)::Bool
+    #(b, ts) = @timeit to "bezInt" bezInt(c1, c2)
     (b, ts) = bezInt(c1, c2)
     @debug (b, ts)
     if b # if they do intersect
@@ -351,7 +393,7 @@ function collisionDetection(c1::BezierCurve, c2::BezierCurve)::Bool
 #        @debug c2_to_intersect
         @debug abs(bezLength(deCasteljau(c1,ts[1])[1]) - bezLength(deCasteljau(c2,ts[2])[1])) 
         return abs(bezLength(deCasteljau(c1,ts[1])[1]) - bezLength(deCasteljau(c2,ts[2])[1])) <
-               1.5  # TODO tweak pessimistic fuzz to this comparison
+               1  # TODO tweak pessimistic fuzz to this comparison
     # If the distance between (c1 origin -> end of c1 intersection section) -  distance between (c2 origin -> end of c2 intersection section)
     # is less than <val>, we say they reached approx the same point at approx the same time => collision!
     else

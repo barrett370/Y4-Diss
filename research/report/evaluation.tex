@@ -6,6 +6,34 @@ GAs are transparent, probabilistic approaches to optimisation problems. As such,
 
 Whilst a poor choice of training data can lead to unintended/ unpredictable behaviour from approaches like neural networks, they have the advantage that most of their compute time is used when constructing the initial model, subsequent usage of these models requires little compute time. Whereas, GAs must run the entirety of the \textit{learning} process from scratch whenever a new route or set of routes is required. In an application where the system sees a high number of unique requests, this compute time can quickly amount to much longer than the training time for a neural network.
 
+\subsection{Genetic Operator Performance}
+
+During development I implemented two different operators in each category, but there are many other approaches proposed in academic literature. Given more time, I would have liked to implement more and present a more empirical evaluation of each.
+
+\subsubsection{Selection}
+
+In a single generation, over three populations of 15 individuals, my ranked selection operator ran 3 times totalling $97.4\mu s$ or an average of $32.5\mu s$ per run.
+
+As you can see in Figure~\ref{fig:selection_eg}, my ranked selection operator performs its task well, removing the obviously less fit individuals in favour of more copies of  fitter ones. This can be seen by the removal of the line that dips below the $x$ axis (in this example the bottom road boundary was defined as $b_{1}(x) = 0 $) and the fact that duplicate routes are found as indicated by the 3rd graph of unique routes showing fewer individuals than the second.
+
+Ranked selection compared with fitness proportional (roulette wheel selection) is much more predictable, it may not explore as much of the search space but it is more likely to thoroughly explore a single area. Most other selection operators seem to focus on maintaining a diverse population so as to not get stuck in local minima.
+
+\subsubsection{Mutation}
+
+The mutation operators I implemented were Uniform and Gaussian.
+
+I found Gaussian to perform better in cases where a route may be close to optimal in the phenotypic space, i.e. with minimal changes to trajectory, it would be optimal. In such cases the genotypic fitness may not accurately represent this, a route that collides with another or passes through infeasible space will suffer from a large genotypic fitness penalty possibly encouraging it to be removed from the \textit{gene pool}. Gaussian mutation, preferring mutated points closer to their initial position can be effective as moving such routes closer to the optima.
+
+However, in cases where the initial population generation has created all routes far from the optimal, Gaussian mutation can struggle to generate mutated points extreme enough to direct the GA towards the minima.
+
+Part of the problem with Gaussian mutation, and mutation in general on $n$-degree Bezier curves, is that even a relatively major control point movement may cause only minor changes to the overall trajectory of the curve in cases where $n$ is high.
+
+An example of a relatively large control point mutation leading to a minor direction change can be seen in Figure~\ref{fig:gauss_mutation_eg}.
+
+It is possible that an approach incorporating Simulated Annealing could help to broadly explore the search space in early generations before refining solutions in a found minima in latter generations.
+
+In a single generation, over the same 3 sets of 15 individuals, my Gaussian mutation operator ran 3 times totalling $1.8 ms$ runtime, an average of $601 \mu s$. This is an insignificant amount of time when compared to the overall runtime of this task which stands at $38.8s$.
+
 \subsection{Bézier Curves}
 \todo[inline]{expand on this section, talk about issues of finding intersection, possible GPU applications}
 

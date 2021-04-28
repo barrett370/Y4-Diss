@@ -1,4 +1,5 @@
 include("roadNetwork.jl")
+using TimerOutputs
 include("parallelCGA.jl")
 global CACHE = true
 global BEZPLOT=false

@@ -76,7 +76,7 @@ function bezInt(
     end
 
     #n = floor(1.4 * max(B1 |> length, B2 |> length))
-    n = 15
+    n = 20
     main = bezInt(B1, B2, 1, n)
     return main
 end
@@ -128,13 +128,13 @@ function bezInt(B1::BezierCurve, B2::BezierCurve, rdepth::Int, rdepth_max, c=[])
 		savefig(p,"bezint-$rdepth$c.png")
 	end
     if rdepth + 1 > rdepth_max
-        @warn "rdepth reached"
+        @debug "rdepth reached"
 		if CACHE
 	        previous_checks[(B1, B2)] = (false, (-1, -1))
 		end
         return (false, (-1, -1))
     end
-    ε = 0.5 # TODO tune param
+    ε = 1 # TODO tune param
     toLuxPoints = b -> map(p -> lx.Point(p[1], p[2]), b)
     if length(B1) < 2 || length(B2) < 2
         @error "error not enough control points"

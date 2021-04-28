@@ -69,11 +69,12 @@ texcount classical_approach.tex  \
 #+end_src
 
 #+RESULTS:
-: 3245
-*** [X] Single Agent Planning [3/3]
+: 3892
+*** [X] Single Agent Planning [3/4]
 - [X] Population encoding
 - [X] Population generation
 - [X] Fitness evaluation
+- [-] Genetic operators
 *** [ ] Multi-Agent Planning [2/3]
 - [X] Intersection Detection
 - [X] Collision Detection
@@ -92,14 +93,14 @@ CLOCK: [2021-04-09 Fri 10:36]--[2021-04-09 Fri 11:01] =>  0:25
 *** [ ] Single Agent
 - [X] population size
 - [X] number of generations
-- [ ] number of obstacles / difficulty of road space
+- [-] number of obstacles / difficulty of road space
     % of road space that is infeasible
     average number of (required) control points to plan route
     How close is the average fitness to optimal (straight line fitness)
 *** [ ] Multi Agent
 - [X] population size
 - [X] number of generations
-- [ ] number of obstacles / difficulty of road space
+- [-] number of obstacles / difficulty of road space
 - [ ] number of concurrently planned agents
 *** [ ] Macro Level
 - [ ] population size
@@ -119,11 +120,11 @@ texcount evaluation.tex  \
 
 
 #+RESULTS:
-: 354
+: 630
 *** [ ] Bezier Curves
-- [ ] Advantages
-- [-] Disadvantages
-- [-] Alternatives
+- [X] Advantages
+- [X] Disadvantages
+- [X] Alternatives
 *** [ ] Genetic Algorithms
 - [ ] Evaluation of currently implemented operators
 - [ ] Other operators and how they may improve
