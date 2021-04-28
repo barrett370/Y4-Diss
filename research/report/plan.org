@@ -43,7 +43,7 @@ texcount background.tex  \
 #+end_src
 
 #+RESULTS:
-: 1686
+: 1805
 - [ ] Make sure all techniques used are properly documented in this section
 
 ** [-] Literature Review [0/1]
@@ -69,7 +69,7 @@ texcount classical_approach.tex  \
 #+end_src
 
 #+RESULTS:
-: 3892
+: 3900
 *** [ ] Single Agent Planning [3/4]
 - [X] Population encoding
 - [X] Population generation
@@ -120,7 +120,7 @@ texcount evaluation.tex  \
 
 
 #+RESULTS:
-: 630
+: 1362
 *** [ ] Bezier Curves
 - [X] Advantages
 - [X] Disadvantages
@@ -131,7 +131,6 @@ texcount evaluation.tex  \
 - [-] Performance
 - [ ] Reliability
 - [ ] Reproducibility
-- [ ]
 
 *** [ ] Single agent approach
 *** [ ] Multi-agent approach
