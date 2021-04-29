@@ -41,7 +41,7 @@ function plot_benchmarks(benches, sf = true)
     [p, PlotlyJS.plot(surf2, layout2)]
 end
 
-function test_gensPopsize(n = 20, n_gens = 10; road_difficulty=1)
+function test_gensPopsize(n = 20, n_gens = 10; road_difficulty=1,samples=5)
     start = Point(0, 5)
     goal = Point(20, 8)
 
@@ -60,8 +60,17 @@ function test_gensPopsize(n = 20, n_gens = 10; road_difficulty=1)
     append!(obstacles, [o2])
     road3 = Road(b1, b2, obstacles, l)
 
-    roads = [road1, road2, road3]
+    o3 =  Circle(1.85,Point(10,5))
+    b1_4(x) = 2cosh(0.1x)-2
+    b2_4(x) = 2cosh(0.12x) +8
+    road4 = Road(b1_4,b2_4, [o3], l)
+
+    roads = [road1, road2, road3,road4]
     road = roads[road_difficulty]
+    if road_difficulty == 4
+        start = Point(0,5)
+        goal = Point(18,6)
+    end
     res = [[] for i = 0:n_gens]
     plans = [[] for i = 0:n_gens]
     for ng = 0:n_gens
@@ -81,7 +90,7 @@ function test_gensPopsize(n = 20, n_gens = 10; road_difficulty=1)
                             )[1],
                         ],
                     )
-                    b.params.samples=5
+                    b.params.samples=samples
                     @show b.params.samples
             append!(
                 res[ng+1],
