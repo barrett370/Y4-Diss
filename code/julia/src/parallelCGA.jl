@@ -18,7 +18,7 @@ function PCGA(
     mutation_method::MutationMethod
 )
 
-    global MT = true
+    global MT = false
     if CACHE
         global previous_checks = Dict{Tuple{BezierCurve,BezierCurve},Tuple{Bool,Tuple{Real,Real}}}()
     end
@@ -40,8 +40,11 @@ function PCGA(
         else
             @warn "Not running in multithreaded mode"
             if TIMEIT
-                append!(ret,timeit_PCGA(start,goal,road,current_plans,i=deepcopy(c),
-                                         n_gens=n_gens,n=n,selection_method=selection_method,mutation_method=mutation_method))
+                @warn "Starting timed agent"
+                @timeit to "core method" res = timeit_PCGA(start,goal,road,current_plans,i=deepcopy(c),
+                                         n_gens=n_gens,n=n,selection_method=selection_method,mutation_method=mutation_method)
+                @warn "timed agent concluded"
+                append!(ret,res)
             else
 
                 append!(ret,PCGA(start,goal,road,current_plans,i=deepcopy(c),
@@ -53,6 +56,7 @@ function PCGA(
             c = c + 1
         end
     end
+    @warn "all agents concluded"
     if multi_thread
         @debug "fetching results"
         for task in tasks
@@ -60,23 +64,28 @@ function PCGA(
             @debug "fetched result $ret"
         end
     end
-    map(route -> route.fitness =  Fitness(road,filter(r -> r != route, ret), route),ret)
-    ret
+    @warn "starting final fitness check"
+    @warn ret
+    if !TIMEIT
+        map(route -> route.fitness =  Fitness(road,filter(r -> r != route, ret), route),ret)
+    end
+    @warn "finished final fitness check"
+    return
 end
 
 function FinalCheck(route::Individual, os::SharedArray, i::Integer)::Bool
     for j in 1:length(os)
         if j != i
-            if !MT
-                @warn "Using fortran collision detection"
-                if ft_collisionDetection(route.phenotype.genotype, os[j] |> getGenotype)
-                    return false
-                end
-            else
+            #if !MT
+            #    @warn "Using fortran collision detection"
+            #    if ft_collisionDetection(route.phenotype.genotype, os[j] |> getGenotype)
+            #        return false
+            #    end
+            #else
                 if collisionDetection(route.phenotype.genotype, os[j] |> getGenotype)
                     return false
                 end
-            end
+            #end
         end
     end
     return true
@@ -180,7 +189,7 @@ function timeit_PCGA(start::Point,
     @debug "Started thread with identifier $i"
     ngens_copy = deepcopy(n_gens)
     𝓕 = curry(curry(timeit_Fitness, road), other_routes) # Curry fitness function with road as this is a static attribute of the function. Allows for nicer piping of data.
-    P = generatePopulation(n, start, goal, road)
+    @timeit to "genPop" P = generatePopulation(n, start, goal, road)
     #map(p -> p.fitness = p |> 𝓕, P) # Calculate fitness for initial population, map 𝓕 over all Individuals
     other_routes[i] = P[1] |> toSVector
     while n_gens > 0 && length(P) > 0# Replace with stopping criteria
@@ -191,9 +200,9 @@ function timeit_PCGA(start::Point,
             @timeit to "mutation" P |> P -> mutation!(P,road,method=mutation_method) # apply mutation operator
             @timeit to "fitness" P |> P -> begin map(p -> p.fitness = p |> 𝓕, P); P end # recalculate fitness of population after mutation
             @timeit to "repair" P |> P -> map(repair, P)  # attempt repair of invalid solutions
-            P |> P -> sort(P, by=p -> p.fitness) # Sort my fitness
-            P |> P -> filter(isValid, P) # remove invalid solutions
-            P |> P -> P[1:minimum([n,length(P)])]# take top n
+            @timeit to "sort by fitness" P |> P -> sort(P, by=p -> p.fitness) # Sort my fitness
+            @timeit to "filter isvalid" P |> P -> filter(isValid, P) # remove invalid solutions
+            @timeit to "take top n" P |> P -> P[1:minimum([n,length(P)])]# take top n
 
         #P_filtered = filter(c -> FinalCheck(c, other_routes, i), P)
         #P_2filtered = filter(ind -> high_proximity_distance(road, ind.phenotype.genotype) == 0, filter(ind -> infeasible_distance(road, ind.phenotype.genotype) == 0, P_filtered))
@@ -203,7 +212,7 @@ function timeit_PCGA(start::Point,
         #    @warn "extending gens, no valid routes found"
         #end
         @debug "accessing routes at $i"
-        other_routes[i] = P[1] |> toSVector
+        @timeit to "update shared array" other_routes[i] = P[1] |> toSVector
         #TODO is this good?
         if P[1].fitness / √((start.x - goal.x)^2 + (start.y - goal.y)^2)  < 1.1
             @warn "Exiting early, within 10% of straight line fitness"

@@ -68,10 +68,7 @@ function test_gensPopsize(n = 20, n_gens = 10; road_difficulty=1)
         for n = 1:n
             append!(plans[ng+1], [[]])
             "benchmarking with $ng generations over $n individuals" |> println
-            append!(
-                res[ng+1],
-                [
-                    BenchmarkTools.@benchmark append!(
+            b = BenchmarkTools.@benchmarkable append!(
                         $plans[$ng+1][$n],
                         [
                             GA(
@@ -81,16 +78,24 @@ function test_gensPopsize(n = 20, n_gens = 10; road_difficulty=1)
                                 n_gens = $ng,
                                 n = $n,
                                 selection_method = ranked,
-                            )[1].fitness,
+                            )[1],
                         ],
                     )
+                    b.params.samples=5
+                    @show b.params.samples
+            append!(
+                res[ng+1],
+                [
+                run(b)
                 ],
             )
         end
     end
+
     @show plans
-    av_fitnesses = map(gen -> map(n -> mean(n), gen), plans)
-    (res, av_fitnesses)
+    fitnesses = map(gen -> map(n -> map(i -> i.fitness,n),gen),plans)
+    av_fitnesses = map(gen -> map(n -> mean(n), gen), fitnesses)
+    (res, av_fitnesses,plans)
 end
 
 function test_roadDifficulty()

@@ -224,8 +224,8 @@ function Fitness(r::Road, i::Individual)
 
     # Curve Fitness
 
-    α = 20# Infeasible path Penalty weight
-    β = 5 # Min safe distance break penalty weight
+    α = 30# Infeasible path Penalty weight
+    β = 20 # Min safe distance break penalty weight
     l = bezLength(i.phenotype.genotype)
     l1 = infeasible_distance(r, i.phenotype.genotype)
     l2 = high_proximity_distance(r, i.phenotype.genotype) # length of path in which min safe distance is broken
@@ -260,17 +260,17 @@ function Fitness(r::Road, os::SharedArray, i::Individual) # Given knowledge of o
     for o in os
         if o != SVector{2 * MAX_P,Float64}(zeros(o |> length))
             @debug "Testing fitness of $i, wrt. $o, parallel"
-            if !MT
-                if ft_collisionDetection(i.phenotype.genotype, o |> getGenotype)
-                    @debug "Detected collision!"
-                    base_fitness = base_fitness * 5 # TODO tune this
-                end
-            else
+            #if !MT
+            #    if ft_collisionDetection(i.phenotype.genotype, o |> getGenotype)
+            #        @debug "Detected collision!"
+            #        base_fitness = base_fitness * 5 # TODO tune this
+            #    end
+            #else
                 if collisionDetection(i.phenotype.genotype, o |> getGenotype)
                     @debug "Detected collision!"
                     base_fitness = base_fitness * 10 # TODO tune this
                 end
-            end
+            #end
         end
     end
 
@@ -301,18 +301,18 @@ function timeit_Fitness(r::Road, os::SharedArray, i::Individual) # Given knowled
     for o in os
         if o != SVector{2 * MAX_P,Float64}(zeros(o |> length))
             @debug "Testing fitness of $i, wrt. $o, parallel"
-            if !MT
-                if ft_collisionDetection(i.phenotype.genotype, o |> getGenotype)
-                    @debug "Detected collision!"
-                    base_fitness = base_fitness * 5 # TODO tune this
-                end
-            else
+            #if !MT
+            #    if ft_collisionDetection(i.phenotype.genotype, o |> getGenotype)
+            #        @debug "Detected collision!"
+            #        base_fitness = base_fitness * 5 # TODO tune this
+            #    end
+            #else
                 col = @timeit  to "collisionDetection" collisionDetection(i.phenotype.genotype, o |> getGenotype)
                 if col
                     @debug "Detected collision!"
                     base_fitness = base_fitness * 10 # TODO tune this
                 end
-            end
+            #end
         end
     end
 
@@ -361,8 +361,8 @@ function ft_collisionDetection(c1::BezierCurve, c2::BezierCurve)::Bool
 
 end
 function collisionDetection(c1::BezierCurve, c2::BezierCurve)::Bool
-    #(b, ts) = @timeit to "bezInt" bezInt(c1, c2)
-    (b, ts) = bezInt(c1, c2)
+    (b, ts) = @timeit to "bezInt" bezInt(c1, c2)
+    #(b, ts) = bezInt(c1, c2)
     @debug (b, ts)
     if b # if they do intersect
         @debug "Intersection"

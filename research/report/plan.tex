@@ -1,0 +1,208 @@
+% Created 2021-04-29 Thu 13:12
+% Intended LaTeX compiler: pdflatex
+\documentclass[11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{grffile}
+\usepackage{longtable}
+\usepackage{wrapfig}
+\usepackage{rotating}
+\usepackage[normalem]{ulem}
+\usepackage{amsmath}
+\usepackage{textcomp}
+\usepackage{amssymb}
+\usepackage{capt-of}
+\usepackage{hyperref}
+\author{Sam Barrett}
+\date{\today}
+\title{Report rough plan}
+\hypersetup{
+ pdfauthor={Sam Barrett},
+ pdftitle={Report rough plan},
+ pdfkeywords={},
+ pdfsubject={},
+ pdfcreator={Emacs 27.2 (Org mode 9.5)}, 
+ pdflang={English}}
+\begin{document}
+
+\maketitle
+\tableofcontents
+
+\begin{verbatim}
+./wordcount.sh
+\end{verbatim}
+
+\section{Sections [1/8]:}
+\label{sec:org5e89f50}
+\subsection{{\bfseries\sffamily [ ]} Abstract [1/1]}
+\label{sec:org34e45e3}
+\begin{verbatim}
+texcount abstract.tex  \
+    | grep "Words in text:" \
+    | tail -1 \
+    | cut -d : -f2 \
+    | sed 's/ //g'
+\end{verbatim}
+
+\subsection{{\bfseries\sffamily [ ]} Introduction [0/0]}
+\label{sec:orga33aeb6}
+\begin{verbatim}
+texcount introduction.tex  \
+    | grep "Words in text:" \
+    | tail -1 \
+    | cut -d : -f2 \
+    | sed 's/ //g'
+\end{verbatim}
+
+\subsection{{\bfseries\sffamily [X]} Background [0/1]}
+\label{sec:org822eaf5}
+\begin{verbatim}
+texcount background.tex  \
+    | grep "Words in text:" \
+    | tail -1 \
+    | cut -d : -f2 \
+    | sed 's/ //g'
+\end{verbatim}
+\begin{itemize}
+\item[{$\square$}] Make sure all techniques used are properly documented in this section
+\end{itemize}
+
+\subsection{{\bfseries\sffamily [-]} Literature Review [2/3]}
+\label{sec:orgc1a4069}
+\begin{verbatim}
+texcount literature_review.tex  \
+    | grep "Words in text:" \
+    | tail -1 \
+    | cut -d : -f2 \
+    | sed 's/ //g'
+\end{verbatim}
+\begin{itemize}
+\item[{$\boxtimes$}] Bezier curves for route generation
+\item[{$\boxtimes$}] GAs for route generation
+\item[{$\square$}] FARNs
+\end{itemize}
+
+\begin{verbatim}
+985
+\end{verbatim}
+
+\subsection{{\bfseries\sffamily [-]} Approach [1/3]}
+\label{sec:org862b8ce}
+\begin{verbatim}
+texcount classical_approach.tex  \
+    | grep "Words in text:" \
+    | tail -1 \
+    | cut -d : -f2 \
+    | sed 's/ //g'
+\end{verbatim}
+\subsubsection{{\bfseries\sffamily [ ]} Single Agent Planning [3/4]}
+\label{sec:org4d6310e}
+\begin{itemize}
+\item[{$\boxtimes$}] Population encoding
+\item[{$\boxtimes$}] Population generation
+\item[{$\boxtimes$}] Fitness evaluation
+\item[{$\boxminus$}] Genetic operators
+\end{itemize}
+\subsubsection{{\bfseries\sffamily [X]} Multi-Agent Planning [2/2]}
+\label{sec:org9928b75}
+\begin{itemize}
+\item[{$\boxtimes$}] Intersection Detection
+\item[{$\boxtimes$}] Collision Detection
+\end{itemize}
+\subsubsection{{\bfseries\sffamily [ ]} Macro-Level Planning [3/5]}
+\label{sec:org8f381f2}
+\begin{itemize}
+\item[{$\boxtimes$}] Graph construction \& Edge weighting + possible extensions
+\item[{$\boxtimes$}] Planning macro routes
+\item[{$\boxtimes$}] grouping agents into concurrent plans
+\item[{$\square$}] Possible extensions
+\item[{$\square$}] Make clear what is my original work
+\end{itemize}
+\subsection{{\bfseries\sffamily [ ]} Results [0/3]}
+\label{sec:org6c2cbfb}
+\subsubsection{{\bfseries\sffamily [ ]} Single Agent}
+\label{sec:orgfdaa7f7}
+\begin{itemize}
+\item[{$\boxtimes$}] population size
+\item[{$\boxtimes$}] number of generations
+\item[{$\boxminus$}] number of obstacles / difficulty of road space
+\% of road space that is infeasible
+average number of (required) control points to plan route
+How close is the average fitness to optimal (straight line fitness)
+\end{itemize}
+\subsubsection{{\bfseries\sffamily [ ]} Multi Agent}
+\label{sec:org82e8378}
+\begin{itemize}
+\item[{$\boxtimes$}] population size
+\item[{$\boxtimes$}] number of generations
+\item[{$\boxminus$}] number of obstacles / difficulty of road space
+\item[{$\square$}] number of concurrently planned agents
+\end{itemize}
+\subsubsection{{\bfseries\sffamily [ ]} Macro Level}
+\label{sec:org963040a}
+\begin{itemize}
+\item[{$\square$}] population size
+\item[{$\square$}] number of generations
+\item[{$\square$}] number of obstacles / difficulty of road space
+\item[{$\square$}] number of concurrently planned agents
+\item[{$\square$}] sparsity of graph
+\end{itemize}
+
+\subsection{{\bfseries\sffamily [ ]} Evaluation [0/6]}
+\label{sec:org6a2f35e}
+\begin{verbatim}
+texcount evaluation.tex  \
+    | grep "Words in text:" \
+    | tail -1 \
+    | cut -d : -f2 \
+    | sed 's/ //g'
+\end{verbatim}
+\subsubsection{{\bfseries\sffamily [ ]} Genetic Algorithms}
+\label{sec:orgacf9dfb}
+\begin{itemize}
+\item[{$\boxminus$}] Evaluation of currently implemented operators
+\begin{itemize}
+\item[{$\boxtimes$}] Selection
+\item[{$\boxtimes$}] Mutation
+\item[{$\square$}] Crossover
+\item[{$\square$}] Fitness
+\end{itemize}
+\end{itemize}
+\subsubsection{{\bfseries\sffamily [ ]} Bezier Curves}
+\label{sec:org0dacfc3}
+\begin{itemize}
+\item[{$\boxtimes$}] Advantages
+\item[{$\boxtimes$}] Disadvantages
+\item[{$\boxtimes$}] Alternatives
+\item[{$\square$}] Other operators and how they may improve
+\item[{$\boxminus$}] Performance
+\item[{$\square$}] Reliability
+\end{itemize}
+\subsubsection{{\bfseries\sffamily [ ]} Single agent approach}
+\label{sec:org689ec54}
+\begin{itemize}
+\item[{$\square$}] How well did it perform?
+\item[{$\square$}] How could it be further improved?
+\end{itemize}
+\subsubsection{{\bfseries\sffamily [ ]} Multi-agent approach}
+\label{sec:orgc692ea7}
+\subsubsection{{\bfseries\sffamily [ ]} macro level approach}
+\label{sec:orgab63143}
+\subsubsection{{\bfseries\sffamily [ ]} Codebase evaluation}
+\label{sec:org4440cf5}
+\begin{itemize}
+\item[{$\square$}] How much work was involved, size of codebase?
+\item[{$\square$}] Where does my approach fall short?
+\end{itemize}
+
+\subsection{{\bfseries\sffamily [ ]} Conclusion [0/0]}
+\label{sec:orgeab2434}
+\begin{verbatim}
+texcount conclusion.tex  \
+    | grep "Words in text:" \
+    | tail -1 \
+    | cut -d : -f2 \
+    | sed 's/ //g'
+\end{verbatim}
+\end{document}

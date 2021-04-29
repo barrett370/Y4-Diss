@@ -1,3 +1,31 @@
 \begin{appendices}
-    
+
+  \chapter{Runtime Data}
+  \begin{figure}
+    \begin{tabular}{l l l l l l l l}
+       Section                       &ncalls     &time   &\%tot     &avg     &alloc   &\%tot      &avg\\
+\hline
+PCGA                        &   1  &  14.4s &  100\% &  14.4s   &16.1GiB  &100\%   &16.1GiB\\
+  \hspace{6pt} Per-agent planning &   3  &  14.4s &  100\% &  4.81s   &16.1GiB  &100\%   &5.38GiB\\
+     \hspace{12pt}fitness                     &   3  &  14.4s &  100\% &  4.81s   &16.1GiB  &100\%   &5.38GiB\\
+       \hspace{24pt}base\_fitness              & 135  &  7.55s & 52.3\% & 55.9ms   &5.65GiB  &35.0\%  &42.9MiB\\
+         \hspace{30pt}infeasible\_distance     & 135  &  4.41s & 30.6\% & 32.7ms   &3.00GiB  &18.6\%  &22.7MiB\\
+         \hspace{30pt}high\_prox\_distance      & 135  &  3.14s & 21.7\% & 23.2ms   &2.66GiB  &16.4\%  &20.1MiB\\
+         \hspace{30pt}bezlength               & 135  &  724\(\mu\)s & 0.01\% & 5.36\(\mu\)s   & 246KiB  &0.00\%  &1.82KiB\\
+       \hspace{24pt}collisionDetection        & 277  &  6.86s & 47.6\% & 24.8ms   &10.5GiB  &65.0\%  &38.8MiB\\
+         \hspace{30pt}bezInt                  & 277  &  5.85s & 40.5\% & 21.1ms   &9.66GiB  &59.8\%  &35.7MiB\\
+     \hspace{12pt}mutation                    &   3  & 1.71ms & 0.01\% &  571\(\mu\)s   & 169KiB  &0.00\%  &56.3KiB\\
+     \hspace{12pt}crossover                   &   3  & 1.14ms & 0.01\% &  381\(\mu\)s   & 189KiB  &0.00\%  &62.9KiB\\
+     \hspace{12pt}genPop                      &   3  &  406\(\mu\)s & 0.00\% &  135\(\mu\)s   & 148KiB  &0.00\%  &49.2KiB\\
+     \hspace{12pt}update shared array         &   3  &  116\(\mu\)s & 0.00\% & 38.5\(\mu\)s   &8.31KiB  &0.00\%  &2.77KiB\\
+     \hspace{12pt}repair                      &   3  & 98.1\(\mu\)s & 0.00\% & 32.7\(\mu\)s   &12.0KiB  &0.00\%  &3.99KiB\\
+     \hspace{12pt}filter isvalid              &   3  & 80.2\(\mu\)s & 0.00\% & 26.7\(\mu\)s   &45.9KiB  &0.00\%  &15.3KiB\\
+     \hspace{12pt}selection                   &   3  & 75.1\(\mu\)s & 0.00\% & 25.0\(\mu\)s   & 134KiB  &0.00\%  &44.8KiB\\
+     \hspace{12pt}sort by fitness             &   3  & 55.6\(\mu\)s & 0.00\% & 18.5\(\mu\)s   &2.25KiB  &0.00\%  &   768B\\
+      \hline
+  \end{tabular}
+  \caption{\label{app:tab:MARuntime} Runtime for a single generation over 3 sets of 15 individuals with intersection caching on, using Gaussian mutation, simple crossover and ranked selection.}
+  \end{figure}
+
 \end{appendices}
+

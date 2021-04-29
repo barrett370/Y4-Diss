@@ -33,7 +33,7 @@ texcount introduction.tex  \
 #+RESULTS:
 : 213
 
-** [X] Background [0/0]
+** [X] Background [0/1]
 #+begin_src bash
 texcount background.tex  \
     | grep "Words in text:" \
@@ -46,7 +46,7 @@ texcount background.tex  \
 : 1805
 - [ ] Make sure all techniques used are properly documented in this section
 
-** [-] Literature Review [0/1]
+** [-] Literature Review [2/3]
 #+begin_src bash
 texcount literature_review.tex  \
     | grep "Words in text:" \
@@ -54,11 +54,13 @@ texcount literature_review.tex  \
     | cut -d : -f2 \
     | sed 's/ //g'
 #+end_src
+- [X] Bezier curves for route generation
+- [X] GAs for route generation
+- [ ] FARNs
 
 #+RESULTS:
-: 972
+: 985
 
-- [-] /FARN/ section
 ** [-] Approach [1/3]
 #+begin_src bash
 texcount classical_approach.tex  \
@@ -78,7 +80,7 @@ texcount classical_approach.tex  \
 *** [X] Multi-Agent Planning [2/2]
 - [X] Intersection Detection
 - [X] Collision Detection
-*** [ ] Macro-Level Planning [3/4]
+*** [ ] Macro-Level Planning [3/5]
 :LOGBOOK:
 CLOCK: [2021-04-15 Thu 14:13]--[2021-04-15 Thu 14:38] =>  0:25
 CLOCK: [2021-04-10 Sat 15:05]--[2021-04-10 Sat 15:30] =>  0:25
@@ -89,6 +91,7 @@ CLOCK: [2021-04-09 Fri 10:36]--[2021-04-09 Fri 11:01] =>  0:25
 - [X] Planning macro routes
 - [X] grouping agents into concurrent plans
 - [ ] Possible extensions
+- [ ] Make clear what is my original work
 ** [ ] Results [0/3]
 *** [ ] Single Agent
 - [X] population size
@@ -120,24 +123,28 @@ texcount evaluation.tex  \
 
 
 #+RESULTS:
-: 1362
+: 1406
+*** [ ] Genetic Algorithms
+- [-] Evaluation of currently implemented operators
+  - [X] Selection
+  - [X] Mutation
+  - [ ] Crossover
+  - [ ] Fitness
+  - [ ] Other operators and how they may improve
+  - [-] Performance
+  - [ ] Reliability
 *** [ ] Bezier Curves
 - [X] Advantages
 - [X] Disadvantages
 - [X] Alternatives
-*** [ ] Genetic Algorithms
-- [-] Evaluation of currently implemented operators
-- [ ] Other operators and how they may improve
-- [-] Performance
-- [ ] Reliability
-- [ ] Reproducibility
-
 *** [ ] Single agent approach
+- [ ] How well did it perform?
+- [ ] How could it be further improved?
 *** [ ] Multi-agent approach
 *** [ ] macro level approach
 *** [ ] Codebase evaluation
-- How much work was involved, size of codebase?
-- Where does my approach fall short?
+- [ ] How much work was involved, size of codebase?
+- [ ] Where does my approach fall short?
 
 ** [ ] Conclusion [0/0]
 #+begin_src bash

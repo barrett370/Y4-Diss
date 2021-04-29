@@ -1,8 +1,9 @@
 \section{Genetic Algorithms}
+\label{sec:eval:GAs}
 
 The core of my approach to solving the problems outlined in Chapter~\ref{chap:Intro} was creating a Genetic algorithm to evolve populations of candidate routes, returning the fittest once the termination criteria are met.
 
-GAs are transparent, probabilistic approaches to optimisation problems. As such, it is much easier to reason about and predict their output when compared with more traditional \textit{black box} approaches such as neural networks.
+GAs are transparent but stochastic approaches to optimisation problems. As such, it is much easier to examine the operations and decisions they make compared with \textit{black box} approaches such as neural networks, however due to their random nature, it can be difficult to predict their exact behaviour and results can differ greatly from run to run if the number of generations or population size is too low.
 
 Whilst a poor choice of training data can lead to unintended/ unpredictable behaviour from approaches like neural networks, they have the advantage that most of their compute time is used when constructing the initial model, subsequent usage of these models requires little compute time. Whereas, GAs must run the entirety of the \textit{learning} process from scratch whenever a new route or set of routes is required. In an application where the system sees a high number of unique requests, this compute time can quickly amount to much longer than the training time for a neural network.
 
@@ -12,7 +13,7 @@ During development I implemented two different operators in each category, but t
 
 \subsubsection{Selection}
 
-In a single generation, over three populations of 15 individuals, my ranked selection operator ran 3 times totalling $97.4\mu s$ or an average of $32.5\mu s$ per run.
+In a single generation, over three populations of 15 individuals, my ranked selection operator ran 3 times totalling $75.1\mu s$ or an average of $25 \mu s$ per run, a negligible amount of time relative to the overall runtime.
 
 As you can see in Figure~\ref{fig:selection_eg}, my ranked selection operator performs its task well, removing the obviously less fit individuals in favour of more copies of  fitter ones. This can be seen by the removal of the line that dips below the $x$ axis (in this example the bottom road boundary was defined as $b_{1}(x) = 0 $) and the fact that duplicate routes are found as indicated by the 3rd graph of unique routes showing fewer individuals than the second.
 
@@ -30,9 +31,9 @@ Part of the problem with Gaussian mutation, and mutation in general on $n$-degre
 
 An example of a relatively large control point mutation leading to a minor direction change can be seen in Figure~\ref{fig:gauss_mutation_eg}.
 
-It is possible that an approach incorporating Simulated Annealing could help to broadly explore the search space in early generations before refining solutions in a found minima in latter generations.
+It is possible that an approach incorporating a form of Simulated Annealing could help to broadly explore the search space in early generations before refining solutions in a found minima in latter generations. This could operate by applying a different mutation operator such as Uniform mutation in the first 60\% of generations before swapping to Gaussian when we would expect our algorithms to have found some local minima.
 
-In a single generation, over the same 3 sets of 15 individuals, my Gaussian mutation operator ran 3 times totalling $1.8 ms$ runtime, an average of $601 \mu s$. This is an insignificant amount of time when compared to the overall runtime of this task which stands at $34.3$.
+In a single generation, over the same 3 sets of 15 individuals, my Gaussian mutation operator ran 3 times totalling $1.71 ms$ runtime, an average of $571\mu s$. This is an insignificant amount of time when compared to the overall runtime of this task which stands at $14.4$.
 
 \subsubsection{Crossover}
 
@@ -46,35 +47,36 @@ As previously mentioned the most important operator, and the one I spend the mos
 
 This acts as the objective function for the algorithm as it seeks to minimise its value across multiple agents over multiple generations.
 
-This operation, especially when modified to detect collisions, was the source of most of the runtime of my project. In the toy example of 3 sets of 15 agents across a single generation, the fitness function accounted for almost 100\% of the $34.3s$ runtime at $34.1$ across 3 calls, an average of $11.4$ seconds per invocation. This is after all my attempts to speedup the process (See Section~\ref{subsec:approach:bezInt}).
+This operation, especially when modified to detect collisions, was the source of most of the runtime of my project. In the toy example of 3 sets of 15 agents across a single generation, the fitness function accounted for a large proportion of the runtime at $14.4$ across 3 calls, an average of $4.81$ seconds per invocation. This is after all my attempts to speedup the process (See Section~\ref{subsec:approach:bezInt}).
 
 The final incarnation of my fitness function can be thought of as two separate parts:
 
 \begin{enumerate}
-  \item The \textit{base\_fitness} i.e. the fitness when considered in isolation in the road space.
+  \item The \textit{base fitness} i.e. the fitness when considered in isolation in the road space.
 
         This calculation again can be thought of as being comprised of 3 parts as outlined in Equation~\ref{eq:basefitness}:
 
-        In total this portion of the function ran in an average of $105ms$ or $0.00092$\% of the fitness function runtime
+        In total this portion of the function ran 135 times in an average of $55.9ms$ for a total of 52.3\% of the fitness function runtime
 
         \begin{enumerate}
           \item Route length
 
-                This procedure had an average runtime of around $6.24 \mu s$ or $5.47\times 10^{-8}$\% of the fitness function
-                runtime
-          \item infeasible distance length taking an average of $59.5ms$ to run
-          \item Close proximity distance length
+                This procedure had an average runtime of around $5.36\mu s$, running 135 times it amounted for $0.01$\% of the fitness function runtime.
+
+          \item Infeasible distance length taking an average of $32.7ms$ to run over its 135 runs, making up $30.6$ of the fitness function runtime.
+          \item Close proximity distance length took an average of $23.2ms$ over 135 runs totalling $21.7$\% of the runtime
 
         \end{enumerate}
 
 
   \item The collision penalty
 
-        Collision detection as previously stated was a major source for complexity in my project. However, after a lot of tweaking and time saving measures, in this toy example the runtime for the collision detection stands at an average of $34.9ms$, less than the average runtime of the infeasible distance calculation.
-\end{enumerate}
+        Collision detection as previously stated was a major source for complexity in my project. However, after a lot of tweaking and time saving measures, in this toy example the runtime for the collision detection stands at an average of $24.8$ms, around the same as the runtime of the high proximity distance calculation.
+\end{enumerate}\todo{Is this all too boring?, come back to this }
 
 
 \section{Bézier Curves}
+\label{sec:eval:bezier}
 \todo[inline]{expand on this section, talk about issues of finding intersection, possible GPU applications}
 
 Bézier curves have been utilised in this project to encode and represent the route of a vehicle. As mentioned in Section~\ref{sec:back-bezier-curves}, there are many reasons I originally selected them for this task. However, over the course of implementation and testing, a number of downsides have been presented.
@@ -97,14 +99,76 @@ Their relatively simple abstract construction as a series of control points prov
 
 They are also capable of representing a high complexity of curve in a relatively simple and concise manner. This makes code much more approachable and algorithms easier to digest.
 
-\subsection{Cooperative Planning}
+\section{Single Agent Planning}
+
+The majority of the components of my single agent planning system have been evaluated in Sections~\ref{sec:eval:GAs} and \ref{sec:eval:bezier}. Here I will discuss its overall effectiveness and any possible extensions that could be made given more time.
+
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[scale=0.14]{figures/sa-1404-col.png}
+  \caption{\label{fig:sa-col} Single agent planning: number of generations against size of population against planning time (left), fitness (right), over \textit{easy} road space (Figure~\ref{subfig:sa-road1}) }
+\end{figure}\todo{replot with seconds on z axis}
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[scale=0.2]{figures/sa-diff2.png}
+  \caption{\label{fig:sa-diff2} Single agent planning: number of generations against size of population against planning time (left) /s, fitness (right), over \textit{moderately difficult} road space (Figure~\ref{subfig:sa-road2}) }
+\end{figure}
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[scale=0.2]{figures/sa-diff3.png}
+  \caption{\label{fig:sa-diff3} Single agent planning: number of generations against size of population against planning time (left) /s, fitness (right), over \textit{difficult} road space (Figure~\ref{subfig:sa-road3}) }
+\end{figure}
+
+\begin{figure}
+  \centering
+  \begin{subfigure}[b]{0.44\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{figures/sa-road1.png}
+    \caption{\label{subfig:sa-road1}Easiest road segment, no obstacles, straight}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.44\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{figures/sa-road2.png}
+    \caption{\label{subfig:sa-road2}Second easiest road segment, single, small obstacle in a straight road. Approx. 4\% of road is infeasible}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.44\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{figures/sa-road3.png}
+    \caption{\label{subfig:sa-road3}Road segment with single, large obstacle in a straight road. Approx. 12.5\% of road is infeasible.}
+  \end{subfigure}
+  \caption{\label{fig:single-agent-roads} Roads used to test single agent planner performance}
+\end{figure}
+
+\todo{Check units for planning time + add link to hosted dynamic version}
+
+In general, I feel that my single agent planner (SAP) performs well. In a road space such as the one shown in Figure~\ref{subfig:sa-road1} my algorithm converges to within 10\% of the fitness of a direct line between the start and goal point within 2 generations over 4 individuals as seen in Figure~\ref{fig:sa-col}\footnote{interactive plot can be found \href{https://barrett370.github.io/Y4-Diss/single-agent-result-1404-col}{here} Link points here: https://barrett370.github.io/Y4-Diss/single-agent-result-1404-col}.
+
+As the road space complexity increases (See Figures~\ref{subfig:sa-road2},\ref{subfig:sa-road3}), speed at which my algorithm convergence is reduced.
+
+Over the road space seen in Figure~\ref{subfig:sa-road2}, this is only by a small margin, taking closer to 3 generations (See Figure~\ref{fig:sa-diff2}\footnote{interactive plot can be found \href{https://barrett370.github.io/Y4-Diss/single-agent-result-diff2}{here} Link points here: https://barrett370.github.io/Y4-Diss/single-agent-result-diff2}).
+
+However, on a more difficult example such as that seen in Figure~\ref{subfig:sa-road3}, all routes close to a straight line are infeasible, resulting in a lower average fitness as can be seen in Figure~\ref{fig:sa-diff3}\footnote{interactive plot can be found \href{https://barrett370.github.io/Y4-Diss/single-agent-result-diff3}{here} Link points here: https://barrett370.github.io/Y4-Diss/single-agent-result-diff3}, as well as a higher average planning time as it is no longer able to terminate early upon reaching generating a route within 10\% of straight line fitness.
+
+
+\section{Cooperative Multi-agent Planning}
 \label{subsec:eval-cooperativeplanning}
 
 My solution to the problem of planning $n$ non-colliding routes for $n$ agents was so wrap my existing \texttt{GA} function in a cooperative \textit{layer}. This cooperative layer relied on a function for detecting collisions which had extremely high overhead, at one point causing around 50x slowdown in the running time of the function. Detecting intersections between two Bézier curves is a non-trivial task with the best methods taking the same approach of recursive subdivision that I utilised.
 
 \todo[inline]{make mention of possible GPU implementations such at in~\cite{robergeFastGeneticAlgorithm2018}, modern enterprise GPUs have around 4000-10000 cores, approximately the max number of curve splits and comparisons in a binary check of depth 6. Being able to do this in a single cycle would result in a huge speedup, paper uses Titan X }
 
+\begin{figure}[ht]
+  \centering
+  \includegraphics[scale=0.19]{figures/ma-1304-lim40.png}
+  \caption{\label{fig:ma-lim40} Multi agent planning number of generations against size of population against planning time (left), fitness limited at 40 (right)}
+\end{figure}
+\todo{Check units for planning time + add link to hosted dynamic version}
+\section{Macro-level Route planning}
 
+\section{Codebase Evaluation}
 
 %TC:macro \todo 1
 
