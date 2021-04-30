@@ -3,6 +3,7 @@ using TimerOutputs
 include("parallelCGA.jl")
 global CACHE = true
 global BEZPLOT=false
+global TIMEIT=false
 global previous_checks = Dict{Tuple{BezierCurve,BezierCurve},Tuple{Bool,Tuple{Real,Real}}}()
 include("GA.jl")
 boundary1(x) = 0

@@ -43,7 +43,7 @@ function toSVector(i::Individual)::SVector{2 * MAX_P,Float64}
     end
     if length(real_array) > 2 * MAX_P# TODO why does this happen?
         @warn "too many control points? $i"
-        real_array = real_array[1:2*MAX_P]
+        real_array = real_array[1:2 * MAX_P]
     end
 
     @debug real_array
@@ -64,15 +64,15 @@ end
 function getGenotype(genotypeString::Array{Real})::BezierCurve
     ret::BezierCurve = []
     for i = 1:2:length(genotypeString)
-        append!(ret, [ControlPoint(genotypeString[i], genotypeString[i+1])])
+        append!(ret, [ControlPoint(genotypeString[i], genotypeString[i + 1])])
     end
     ret
 end
 
 function getGenotype(svec::SVector{2 * MAX_P,Float64})::BezierCurve
     ret::BezierCurve = []
-    for i = 1:2:(svec|> length)
-        append!(ret, [ControlPoint(svec[i], svec[i+1])])
+    for i = 1:2:(svec |> length)
+        append!(ret, [ControlPoint(svec[i], svec[i + 1])])
     end
     ret
 end
@@ -96,12 +96,12 @@ function generatePopulation(
         for i = 1:n_control_points
             new_x =
                 ps[end].x + rand(
-                    x_distance/(n_control_points*4):0.1:x_distance/n_control_points,
+                    x_distance / (n_control_points * 4):0.1:x_distance / n_control_points,
                 )
             if new_x > goal.x
                 new_x = goal.x
             end
-            new_y = ps[end].y + rand(-2*(y_distance/n):1/n:2*(y_distance/n))
+            new_y = ps[end].y + rand(-2 * (y_distance / n):1 / n:2 * (y_distance / n))
             if new_y > goal.y
                 new_y = goal.y
             end
@@ -119,7 +119,7 @@ end
 
 function infeasible_distance(road::Road, curve::BezierCurve)
     l = 0
-    curve_values = get_curve(curve,100)
+    curve_values = get_curve(curve, 100)
     for obstacle in road.obstacles
         intersects = []
         if typeof(obstacle) == Circle
@@ -128,12 +128,12 @@ function infeasible_distance(road::Road, curve::BezierCurve)
                 x = curve_values[1][i]
                 y = curve_values[2][i]
                 potential_circle_intersect_is = findall(
-                    cx -> round(cx, digits = 1) == round(x, digits = 1),
+                    cx -> round(cx, digits=1) == round(x, digits=1),
                     obstacle_values[1],
                 )
                 for j in potential_circle_intersect_is
-                    if round(y, digits = 1) ==
-                       round(obstacle_values[2][j], digits = 1)
+                    if round(y, digits=1) ==
+                       round(obstacle_values[2][j], digits=1)
                         t = i / 500
                         append!(intersects, [(x, y, t)])
                     end
@@ -156,7 +156,7 @@ function infeasible_distance(road::Road, curve::BezierCurve)
 
         end
         if length(intersects) > 0
-            pre_ob = deCasteljau(curve, intersects[1][3])[2]|> bezLength
+            pre_ob = deCasteljau(curve, intersects[1][3])[2] |> bezLength
             post_ob = curve_section = deCasteljau(
                 deCasteljau(curve, intersects[1][3])[2],
                 intersects[end][3],
@@ -164,13 +164,13 @@ function infeasible_distance(road::Road, curve::BezierCurve)
             l += pre_ob - post_ob
         end
     end
-    for i = 1:length(curve_values[1])-1
+    for i = 1:length(curve_values[1]) - 1
         if curve_values[2][i] >= road.boundary_2(curve_values[1][i]) ||
            curve_values[2][i] <= road.boundary_1(curve_values[1][i])
 
             dist = √(
-                (curve_values[1][i] - curve_values[1][i+1])^2 +
-                (curve_values[2][i] - curve_values[2][i+1])^2,
+                (curve_values[1][i] - curve_values[1][i + 1])^2 +
+                (curve_values[2][i] - curve_values[2][i + 1])^2,
             )
             # @show 100*dist
             l = l + dist
@@ -187,7 +187,7 @@ function high_proximity_distance(road::Road, curve::BezierCurve)
     for obstacle in road.obstacles
         if typeof(obstacle) == Circle
             threshold = obstacle.r * 1.5
-            for i = 1:length(curve_values[1])-1
+            for i = 1:length(curve_values[1]) - 1
                 # @show   √((curve_values[1][i] - obstacle.centre.x)^2 +
                 # (curve_values[2][i] - obstacle.centre.y)^2)
                 if √(
@@ -195,8 +195,8 @@ function high_proximity_distance(road::Road, curve::BezierCurve)
                     (curve_values[2][i] - obstacle.centre.y)^2,
                 ) <= threshold
                     l += √(
-                        (curve_values[1][i+1] - curve_values[1][i])^2 +
-                        (curve_values[2][i+1] - curve_values[2][i])^2,
+                        (curve_values[1][i + 1] - curve_values[1][i])^2 +
+                        (curve_values[2][i + 1] - curve_values[2][i])^2,
                     )
                 end
             end
@@ -210,8 +210,8 @@ function high_proximity_distance(road::Road, curve::BezierCurve)
            threshold
 
             dist = √(
-                (curve_values[1][i] - curve_values[1][i+1])^2 +
-                (curve_values[2][i] - curve_values[2][i+1])^2,
+                (curve_values[1][i] - curve_values[1][i + 1])^2 +
+                (curve_values[2][i] - curve_values[2][i + 1])^2,
             )
             # @show 100*dist
             l = l + dist
@@ -231,7 +231,7 @@ function Fitness(r::Road, i::Individual)
     l2 = high_proximity_distance(r, i.phenotype.genotype) # length of path in which min safe distance is broken
 
 
-    #@show l + α * l1 + β * l2
+    # @show l + α * l1 + β * l2
     l + α * l1 + β * l2
 end
 
@@ -246,7 +246,7 @@ function timeit_Fitness(r::Road, i::Individual)
     l2 = @timeit to "hgih_prox_distance" high_proximity_distance(r, i.phenotype.genotype) # length of path in which min safe distance is broken
 
 
-    #@show l + α * l1 + β * l2
+    # @show l + α * l1 + β * l2
     l + α * l1 + β * l2
 end
 
@@ -260,17 +260,17 @@ function Fitness(r::Road, os::SharedArray, i::Individual) # Given knowledge of o
     for o in os
         if o != SVector{2 * MAX_P,Float64}(zeros(o |> length))
             @debug "Testing fitness of $i, wrt. $o, parallel"
-            #if !MT
+            # if !MT
             #    if ft_collisionDetection(i.phenotype.genotype, o |> getGenotype)
             #        @debug "Detected collision!"
             #        base_fitness = base_fitness * 5 # TODO tune this
             #    end
-            #else
-                if collisionDetection(i.phenotype.genotype, o |> getGenotype)
-                    @debug "Detected collision!"
-                    base_fitness = base_fitness * 10 # TODO tune this
-                end
-            #end
+            # else
+            if collisionDetection(i.phenotype.genotype, o |> getGenotype)
+                @debug "Detected collision!"
+                base_fitness = base_fitness * 10 # TODO tune this
+            end
+            # end
         end
     end
 
@@ -283,36 +283,36 @@ function Fitness(r::Road, os::Array{Individual}, i::Individual) # Given knowledg
     #    base_fitness = base_fitness * 5
     #
     for o in os
-            @debug "Testing fitness of $i, wrt. $o, parallel"
-                if collisionDetection(i.phenotype.genotype, o.phenotype.genotype )
-                    @debug "Detected collision!"
-                    base_fitness = base_fitness * 10 # TODO tune this
-                end
+        @debug "Testing fitness of $i, wrt. $o, parallel"
+        if collisionDetection(i.phenotype.genotype, o.phenotype.genotype)
+            @debug "Detected collision!"
+            base_fitness = base_fitness * 10 # TODO tune this
+        end
     end
 
     return base_fitness
 end
 function timeit_Fitness(r::Road, os::SharedArray, i::Individual) # Given knowledge of other individuals in the roadspace penalise intersections
 
-    base_fitness =@timeit to "base_fitness" timeit_Fitness(r, i)
+    base_fitness = @timeit to "base_fitness" timeit_Fitness(r, i)
     # if bezInt(i.phenotype.genotype, o.phenotype.genotype)
     #    base_fitness = base_fitness * 5
     #
     for o in os
         if o != SVector{2 * MAX_P,Float64}(zeros(o |> length))
             @debug "Testing fitness of $i, wrt. $o, parallel"
-            #if !MT
+            # if !MT
             #    if ft_collisionDetection(i.phenotype.genotype, o |> getGenotype)
             #        @debug "Detected collision!"
             #        base_fitness = base_fitness * 5 # TODO tune this
             #    end
-            #else
-                col = @timeit  to "collisionDetection" collisionDetection(i.phenotype.genotype, o |> getGenotype)
-                if col
-                    @debug "Detected collision!"
-                    base_fitness = base_fitness * 10 # TODO tune this
-                end
-            #end
+            # else
+            col = @timeit  to "collisionDetection" collisionDetection(i.phenotype.genotype, o |> getGenotype)
+            if col
+                @debug "Detected collision!"
+                base_fitness = base_fitness * 10 # TODO tune this
+            end
+            # end
         end
     end
 
@@ -321,7 +321,7 @@ end
 
 function debugIsValid(i::Individual)
 
-    if sort(i.phenotype.genotype, by = g -> g.x) != i.phenotype.genotype
+    if sort(i.phenotype.genotype, by=g -> g.x) != i.phenotype.genotype
         @debug "control points not in order"
     elseif length(i.phenotype.genotype) < 2
         @debug "too few control points"
@@ -334,7 +334,7 @@ end
 
 function isValid(i::Individual)::Bool
 
-    sort(i.phenotype.genotype, by = g -> g.x) == i.phenotype.genotype &&
+    sort(i.phenotype.genotype, by=g -> g.x) == i.phenotype.genotype &&
         length(i.phenotype.genotype) >= 2 &&
         i.phenotype.genotype[1] == i.phenotype.source &&
         i.phenotype.genotype[end] == i.phenotype.goal
@@ -342,14 +342,14 @@ function isValid(i::Individual)::Bool
 end
 
 function repair(i::Individual)::Individual
-    sort!(i.phenotype.genotype, by = g -> g.x)
+    sort!(i.phenotype.genotype, by=g -> g.x)
     return i
 end
 function ft_collisionDetection(c1::BezierCurve, c2::BezierCurve)::Bool
     @warn "Using fortran bezier lib"
-    @show (b, ps) = ft_bezInt(c1,c2)
+    @show (b, ps) = ft_bezInt(c1, c2)
     if b
-        if (deCasteljau(c1,ps[1])[1] |> bezLength) - (deCasteljau(c2,ps[2])[1] |> bezLength) < 0.5
+        if (deCasteljau(c1, ps[1])[1] |> bezLength) - (deCasteljau(c2, ps[2])[1] |> bezLength) < 0.5
             return true
         else
             return false
@@ -361,13 +361,16 @@ function ft_collisionDetection(c1::BezierCurve, c2::BezierCurve)::Bool
 
 end
 function collisionDetection(c1::BezierCurve, c2::BezierCurve)::Bool
-    (b, ts) = @timeit to "bezInt" bezInt(c1, c2)
-    #(b, ts) = bezInt(c1, c2)
+    if TIMEIT
+        (b, ts) = @timeit to "bezInt" bezInt(c1, c2)
+    else
+        (b, ts) = bezInt(c1, c2)
+    end
     @debug (b, ts)
     if b # if they do intersect
         @debug "Intersection"
-        @debug abs(bezLength(deCasteljau(c1,ts[1])[1]) - bezLength(deCasteljau(c2,ts[2])[1]))
-        return abs(bezLength(deCasteljau(c1,ts[1])[1]) - bezLength(deCasteljau(c2,ts[2])[1])) <
+        @debug abs(bezLength(deCasteljau(c1, ts[1])[1]) - bezLength(deCasteljau(c2, ts[2])[1]))
+        return abs(bezLength(deCasteljau(c1, ts[1])[1]) - bezLength(deCasteljau(c2, ts[2])[1])) <
                0.5  # TODO tweak pessimistic fuzz to this comparison
     # If the distance between (c1 origin -> end of c1 intersection section) -  distance between (c2 origin -> end of c2 intersection section)
     # is less than <val>, we say they reached approx the same point at approx the same time => collision!
@@ -378,9 +381,9 @@ function collisionDetection(c1::BezierCurve, c2::BezierCurve)::Bool
 end
 
 
-function get_curve(c::BezierCurve, n = 500)
+function get_curve(c::BezierCurve, n=500)
     ps_x, ps_y = [], []
-    for x in range(0, 1, step = 1 / n)
+    for x in range(0, 1, step=1 / n)
         C = c(x)
         append!(ps_x, C.x)
         append!(ps_y, C.y)

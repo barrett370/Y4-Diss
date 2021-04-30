@@ -2,7 +2,7 @@ import BenchmarkTools
 include("../src/GA.jl")
 using PlotlyJS
 
-function plot_benchmarks(benches, sf = true)
+function plot_benchmarks(benches, sf=true)
 
     means =
         map(ns -> map(b -> BenchmarkTools.mean(b).time * 10^-9, ns), benches[1])
@@ -12,36 +12,36 @@ function plot_benchmarks(benches, sf = true)
     ngens = vcat(1:length(benches[1]))
     @show ngens, ns, collect(Iterators.flatten(means))
     layout = PlotlyJS.Layout(;
-        title = "Singlew agent planner \n z=Planning time (left) /s | Average Fitness (right)",
-        xaxis = attr(title = "Size of population"),
-        yaxis = attr(title = "Number of generations"),
-        zaxis = attr(title = "Time to plan /ms"),
+        title="Singlew agent planner \n z=Planning time (left) /s | Average Fitness (right)",
+        xaxis=attr(title="Size of population"),
+        yaxis=attr(title="Number of generations"),
+        zaxis=attr(title="Time to plan /ms"),
     )
     layout2 = PlotlyJS.Layout(;
-        xaxis = attr(title = "Size of population"),
-        yaxis = attr(title = "Number of generations"),
-        zaxis = attr(title = "Fitness (length of route)"),
+        xaxis=attr(title="Size of population"),
+        yaxis=attr(title="Number of generations"),
+        zaxis=attr(title="Fitness (length of route)"),
     )
     surf = PlotlyJS.surface(
-        x = ns,
-        y = ngens,
-        z = means,
-        surfacecolor = mean_fitness,
-        layout = layout,
+        x=ns,
+        y=ngens,
+        z=means,
+        surfacecolor=mean_fitness,
+        layout=layout,
     )
     surf2 = PlotlyJS.surface(
-        x = ns,
-        y = ngens,
-        z = mean_fitness,
-        surfacecolor = means,
-        layout = layout2,
+        x=ns,
+        y=ngens,
+        z=mean_fitness,
+        surfacecolor=means,
+        layout=layout2,
     )
 
     p = PlotlyJS.plot(surf, layout)
     [p, PlotlyJS.plot(surf2, layout2)]
 end
 
-function test_gensPopsize(n = 20, n_gens = 10; road_difficulty=1,samples=5)
+function test_gensPopsize(n=20, n_gens=10; road_difficulty=1,samples=5)
     start = Point(0, 5)
     goal = Point(20, 8)
 
@@ -60,40 +60,40 @@ function test_gensPopsize(n = 20, n_gens = 10; road_difficulty=1,samples=5)
     append!(obstacles, [o2])
     road3 = Road(b1, b2, obstacles, l)
 
-    o3 =  Circle(1.85,Point(10,5))
-    b1_4(x) = 2cosh(0.1x)-2
-    b2_4(x) = 2cosh(0.12x) +8
-    road4 = Road(b1_4,b2_4, [o3], l)
+    o3 =  Circle(1.85, Point(10, 5))
+    b1_4(x) = 2cosh(0.1x) - 2
+    b2_4(x) = 2cosh(0.12x) + 8
+    road4 = Road(b1_4, b2_4, [o3], l)
 
     roads = [road1, road2, road3,road4]
     road = roads[road_difficulty]
     if road_difficulty == 4
-        start = Point(0,5)
-        goal = Point(18,6)
+        start = Point(0, 5)
+        goal = Point(18, 6)
     end
     res = [[] for i = 0:n_gens]
     plans = [[] for i = 0:n_gens]
     for ng = 0:n_gens
         for n = 1:n
-            append!(plans[ng+1], [[]])
+            append!(plans[ng + 1], [[]])
             "benchmarking with $ng generations over $n individuals" |> println
             b = BenchmarkTools.@benchmarkable append!(
-                        $plans[$ng+1][$n],
+                        $plans[$ng + 1][$n],
                         [
                             GA(
                                 $start,
                                 $goal,
                                 $road,
-                                n_gens = $ng,
-                                n = $n,
-                                selection_method = ranked,
+                                n_gens=$ng,
+                                n=$n,
+                                selection_method=ranked,
                             )[1],
                         ],
                     )
-                    b.params.samples=samples
-                    @show b.params.samples
+            b.params.samples = samples
+            @show b.params.samples
             append!(
-                res[ng+1],
+                res[ng + 1],
                 [
                 run(b)
                 ],
@@ -102,9 +102,9 @@ function test_gensPopsize(n = 20, n_gens = 10; road_difficulty=1,samples=5)
     end
 
     @show plans
-    fitnesses = map(gen -> map(n -> map(i -> i.fitness,n),gen),plans)
+    fitnesses = map(gen -> map(n -> map(i -> i.fitness, n), gen), plans)
     av_fitnesses = map(gen -> map(n -> mean(n), gen), fitnesses)
-    (res, av_fitnesses,plans)
+    (res, av_fitnesses, plans)
 end
 
 function test_roadDifficulty()
@@ -125,9 +125,9 @@ function test_roadDifficulty()
                     $start,
                     $goal,
                     $road,
-                    n_gens = $ng,
-                    n = $n,
-                    selection_method = ranked,
+                    n_gens=$ng,
+                    n=$n,
+                    selection_method=ranked,
                 )[1].fitness,
             ],
         )
@@ -146,4 +146,25 @@ function save_res(res, dir)
             end
         end
     end
+end
+
+function solution_complexity(benchmarks)
+    solutions = benchmarks[3]
+    ns = vcat(1:length(solutions[1]))
+    ngens = vcat(1:length(solutions))
+    avg_cps = map(gen -> map(n -> map(i -> i.phenotype.genotype |> length, n) |> mean, gen), solutions)
+
+    layout = PlotlyJS.Layout(;
+        title="Single agent planner z = avg. number of control points in generated routes",
+        xaxis=attr(title="Size of population"),
+        yaxis=attr(title="Number of generations"),
+    )
+    surf = PlotlyJS.surface(
+        x=ns,
+        y=ngens,
+        z=avg_cps,
+        layout=layout,
+    )
+    p = PlotlyJS.plot(surf, layout)
+    [p]
 end

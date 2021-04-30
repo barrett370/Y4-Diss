@@ -58,7 +58,7 @@ function multi_plot_benchmarks(benches, sf = true, zlims = nothing)
 
 end
 
-function multi_test_gensPopsize(n = 20, n_gens = 10; road_difficulty=1)
+function multi_test_gensPopsize(n = 20, n_gens = 10; road_difficulty=1,samples=15)
     starts = [Point(0, 5), Point(0, 8), Point(0, 6)]
 
     goals = [Point(20, 8), Point(18, 3), Point(15, 5)]
@@ -79,26 +79,34 @@ function multi_test_gensPopsize(n = 20, n_gens = 10; road_difficulty=1)
     append!(obstacles, [o2])
     road3 = Road(b1, b2, obstacles, l)
 
-    roads = [road1,road2,road3]
+    o3 =  Circle(1.85, Point(10, 5))
+    b1_4(x) = 2cosh(0.1x) - 2
+    b2_4(x) = 2cosh(0.12x) + 8
+    road4 = Road(b1_4, b2_4, [o3], l)
+
+    roads = [road1,road2,road3,road4]
     road = roads[road_difficulty]
 
     res = [[] for i = 0:n_gens]
     plans = [[] for i = 0:n_gens]
+
+    if road_difficulty == 4
+        starts = [Point(0, 5),Point(1,3),Point(0,7)]
+        goals = [Point(18, 6),Point(16,7),Point(20,10)]
+    end
     for ng = 0:n_gens
         for n = 1:n
             #global previous_checks = Dict{Tuple{BezierCurve,BezierCurve},Tuple{Bool,Tuple{BezierCurve,BezierCurve}}}()
             append!(plans[ng+1], [[]])
             "benchmarking with $ng generations over $n individuals" |> println
-            append!(
-                res[ng+1],
-                [
-                    BenchmarkTools.@benchmark append!(
+            b = BenchmarkTools.@benchmarkable append!(
                         $plans[$ng+1][$n],
                         [
                             PCGA(
                                 $starts,
                                 $goals,
                                 $road,
+                                true,
                                 n_gens = $ng,
                                 n = $n,
                                 selection_method = ranked,
@@ -106,8 +114,16 @@ function multi_test_gensPopsize(n = 20, n_gens = 10; road_difficulty=1)
                             ),
                         ],
                     )
+            b.params.samples = samples
+            append!(
+                res[ng+1],
+                [
+                  run(b)  
                 ],
             )
+            @warn "clearing cache"
+            previous_checks = Dict{Tuple{BezierCurve,BezierCurve}, Tuple{Bool,Tuple{Real,Real}}}()
+            @warn "cleared cache: $previous_checks"
         end
     end
     @show plans
@@ -122,5 +138,5 @@ function multi_test_gensPopsize(n = 20, n_gens = 10; road_difficulty=1)
         ),
         fs,
     )
-    (res, av_fs)
+    (res, av_fs,plans)
 end

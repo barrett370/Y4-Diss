@@ -276,7 +276,7 @@ So far we have only concerned ourselves with planning a route through a road-spa
 
 There are different approaches we can take to this problem. \todo[inline]{refer to lit rev sections discussing approaches by Kala\cite{kalaOnroadIntelligentVehicles2016} and Cai \& Peng \cite{caiCooperativeCoevolutionaryAdaptive2002}}
 
-My initial approach to a collaborative planning system was somewhat inefficient. The system operated by planning routes for each agent sequentially, using a growing \textit{context} to keep track of the routes that had already been finalised. The first agent to be planned was not concerned with avoiding collisions, as, as far as it was concerned, there were no other agents in the system. Each subsequent agent checked if any of its candidate solutions intersected with and of the routes planned before, a very high penalty was applied to any routes with collisions.
+My initial approach \todo{refer to ?Cai+Peng? as their approach was similar} to a collaborative planning system was somewhat inefficient. The system operated by planning routes for each agent sequentially, using a growing \textit{context} to keep track of the routes that had already been finalised. The first agent to be planned was not concerned with avoiding collisions, as, as far as it was concerned, there were no other agents in the system. Each subsequent agent checked if any of its candidate solutions intersected with and of the routes planned before, a very high penalty was applied to any routes with collisions.
 
 This system was very inefficient with the final routes requiring a large number of checks to be carried out by my \texttt{bezInt} function, which itself suffered from \todo[inline]{verify this} exponential time (and space) complexity.
 

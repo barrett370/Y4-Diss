@@ -6,7 +6,7 @@
 ./wordcount.sh
 #+end_src
 #+RESULTS:
-: 6002
+: 8304
 
 * Sections [1/8]:
 ** [ ] Abstract [1/1]
@@ -54,6 +54,10 @@ texcount literature_review.tex  \
     | cut -d : -f2 \
     | sed 's/ //g'
 #+end_src
+
+#+RESULTS:
+: 985
+
 - [X] Bezier curves for route generation
 - [X] GAs for route generation
 - [ ] FARNs
@@ -112,7 +116,7 @@ CLOCK: [2021-04-09 Fri 10:36]--[2021-04-09 Fri 11:01] =>  0:25
 - [ ] number of concurrently planned agents
 - [ ] sparsity of graph
 
-** [ ] Evaluation [0/6]
+** [ ] Evaluation [1/6]
 #+begin_src bash
 texcount evaluation.tex  \
     | grep "Words in text:" \
@@ -123,22 +127,22 @@ texcount evaluation.tex  \
 
 
 #+RESULTS:
-: 1406
+: 1647
 *** [ ] Genetic Algorithms
 - [-] Evaluation of currently implemented operators
   - [X] Selection
   - [X] Mutation
   - [ ] Crossover
-  - [ ] Fitness
+  - [-] Fitness
   - [ ] Other operators and how they may improve
   - [-] Performance
   - [ ] Reliability
-*** [ ] Bezier Curves
+*** [X] Bezier Curves
 - [X] Advantages
 - [X] Disadvantages
 - [X] Alternatives
 *** [ ] Single agent approach
-- [ ] How well did it perform?
+- [-] How well did it perform?
 - [ ] How could it be further improved?
 *** [ ] Multi-agent approach
 *** [ ] macro level approach

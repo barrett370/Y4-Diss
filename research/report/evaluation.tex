@@ -101,25 +101,31 @@ They are also capable of representing a high complexity of curve in a relatively
 
 \section{Single Agent Planning}
 
-The majority of the components of my single agent planning system have been evaluated in Sections~\ref{sec:eval:GAs} and \ref{sec:eval:bezier}. Here I will discuss its overall effectiveness and any possible extensions that could be made given more time.
+The majority of the components of my single agent planning system have been evaluated in Sections~\ref{sec:eval:GAs} and \ref{sec:eval:bezier}. Here I will discuss its overall effectiveness and any possible extensions that could be implemented given more time.
 
 
 \begin{figure}[ht]
   \centering
   \includegraphics[scale=0.14]{figures/sa-1404-col.png}
-  \caption{\label{fig:sa-col} Single agent planning: number of generations against size of population against planning time (left), fitness (right), over \textit{easy} road space (Figure~\ref{subfig:sa-road1}) }
+  \caption{\label{fig:sa-col} Single agent planning: number of generations against size of population against planning time (left), fitness (right), over \textit{easy} road space (Figure~\ref{subfig:sa-road1}) (1000 samples)}
 \end{figure}\todo{replot with seconds on z axis}
 
 \begin{figure}[ht]
   \centering
   \includegraphics[scale=0.2]{figures/sa-diff2.png}
-  \caption{\label{fig:sa-diff2} Single agent planning: number of generations against size of population against planning time (left) /s, fitness (right), over \textit{moderately difficult} road space (Figure~\ref{subfig:sa-road2}) }
+  \caption{\label{fig:sa-diff2} Single agent planning: number of generations against size of population against planning time (left) /s, fitness (right), over \textit{moderately difficult} road space (Figure~\ref{subfig:sa-road2}) (1000 samples) }
 \end{figure}
 
 \begin{figure}[ht]
   \centering
   \includegraphics[scale=0.2]{figures/sa-diff3.png}
-  \caption{\label{fig:sa-diff3} Single agent planning: number of generations against size of population against planning time (left) /s, fitness (right), over \textit{difficult} road space (Figure~\ref{subfig:sa-road3}) }
+  \caption{\label{fig:sa-diff3} Single agent planning: number of generations against size of population against planning time (left) /s, fitness (right), over \textit{difficult} road space (Figure~\ref{subfig:sa-road3}) (1000 samples)}
+\end{figure}
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[scale=0.15]{figures/sa-diff4.png}
+  \caption{\label{fig:sa-diff4} Single agent planning: number of generations against size of population against planning time (left) /s, fitness (right), over \textit{difficult} road space (Figure~\ref{subfig:sa-road4}) (15 samples)}
 \end{figure}
 
 \begin{figure}
@@ -139,21 +145,27 @@ The majority of the components of my single agent planning system have been eval
     \includegraphics[width=\textwidth]{figures/sa-road3.png}
     \caption{\label{subfig:sa-road3}Road segment with single, large obstacle in a straight road. Approx. 12.5\% of road is infeasible.}
   \end{subfigure}
-  \caption{\label{fig:single-agent-roads} Roads used to test single agent planner performance}
+  \begin{subfigure}[b]{0.44\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{figures/sa-road4.png}
+    \caption{\label{subfig:sa-road4}Road segment with single, medium sized obstacle in a curved road. Approx. 4.9\% of road is infeasible.}
+  \end{subfigure}
+  \caption{\label{fig:single-agent-roads} Roads used to test single agent planner performance, start and goal positions shown, ordered in terms of difficulty}
 \end{figure}
 
 \todo{Check units for planning time + add link to hosted dynamic version}
 
-In general, I feel that my single agent planner (SAP) performs well. In a road space such as the one shown in Figure~\ref{subfig:sa-road1} my algorithm converges to within 10\% of the fitness of a direct line between the start and goal point within 2 generations over 4 individuals as seen in Figure~\ref{fig:sa-col}\footnote{interactive plot can be found \href{https://barrett370.github.io/Y4-Diss/single-agent-result-1404-col}{here} Link points here: https://barrett370.github.io/Y4-Diss/single-agent-result-1404-col}.
+In general, I feel that my single agent planner performs well. In a road space such as the one shown in Figure~\ref{subfig:sa-road1} my algorithm converges to within 10\% of the fitness of a direct line between the start and goal point within 2 generations over 4 individuals as seen in Figure~\ref{fig:sa-col}\footnote{interactive plot can be found \href{https://barrett370.github.io/Y4-Diss/single-agent-result-1404-col}{here} Link points here: https://barrett370.github.io/Y4-Diss/single-agent-result-1404-col}.
 
 As the road space complexity increases (See Figures~\ref{subfig:sa-road2},\ref{subfig:sa-road3}), speed at which my algorithm convergence is reduced.
 
 Over the road space seen in Figure~\ref{subfig:sa-road2}, this is only by a small margin, taking closer to 3 generations (See Figure~\ref{fig:sa-diff2}\footnote{interactive plot can be found \href{https://barrett370.github.io/Y4-Diss/single-agent-result-diff2}{here} Link points here: https://barrett370.github.io/Y4-Diss/single-agent-result-diff2}).
 
-However, on a more difficult example such as that seen in Figure~\ref{subfig:sa-road3}, all routes close to a straight line are infeasible, resulting in a lower average fitness as can be seen in Figure~\ref{fig:sa-diff3}\footnote{interactive plot can be found \href{https://barrett370.github.io/Y4-Diss/single-agent-result-diff3}{here} Link points here: https://barrett370.github.io/Y4-Diss/single-agent-result-diff3}, as well as a higher average planning time as it is no longer able to terminate early upon reaching generating a route within 10\% of straight line fitness.
+However, on a more difficult example such as that seen in Figure~\ref{subfig:sa-road3}, all routes close to a straight line are infeasible, resulting in a lower average fitness as can be seen in Figure~\ref{fig:sa-diff3}\footnote{interactive plot can be found \href{https://barrett370.github.io/Y4-Diss/single-agent-result-diff3}{here} Link points here: https://barrett370.github.io/Y4-Diss/single-agent-result-diff3}, as well as a higher average planning time as it is required to perform more involved infeasible distance calculations more often.
 
+On the example road shown in Figure~\ref{subfig:sa-road4}, the algorithm converges slower still, but still reaching what I would consider to be a \textit{good} solution within 5 generations with a population size around 7, these results can be seen in Figure~\ref{fig:sa-diff4}\footnote{interactive plot can be found, Link points here:}\todo{update this footnote}. In terms of planning time, with a few anomalous exceptions planning time steadily increases roughly proportionally to the number of generations $\times$ the population size.
 
-\section{Cooperative Multi-agent Planning}
+\section{Cooperative (Multi-agent) Planning}
 \label{subsec:eval-cooperativeplanning}
 
 My solution to the problem of planning $n$ non-colliding routes for $n$ agents was so wrap my existing \texttt{GA} function in a cooperative \textit{layer}. This cooperative layer relied on a function for detecting collisions which had extremely high overhead, at one point causing around 50x slowdown in the running time of the function. Detecting intersections between two Bézier curves is a non-trivial task with the best methods taking the same approach of recursive subdivision that I utilised.
@@ -163,7 +175,7 @@ My solution to the problem of planning $n$ non-colliding routes for $n$ agents w
 \begin{figure}[ht]
   \centering
   \includegraphics[scale=0.19]{figures/ma-1304-lim40.png}
-  \caption{\label{fig:ma-lim40} Multi agent planning number of generations against size of population against planning time (left), fitness limited at 40 (right)}
+  \caption{\label{fig:ma-lim40} Multi agent planning number of generations against size of population against planning time (left), fitness limited at 40 (right) (1000 samples)}
 \end{figure}
 \todo{Check units for planning time + add link to hosted dynamic version}
 \section{Macro-level Route planning}
