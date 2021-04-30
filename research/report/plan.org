@@ -97,10 +97,11 @@ CLOCK: [2021-04-09 Fri 10:36]--[2021-04-09 Fri 11:01] =>  0:25
 - [ ] Possible extensions
 - [ ] Make clear what is my original work
 ** [ ] Results [0/3]
+DEADLINE: <2021-05-03 Mon>
 *** [ ] Single Agent
 - [X] population size
 - [X] number of generations
-- [-] number of obstacles / difficulty of road space
+- [X] number of obstacles / difficulty of road space
     % of road space that is infeasible
     average number of (required) control points to plan route
     How close is the average fitness to optimal (straight line fitness)
@@ -136,7 +137,6 @@ texcount evaluation.tex  \
   - [-] Fitness
   - [ ] Other operators and how they may improve
   - [-] Performance
-  - [ ] Reliability
 *** [X] Bezier Curves
 - [X] Advantages
 - [X] Disadvantages
@@ -145,7 +145,11 @@ texcount evaluation.tex  \
 - [-] How well did it perform?
 - [ ] How could it be further improved?
 *** [ ] Multi-agent approach
+- [ ] How well did it perform?
+- [ ] How could it be further improved?
 *** [ ] macro level approach
+- [ ] How well did it perform?
+- [ ] How could it be further improved?
 *** [ ] Codebase evaluation
 - [ ] How much work was involved, size of codebase?
 - [ ] Where does my approach fall short?

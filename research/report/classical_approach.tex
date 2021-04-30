@@ -216,7 +216,7 @@ I.e. a mutated control point cannot lie before or after the start or end points 
   \mathcal{Y} = \left[ - 1.3 \cdot \frac{b_{1}(\mathcal{X}_{1}) + b_{2}(\mathcal{X}_{2})}{2}, 1.3 \cdot \frac{b_{2}(\mathcal{X}_{1}) + b_{2}(\mathcal{X}_{2})}{2} \right]
 \end{equation}
 
-Meaning $-1.3$ times the average $y$ coordinate of the bottom road boundary to $1.3$ times the average of the top road boundary across the range of permitted $x$ values. $\pm 1.3$ was used after experimenting with values ranging from $\pm 2$ to $\pm 0.5$, 1.3 offers the procedure the chance to significantly affect the course of a route whilst minimising the chance that the mutated route will be infeasible.
+Meaning $-1.3$ times the average $y$ coordinate of the bottom road boundary to $1.3$ times the average of the top road boundary across the range of permitted $x$ values. $\pm 1.3$ was used after experimenting with values ranging from $\pm 2$ to $\pm 0.5$, 1.3 offers the procedure the chance to significantly affect the course of a route whilst, minimising the chance that the mutated route will be infeasible.
 
 A pair standard deviations as previously outlined in the Background section are defined as:
 
@@ -276,11 +276,11 @@ So far we have only concerned ourselves with planning a route through a road-spa
 
 There are different approaches we can take to this problem. \todo[inline]{refer to lit rev sections discussing approaches by Kala\cite{kalaOnroadIntelligentVehicles2016} and Cai \& Peng \cite{caiCooperativeCoevolutionaryAdaptive2002}}
 
-My initial approach \todo{refer to ?Cai+Peng? as their approach was similar} to a collaborative planning system was somewhat inefficient. The system operated by planning routes for each agent sequentially, using a growing \textit{context} to keep track of the routes that had already been finalised. The first agent to be planned was not concerned with avoiding collisions, as, as far as it was concerned, there were no other agents in the system. Each subsequent agent checked if any of its candidate solutions intersected with and of the routes planned before, a very high penalty was applied to any routes with collisions.
+My initial approach \todo{refer to ?Cai+Peng? as their approach was similar} to a collaborative planning system was somewhat inefficient. The system operated by planning routes for each agent sequentially, using a growing \textit{context} to keep track of the routes that had already been finalised. The first agent to be planned was not concerned with avoiding collisions, because, as far as it was concerned, there were no other agents in the system. Each subsequent agent checked if any of its candidate solutions intersected with any of the routes planned before, a very high penalty was applied to any routes with collisions.
 
 This system was very inefficient with the final routes requiring a large number of checks to be carried out by my \texttt{bezInt} function, which itself suffered from \todo[inline]{verify this} exponential time (and space) complexity.
 
-This system was improved upon by splitting the process over multiple threads, each agent being given a separate thread, communicating their most up-to-date plans via a shared array, $S$. Agent $i$ will store its current fittest route in $S[i]$, the calculation for fitness of any candidate checks for collisions with each route in $S$. This system may conduct more checks but it removes the problem of prioritising the first route to the planned and reduces the overall runtime of the system approximately proportionally to the number of threads available, an abstract view of the topology can be seen in Figure~\ref{fig:PCGA} with each agent $a_{k}, k \in [1,n]$ being mapped to a separate threaded instance of my GA planner. Each instance has access to the shared array which stores the fittest route after generation $i \in [1,m]$ with $m$ being the maximum number of generations for each agent.
+This system was improved upon by splitting the process over multiple threads, each agent being given a separate thread, communicating their most up-to-date plans via a shared array, $S$. Agent $i$ will store its current fittest route in $S[i]$, the calculation for fitness of any candidate checks for collisions with each route in $S$. This system may conduct more checks but it removes the problem of prioritising the first route to be planned and reduces the overall runtime of the system approximately proportionally to the number of threads available, an abstract view of the topology can be seen in Figure~\ref{fig:PCGA} with each agent $a_{k}, k \in [1,n]$ being mapped to a separate threaded instance of my GA planner. Each instance has access to the shared array which stores the fittest route after generation $i \in [1,m]$ with $m$ being the maximum number of generations for each agent.
 
 Updates to the shared array happen as and when each thread reaches the end of a generation. This can mean that routes that terminate before others have to adapt less to other routes, but this trade-off cannot be avoided without instituting constant communication between threads, which in and of itself introduces overhead and slows down planning.
 
@@ -350,11 +350,11 @@ In order to speedup my Bézier intersection function I implemented a number of t
     \item I instead instituted a simpler heuristic using bounded boxes (See Section~\ref{subsec:back_boundedboxes}). Using the \texttt{Luxor} library\cite{JuliaGraphicsLuxorJl2021}, I was able to detect whether two bounded boxes intersected, if they did not, further checks can be skipped.\todo{Merge these first 2? }
   \item If two curve segments have already been checked for intersection, why bother checking them again?
 
-        This question was solved by trading computation time for memory, by constructing a hash table linking curve pairs to a tuple of intersection curve segments (if present) and a boolean, when checking two curve sections, if they already exist in the hash table the remaining computation can be skipped with the pre-computed result returned instead.
+        This question was solved by trading computation time for memory, by constructing a hash table linking curve pairs to a tuple containing the approximate values for $t$ representing the point of intersection (if present) and a boolean, when checking two curve sections, if they already exist in the hash table the remaining computation can be skipped with the pre-computed result returned instead.
 
         In most cases a check is performed at least twice. Given two candidate solutions for two distinct agents $B_{1}$ and $B_{2}$, when evaluating the fitness of $B_{1}$ it is checked for intersections with $B_{2}$ and equally when evaluating the fitness of $B_{2}$ $B_{2}$ is checked against $B_{1}$, thus buy storing the first result, the second check can be skipped.
 
-        In reality, many curve segments are found repeatedly inside of populations and as such many more duplicate checks can be skipped through this method.
+        In reality, many curve segments are found repeatedly inside populations and as such many more duplicate checks can be skipped through this method.
   \item I implemented a recursion depth limit so as to introduce an upper bound in computation before the function returns false. Without this I found that often the checks would repeat until it was searching for intersections between infinitesimally small curve sections.
 
   \item I was also able to reduce the runtime of this function via the use of threading. Upon a subdivision two more threaded tasks are spawned and the lazy disjunction of their results returned. The optimal case for this approach is that the intersection occurs early on in the curve as the task results must be fetched sequentially in the order that they were spawned. \todo{remove this sentence?}
@@ -381,7 +381,7 @@ The next stage in development is to attempt to implement the wrapper to solve Pr
 As specified in Problem~\ref{prob:Spec}, we require a description of the road space as a graph, $\mathcal{R}= (V,E)$ of intersections, $V$ and road segments $E$\todo[inline]{Should I define it as $\mathcal{R} = (I, R)$?}
 .
 
-This is a malleable definition allowing for a lot of information to encapsulated whilst maintaining an abstract canonical description compatible with a swathe of mathematics through graph theory.\todo[inline]{wordy?}
+This is a malleable definition allowing for a lot of information to be encapsulated whilst maintaining an abstract canonical description compatible with a swathe of mathematics through graph theory.\todo[inline]{wordy?}
 
 I decided to use a mixture libraries to construct my road network: \texttt{Graphs.jl}\cite{JuliaAtticGraphsJl2021}, \texttt{LightGraphs.jl}\cite{Bromberger17}  and \texttt{SimpleWeightedGraphs.jl}\cite{JuliaGraphsSimpleWeightedGraphsJl2021}. The graph structures found in \texttt{Graphs.jl} allow for a lot of data (The entirety of the \texttt{Road} structure can be stored as edge metadata) to be encapsulated but do not offer the same functionality as those found in \texttt{LightGraphs.jl}, \texttt{SimpleWeightedGraphs.jl} utilises the \texttt{LightGraphs.jl} format but allows for weighted edges when applying the various standard graph-based algorithms (including Dijkstra), as such I created my own helper functions to convert between the two formats, which is a relatively simple process of filtering data into a new, more restrictive, structure.
 
@@ -546,7 +546,7 @@ Julia operates using multiple dispatch similar to languages such as Haskell. It 
 
 Julia features a syntax similar to both Python and Matlab with performance on par with C. As I am already very familiar with python and have studied functional programming in a number of modules; I found this language very quick and intuitive to learn and the resulting code to be clean, idiomatic and fast.
 
-A real-world deployment of a system based on my research would undoubtedly be required to run on small, relatively low performance, embedded systems and as such Julia may not be appropriate here. A language such as C or Rust may be used instead.
+\todo{revise this para}A real-world deployment of a system based on my research would undoubtedly be required to run on small, relatively low performance, embedded systems and as such Julia may not be appropriate here. A language such as C or Rust may be used instead.
 
 Julia also has distributed computation facilities. This sort of functionality could be extremely useful in a system such as mine as it could allow for computation to be spread across the agents themselves, removing the need for a central planning centre which could be a single point of failure.
 

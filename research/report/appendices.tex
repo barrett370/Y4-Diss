@@ -1,7 +1,7 @@
 \begin{appendices}
 
   \chapter{Runtime Data}
-  \begin{figure}
+  \begin{table}
     \begin{tabular}{l l l l l l l l}
        Section                       &ncalls     &time   &\%tot     &avg     &alloc   &\%tot      &avg\\
 \hline
@@ -25,10 +25,12 @@ PCGA                        &   1  &  14.4s &  100\% &  14.4s   &16.1GiB  &100\%
       \hline
   \end{tabular}
   \caption{\label{app:tab:MARuntime} Runtime for a single generation over 3 sets of 15 individuals with intersection caching on, using Gaussian mutation, simple crossover and ranked selection.}
-\end{figure}
-\begin{adjustbox}{angle=90}
-\csvautotabular{sa-all-data.csv}
-\end{adjustbox}
+\end{table}
 
 \end{appendices}
 
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "report"
+%%% End:

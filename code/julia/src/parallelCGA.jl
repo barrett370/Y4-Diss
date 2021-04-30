@@ -70,7 +70,7 @@ function PCGA(
         map(route -> route.fitness =  Fitness(road,filter(r -> r != route, ret), route),ret)
     end
     @warn "finished final fitness check"
-    return
+    return ret
 end
 
 function FinalCheck(route::Individual, os::SharedArray, i::Integer)::Bool
