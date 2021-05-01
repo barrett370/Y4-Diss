@@ -174,7 +174,7 @@ The majority of the components of my single agent planning system have been eval
     \includegraphics[width=\textwidth]{figures/sa-diff4-cps.png}
     \caption{\label{subfig:sa-diff4-cps}Average number of control points in routes for Road~\ref{subfig:sa-road4}}
   \end{subfigure}
-  \caption{\label{fig:single-agent-cps} Average solution complexity varying number of generations and size of population across various roads}
+  \caption{\label{fig:single-agent-cps} Average solution complexity for a single agent over a varying number of generations and sizes of populations across various roads }
 \end{figure}
 
 \todo{Check units for planning time + add link to hosted dynamic version}
@@ -218,6 +218,15 @@ On a road with an obstacle (Figure~\ref{subfig:ma-road2}), the result seen in Fi
   \centering
   \includegraphics[scale=0.19]{figures/ma-diff2.png}
   \caption{\label{fig:ma-diff2-lim40} Multi agent planning number of generations against size of population against planning time (left), fitness limited at 40 (right), planning through road seen in Figure~\ref{subfig:ma-road2}}
+\end{figure}
+
+
+Increasing the difficulty further, over the road seen in Figure~\ref{subfig:ma-road3}, we see a yet slower convergence rate with consistent \textit{good} results appearing after 8 generations over 8 individuals, we do however see the fitness drop steeply between the 7th and 8th generations, much more steeply than in the \textit{easier} road segments. Planning time is significantly higher than in previous tests with an average planning rising to around 3 minutes on high numbers of generations and sizes of populations.
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[scale=0.19]{figures/ma-diff3.png}
+  \caption{\label{fig:ma-diff3-lim40} Multi agent planning number of generations against size of population against planning time (left), fitness limited at 40 (right), planning through road seen in Figure~\ref{subfig:ma-road3}}
 \end{figure}
 
 \begin{figure}
