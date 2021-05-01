@@ -21,15 +21,15 @@ function (+)(a::ControlPoint, b::ControlPoint)
     ControlPoint(b.x + a.x, b.y + a.y)
 end
 
-#function convert(::Type{BezierCurve}, i::Individual)
+# function convert(::Type{BezierCurve}, i::Individual)
 #  i.phenotype.genotype
-#end
+# end
 
 function (curve::BezierCurve)(t::Real)::ControlPoint
     @match curve begin
         [p] => p
         _ => begin
-            b1::BezierCurve = BezierCurve(curve[1:end-1])
+            b1::BezierCurve = BezierCurve(curve[1:end - 1])
             b2::BezierCurve = BezierCurve(curve[2:end])
             return ((1 - t) * b1(t)) + (t * b2(t))
         end
@@ -44,8 +44,8 @@ end
 
 function polygon_length(curve::BezierCurve)
     l = 0
-    for i = 1:length(curve)-1
-        l += √((curve[i].x - curve[i+1].x)^2 + (curve[i].y - curve[i+1].y)^2)
+    for i = 1:length(curve) - 1
+        l += √((curve[i].x - curve[i + 1].x)^2 + (curve[i].y - curve[i + 1].y)^2)
     end
     l
 end
@@ -72,10 +72,10 @@ function bezInt(
 )::Tuple{Bool,Tuple{Real,Real}}
     @debug "bezInt called"
     if B2 |> toRealArray == zeros(B2 |> length)
-        return (false, (-1,-1))
+        return (false, (-1, -1))
     end
 
-    #n = floor(1.4 * max(B1 |> length, B2 |> length))
+    # n = floor(1.4 * max(B1 |> length, B2 |> length))
     n = 20
     main = bezInt(B1, B2, 1, n)
     return main
@@ -90,42 +90,41 @@ end
 
 
 function clear_previous_checks()
-	previous_checks = Dict{
-	    Tuple{BezierCurve,BezierCurve},
-	    Tuple{Bool,Tuple{BezierCurve,BezierCurve}},
-	}()
+	previous_checks = Dict{Tuple{BezierCurve,BezierCurve},Tuple{Bool,Tuple{BezierCurve,BezierCurve}},}()
 end
 
 function bbox(b::BezierCurve)
 
-	xs = map(p -> p.x,b)
-	ys = map(p -> p.y,b)
+	xs = map(p -> p.x, b)
+	ys = map(p -> p.y, b)
 
 	min_x = xs |> minimum
 	max_x = xs |> maximum
 	min_y = ys |> minimum
 	max_y = ys |> maximum
 
-	box = lx.BoundingBox(lx.Point(min_x,min_y),lx.Point(max_x,max_y))
+	box = lx.BoundingBox(lx.Point(min_x, min_y), lx.Point(max_x, max_y))
 
 	box
 
 end
 function flatten(l)
-           res = []
-           if l |> length == 1
-               return l
-           elseif l |> length == 0
+    res = []
+    if l |> length == 1
+        return l
+    elseif l |> length == 0
                return res |> reverse
            else
-               return append!(append!(res,flatten(l[1])),l[2])
-           end
-           end
+               return append!(append!(res, flatten(l[1])), l[2])
+    end
+end
+
+
 function bezInt(B1::BezierCurve, B2::BezierCurve, rdepth::Int, rdepth_max, c=[])
 	if BEZPLOT && rdepth < 5
-		p = plotGeneration([Individual(Phenotype(B1[1],B1,B1[end]),0),Individual(Phenotype(B2[1],B2,B2[end]),0)], 100)
-		plot!(p,leg=false,ticks=false)
-		savefig(p,"bezint-$rdepth$c.png")
+		p = plotGeneration([Individual(Phenotype(B1[1], B1, B1[end]), 0),Individual(Phenotype(B2[1], B2, B2[end]), 0)], 100)
+		plot!(p, leg=false, ticks=false)
+		savefig(p, "bezint-$rdepth$c.png")
 	end
     if rdepth + 1 > rdepth_max
         @debug "rdepth reached"
@@ -156,7 +155,7 @@ function bezInt(B1::BezierCurve, B2::BezierCurve, rdepth::Int, rdepth_max, c=[])
         dupe_points = length((B1 |> toRealArray) ∩ (B2 |> toRealArray)) != 0
         if !dupe_points && length(B1) > 1 && length(B2) > 1
             @debug "no dupe points"
-			hull_intersection = lx.boundingboxesintersect(B1 |> bbox, B2|> bbox)
+			hull_intersection = lx.boundingboxesintersect(B1 |> bbox, B2 |> bbox)
         else
             @debug "setting intersection to default (true)"
             hull_intersection = true
@@ -247,19 +246,19 @@ function bezInt(B1::BezierCurve, B2::BezierCurve, rdepth::Int, rdepth_max, c=[])
                     end
                 end
 				if CACHE
-	                previous_checks[(B1, B2)] = (false, (-1,-1))
+	                previous_checks[(B1, B2)] = (false, (-1, -1))
 				end
-                return (false, (-1,-1))
+                return (false, (-1, -1))
 
             end
         else
             @debug "B1 and B2 are not candidates therefore, cannot intersect."
 			if CACHE
-	            previous_checks[(B1, B2)] = (false, (-1,-1))
+	            previous_checks[(B1, B2)] = (false, (-1, -1))
 			end
-            return (false, (-1,-1))
+            return (false, (-1, -1))
         end
     end
 	@error "bezInt default return"
-	return (false,(-1,-1))
+	return (false, (-1, -1))
 end

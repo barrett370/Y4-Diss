@@ -77,7 +77,6 @@ The final incarnation of my fitness function can be thought of as two separate p
 
 \section{Bézier Curves}
 \label{sec:eval:bezier}
-\todo[inline]{expand on this section, talk about issues of finding intersection, possible GPU applications}
 
 Bézier curves have been utilised in this project to encode and represent the route of a vehicle. As mentioned in Section~\ref{sec:back-bezier-curves}, there are many reasons I originally selected them for this task. However, over the course of implementation and testing, a number of downsides have been presented.
 
@@ -99,7 +98,7 @@ Their relatively simple abstract construction as a series of control points prov
 
 They are also capable of representing a high complexity of curve in a relatively simple and concise manner. This makes code much more approachable and algorithms easier to digest.
 
-\section{Single Agent Planning}
+\section{Single Agent Planning}\todo{go back and talk about solution complexity + planning time in more detail}
 
 The majority of the components of my single agent planning system have been evaluated in Sections~\ref{sec:eval:GAs} and \ref{sec:eval:bezier}. Here I will discuss its overall effectiveness and any possible extensions that could be implemented given more time.
 
@@ -107,25 +106,25 @@ The majority of the components of my single agent planning system have been eval
 \begin{figure}[ht]
   \centering
   \includegraphics[scale=0.14]{figures/sa-1404-col.png}
-  \caption{\label{fig:sa-col} Single agent planning: number of generations against size of population against planning time (left), fitness (right), over \textit{easy} road space (Figure~\ref{subfig:sa-road1}) (1000 samples)}
+  \caption{\label{fig:sa-col} Single agent planning: number of generations against size of population against planning time (left), fitness (right), over \textit{easy} road space (Figure~\ref{subfig:sa-road1})}
 \end{figure}\todo{replot with seconds on z axis}
 
 \begin{figure}[ht]
   \centering
   \includegraphics[scale=0.2]{figures/sa-diff2.png}
-  \caption{\label{fig:sa-diff2} Single agent planning: number of generations against size of population against planning time (left) /s, fitness (right), over \textit{moderately difficult} road space (Figure~\ref{subfig:sa-road2}) (1000 samples) }
+  \caption{\label{fig:sa-diff2} Single agent planning: number of generations against size of population against planning time (left) /s, fitness (right), over \textit{moderately difficult} road space (Figure~\ref{subfig:sa-road2})}
 \end{figure}
 
 \begin{figure}[ht]
   \centering
   \includegraphics[scale=0.2]{figures/sa-diff3.png}
-  \caption{\label{fig:sa-diff3} Single agent planning: number of generations against size of population against planning time (left) /s, fitness (right), over \textit{difficult} road space (Figure~\ref{subfig:sa-road3}) (1000 samples)}
+  \caption{\label{fig:sa-diff3} Single agent planning: number of generations against size of population against planning time (left) /s, fitness (right), over \textit{difficult} road space (Figure~\ref{subfig:sa-road3})}
 \end{figure}
 
 \begin{figure}[ht]
   \centering
   \includegraphics[scale=0.15]{figures/sa-diff4.png}
-  \caption{\label{fig:sa-diff4} Single agent planning: number of generations against size of population against planning time (left) /s, fitness (right), over \textit{difficult} road space (Figure~\ref{subfig:sa-road4}) (15 samples)}
+  \caption{\label{fig:sa-diff4} Single agent planning: number of generations against size of population against planning time (left) /s, fitness (right), over \textit{difficult} road space (Figure~\ref{subfig:sa-road4})}
 \end{figure}
 
 \begin{figure}
@@ -153,11 +152,36 @@ The majority of the components of my single agent planning system have been eval
   \caption{\label{fig:single-agent-roads} Roads used to test single agent planner performance, start and goal positions shown, ordered in terms of difficulty}
 \end{figure}
 
+\begin{figure}
+  \centering
+  \begin{subfigure}[b]{0.44\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{figures/sa-diff1-cps.png}
+    \caption{\label{subfig:sa-diff1-cps}Average number of control points in routes for Road~\ref{subfig:sa-road1}}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.44\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{figures/sa-diff2-cps.png}
+    \caption{\label{subfig:sa-diff2-cps}Average number of control points in routes for Road~\ref{subfig:sa-road2}}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.44\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{figures/sa-diff3-cps.png}
+    \caption{\label{subfig:sa-diff3-cps}Average number of control points in routes for Road~\ref{subfig:sa-road3}}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.44\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{figures/sa-diff4-cps.png}
+    \caption{\label{subfig:sa-diff4-cps}Average number of control points in routes for Road~\ref{subfig:sa-road4}}
+  \end{subfigure}
+  \caption{\label{fig:single-agent-cps} Average solution complexity varying number of generations and size of population across various roads}
+\end{figure}
+
 \todo{Check units for planning time + add link to hosted dynamic version}
 
 In general, I feel that my single agent planner performs well\footnote{\textbf{Note:} all data used in creating the figures referenced in this section can be found in the \textit{sa-all-data.csv} file included with this report }. In a road space such as the one shown in Figure~\ref{subfig:sa-road1} my algorithm converges to within 10\% of the fitness of a direct line between the start and goal point within 2 generations over 4 individuals as seen in Figure~\ref{fig:sa-col}\footnote{interactive plot can be found \href{https://barrett370.github.io/Y4-Diss/single-agent-result-1404-col}{here} Link points here: https://barrett370.github.io/Y4-Diss/single-agent-result-1404-col}.
 
-As the road space complexity increases (See Figures~\ref{subfig:sa-road2},\ref{subfig:sa-road3}), speed at which my algorithm convergence is reduced.
+As the road space complexity increases (See Figures~\ref{subfig:sa-road2},\ref{subfig:sa-road3}), the speed at which my algorithm convergence is reduced.
 
 Over the road space seen in Figure~\ref{subfig:sa-road2}, this is only by a small margin, taking closer to 3 generations (See Figure~\ref{fig:sa-diff2}\footnote{interactive plot can be found \href{https://barrett370.github.io/Y4-Diss/single-agent-result-diff2}{here} Link points here: https://barrett370.github.io/Y4-Diss/single-agent-result-diff2}).
 
@@ -165,20 +189,63 @@ However, on a more difficult example such as that seen in Figure~\ref{subfig:sa-
 
 On the example road shown in Figure~\ref{subfig:sa-road4}, the algorithm converges slower still, but still reaching what I would consider to be a \textit{good} solution within 5 generations with a population size around 7, these results can be seen in Figure~\ref{fig:sa-diff4}\footnote{interactive plot can be found, Link points here:}\todo{update this footnote}. In terms of planning time, with a few anomalous exceptions planning time steadily increases roughly proportionally to (the number of generations $\times$ the population size).
 
-In general, the analysis of the planning time for my algorithm is difficult due to the inherent stochastic nature of Genetic algorithms. As such, you may notice many erroneous spikes in seemingly random places across the results surfaces, however, in all cases a general upward trend in planning time is seen.
+In general, the analysis of the planning time for my algorithm is difficult due to the inherent stochastic nature of Genetic algorithms. As such, you may notice many erroneous spikes in seemingly random places across the results surfaces, however, in all cases a general upward trend in planning time is seen.\todo{move this to end of evaluation?}
 
 \section{Cooperative (Multi-agent) Planning}
 \label{subsec:eval-cooperativeplanning}
 
 My solution to the problem of planning $n$ non-colliding routes for $n$ agents was so wrap my existing \texttt{GA} function in a cooperative \textit{layer}. This cooperative layer relied on a function for detecting collisions which had extremely high overhead, at one point causing around 50x slowdown in the running time of the function. Detecting intersections between two Bézier curves is a non-trivial task with the best methods taking the same approach of recursive subdivision that I utilised.
 
-\todo[inline]{make mention of possible GPU implementations such at in~\cite{robergeFastGeneticAlgorithm2018}, modern enterprise GPUs have around 4000-10000 cores, approximately the max number of curve splits and comparisons in a binary check of depth 6. Being able to do this in a single cycle would result in a huge speedup, paper uses Titan X }
+As detailed in Section~\ref{sec:maa}, I attempted to speedup my cooperative planning layer through many different means, including parallelising the entire method as well as individual high-complexity sections such as the Bézier curve intersection function. The system on which I have been benchmarking performance is equipped with 16 cores running at a maximum of 4.2GHz.
+
+Julia boasts the ability to distribute work across multiple systems over secure shell, this could conceivably allow for on-board vehicle computers to aid in the computation and planning of their own routes. Each individual in a concurrent plan is spawned as a unique threaded task and as such having cores equal to the number of concurrently planned agents is ideal. Julia also has good support for GPU programming through libraries such as \texttt{CUDA.jl}\cite{besard2018juliagpu}, in their 2018 paper Roberge et al.\cite{robergeFastGeneticAlgorithm2018} showed how effective massively parallelising genetic algorithms can be, seeing a 290x speedup when compared to sequential execution on a CPU.\@ These two factors make the relatively high planning times seen in this report potentially immaterial and could allow for much higher numbers of generations or larger populations to be feasible.\todo{move this para?}
+
+I tested my cooperative planning method against the same road sections I used to test the single agent planner and unless stated otherwise tested with 3 agents with start-goal positions seen in Figure~\ref{fig:multi-agent-roads}
+
+When considering the easiest road section, Figure~\ref{subfig:ma-road1}, the average fitness of individuals at low generations and population size is incredibly high, leading to me thresholding it at 40 when producing Figure~\ref{fig:ma-diff1-lim40}. However, it quickly drops producing \textit{good} solutions with average fitness in the region of 18 to 20 within 4 generations over populations around 5 in size.
+
+Planning time sees typical steady growth as the number of generations and population size increases, peaking at around 1 minute (excluding anomalous results) but averaging closer to 40 seconds at the higher end of population size and generations.
 
 \begin{figure}[ht]
   \centering
-  \includegraphics[scale=0.19]{figures/ma-1304-lim40.png}
-  \caption{\label{fig:ma-lim40} Multi agent planning number of generations against size of population against planning time (left), fitness limited at 40 (right) (1000 samples)}
+  \includegraphics[scale=0.19]{figures/ma-diff1.png}
+  \caption{\label{fig:ma-diff1-lim40} Multi agent planning number of generations against size of population against planning time (left), fitness limited at 40 (right), planning through road seen in Figure~\ref{subfig:ma-road1}}
 \end{figure}
+
+On a road with an obstacle (Figure~\ref{subfig:ma-road2}), the result seen in Figure~\ref{fig:ma-diff2-lim40} is achieved. Taking slightly longer to converge to \textit{good} solutions at around 6 generations over 6 population. It appears that the number of generations has more of an effect on fitness with 6 generations over 5 populations showing better results than 4 generations on 7 population. However planning time appears to suffer more from more generations than it does from larger populations.
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[scale=0.19]{figures/ma-diff2.png}
+  \caption{\label{fig:ma-diff2-lim40} Multi agent planning number of generations against size of population against planning time (left), fitness limited at 40 (right), planning through road seen in Figure~\ref{subfig:ma-road2}}
+\end{figure}
+
+\begin{figure}
+  \centering
+  \begin{subfigure}[b]{0.44\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{figures/ma-road1.png}
+    \caption{\label{subfig:ma-road1}Easiest road segment, no obstacles, straight}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.44\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{figures/ma-road2.png}
+    \caption{\label{subfig:ma-road2}Second easiest road segment, single, small obstacle in a straight road. Approx. 4\% of road is infeasible}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.44\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{figures/ma-road3.png}
+    \caption{\label{subfig:ma-road3}Road segment with single, large obstacle in a straight road. Approx. 12.5\% of road is infeasible.}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.44\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{figures/ma-road4.png}
+    \caption{\label{subfig:ma-road4}Road segment with single, medium sized obstacle in a curved road. Approx. 4.9\% of road is infeasible.}
+  \end{subfigure}
+  \caption{\label{fig:multi-agent-roads} Roads used to test single agent planner performance, start and goal positions shown, ordered in terms of difficulty}
+\end{figure}
+
+
 \todo{Check units for planning time + add link to hosted dynamic version}
 \section{Macro-level Route planning}
 

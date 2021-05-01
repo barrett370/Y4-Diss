@@ -2,7 +2,7 @@ include("../src/parallelCGA.jl")
 import BenchmarkTools
 import PlotlyJS
 
-function multi_plot_benchmarks(benches, sf = true, zlims = nothing)
+function multi_plot_benchmarks(benches, sf=true, zlims=nothing)
 
     means =
         map(ns -> map(b -> BenchmarkTools.mean(b).time * 10^-9, ns), benches[1])
@@ -12,25 +12,25 @@ function multi_plot_benchmarks(benches, sf = true, zlims = nothing)
     ngens = vcat(1:length(benches[1]))
     @show ngens, ns, collect(Iterators.flatten(means))
     layout = PlotlyJS.Layout(;
-        title = "Multi agent parallel planner \n z=Planning time /s (left) | Average Fitness (right) | Planning time overlayed with Average Fitness",
-        xaxis = attr(title = "Size of population"),
-        yaxis = attr(title = "Number of generations"),
-        zaxis = attr(title = "Time to plan /ms"),
+        title="Multi agent parallel planner \n z=Planning time /s (left) | Average Fitness (right) | Planning time overlayed with Average Fitness",
+        xaxis=attr(title="Size of population"),
+        yaxis=attr(title="Number of generations"),
+        zaxis=attr(title="Time to plan /ms"),
     )
     layout2 = PlotlyJS.Layout(;
-        xaxis = attr(title = "Size of population"),
-        yaxis = attr(title = "Number of generations"),
-        zaxis = attr(title = "Fitness (length of route)"),
+        xaxis=attr(title="Size of population"),
+        yaxis=attr(title="Number of generations"),
+        zaxis=attr(title="Fitness (length of route)"),
     )
     surf = PlotlyJS.surface(
-        x = ns,
-        y = ngens,
-        z = means,
-        #surfacecolor = mean_fitness,
-        layout = layout,
+        x=ns,
+        y=ngens,
+        z=means,
+        # surfacecolor = mean_fitness,
+        layout=layout,
     )
     if zlims != nothing
-        mean_fitness= map(gen -> map(e -> begin
+        mean_fitness = map(gen -> map(e -> begin
             if e > zlims[2]
                 e = zlims[2]
             elseif e < zlims[1]
@@ -42,23 +42,23 @@ function multi_plot_benchmarks(benches, sf = true, zlims = nothing)
     end
 
     surf2 = PlotlyJS.surface(
-        x = ns,
-        y = ngens,
-        z = mean_fitness,
-        zlims = (0, 60),
-        #surfacecolor = means,
-        layout = layout2,
+        x=ns,
+        y=ngens,
+        z=mean_fitness,
+        zlims=(0, 60),
+        # surfacecolor = means,
+        layout=layout2,
     )
     p = PlotlyJS.plot(surf, layout)
 
     if sf
         savehtml(p, "images/tmp_multi-agent-result.html")
     end
-    [p, PlotlyJS.plot(surf2, layout2),PlotlyJS.plot([surf,surf2], layout2)]
+    [p, PlotlyJS.plot(surf2, layout2)]
 
 end
 
-function multi_test_gensPopsize(n = 20, n_gens = 10; road_difficulty=1,samples=15)
+function multi_test_gensPopsize(n=20, n_gens=10; road_difficulty=1,samples=15)
     starts = [Point(0, 5), Point(0, 8), Point(0, 6)]
 
     goals = [Point(20, 8), Point(18, 3), Point(15, 5)]
@@ -91,38 +91,38 @@ function multi_test_gensPopsize(n = 20, n_gens = 10; road_difficulty=1,samples=1
     plans = [[] for i = 0:n_gens]
 
     if road_difficulty == 4
-        starts = [Point(0, 5),Point(1,3),Point(0,7)]
-        goals = [Point(18, 6),Point(16,7),Point(20,10)]
+        starts = [Point(0, 5),Point(1, 3),Point(0, 7)]
+        goals = [Point(18, 6),Point(16, 7),Point(20, 10)]
     end
     for ng = 0:n_gens
         for n = 1:n
-            #global previous_checks = Dict{Tuple{BezierCurve,BezierCurve},Tuple{Bool,Tuple{BezierCurve,BezierCurve}}}()
-            append!(plans[ng+1], [[]])
+            # global previous_checks = Dict{Tuple{BezierCurve,BezierCurve},Tuple{Bool,Tuple{BezierCurve,BezierCurve}}}()
+            append!(plans[ng + 1], [[]])
             "benchmarking with $ng generations over $n individuals" |> println
             b = BenchmarkTools.@benchmarkable append!(
-                        $plans[$ng+1][$n],
+                        $plans[$ng + 1][$n],
                         [
                             PCGA(
                                 $starts,
                                 $goals,
                                 $road,
                                 true,
-                                n_gens = $ng,
-                                n = $n,
-                                selection_method = ranked,
-                                mutation_method = gaussian,
+                                n_gens=$ng,
+                                n=$n,
+                                selection_method=ranked,
+                                mutation_method=gaussian,
                             ),
                         ],
                     )
             b.params.samples = samples
             append!(
-                res[ng+1],
+                res[ng + 1],
                 [
                   run(b)  
                 ],
             )
             @warn "clearing cache"
-            previous_checks = Dict{Tuple{BezierCurve,BezierCurve}, Tuple{Bool,Tuple{Real,Real}}}()
+            previous_checks = Dict{Tuple{BezierCurve,BezierCurve},Tuple{Bool,Tuple{Real,Real}}}()
             @warn "cleared cache: $previous_checks"
         end
     end
@@ -138,5 +138,25 @@ function multi_test_gensPopsize(n = 20, n_gens = 10; road_difficulty=1,samples=1
         ),
         fs,
     )
-    (res, av_fs,plans)
+    (res, av_fs, plans)
+end
+
+function multi_solution_complexity(benchmarks)
+    solutions = benchmarks[3]
+    ns = vcat(1:length(solutions[1]))
+    ngens = vcat(1:length(solutions))
+    avg_cps = map(gen -> map(n -> map(each -> each .|> getGenotype .|> length |> mean,n) |> mean, gen),solutions)
+    layout = PlotlyJS.Layout(;
+        title="Single agent planner z = avg. number of control points in generated routes",
+        xaxis=attr(title="Size of population"),
+        yaxis=attr(title="Number of generations"),
+    )
+    surf = PlotlyJS.surface(
+        x=ns,
+        y=ngens,
+        z=avg_cps,
+        layout=layout,
+    )
+    p = PlotlyJS.plot(surf, layout)
+    [p]
 end

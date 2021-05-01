@@ -69,6 +69,10 @@ function getGenotype(genotypeString::Array{Real})::BezierCurve
     ret
 end
 
+function getGenotype(i::Individual)::BezierCurve
+   i.phenotype.genotype 
+end
+
 function getGenotype(svec::SVector{2 * MAX_P,Float64})::BezierCurve
     ret::BezierCurve = []
     for i = 1:2:(svec |> length)

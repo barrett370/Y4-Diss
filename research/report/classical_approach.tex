@@ -333,7 +333,7 @@ With this assumption, we can now say that two routes collide if they intersect a
 \subsubsection{Bézier Curve intersection}
 \label{subsec:approach:bezInt}
 
-The commonly employed technique for finding intersections between two $n$-degree Bézier curves is repeated recursive subdivision. Whilst it is possible to precisely calculate the point of intersection it is very difficult and computationally expensive and does not generalise well to $n$ degrees. For example, to numerically find the intersection two curves of degree 3 we must solve a $9^{th}$ order equation, producing unstable results. This is described by Bézout's theorem which states that two planar algebraic curves of degrees $d_{1}$ and $d_{2}$ will have up to $d_{1}d_{2}$ intersection points.\todo{cite this or remove it}
+The commonly employed technique for finding intersections between two $n$-degree Bézier curves is repeated recursive subdivision. Whilst it is possible to precisely calculate the point of intersection it is very difficult and computationally expensive and does not generalise well to $n$ degrees. For example, to precisely find the intersection two curves of degree 3 we must solve a $9^{th}$ order equation, producing unstable results. This is described by Bézout's theorem which states that two planar algebraic curves of degrees $d_{1}$ and $d_{2}$ will have up to $d_{1}d_{2}$ intersection points.\todo{cite this or remove it}
 
 In their 2006 paper Yap\cite{yapCompleteSubdivisionAlgorithms2006} proposed an efficient method for finding the intersection of two Bézier curves through a 2 stage process surrounding repeated subdivision.
 
