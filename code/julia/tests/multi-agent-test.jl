@@ -29,7 +29,7 @@ function multi_plot_benchmarks(benches, sf=true, zlims=nothing)
         # surfacecolor = mean_fitness,
         layout=layout,
     )
-    if zlims != nothing
+    if zlims !== nothing
         mean_fitness = map(gen -> map(e -> begin
             if e > zlims[2]
                 e = zlims[2]

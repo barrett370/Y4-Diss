@@ -200,7 +200,7 @@ As detailed in Section~\ref{sec:maa}, I attempted to speedup my cooperative plan
 
 Julia boasts the ability to distribute work across multiple systems over secure shell, this could conceivably allow for on-board vehicle computers to aid in the computation and planning of their own routes. Each individual in a concurrent plan is spawned as a unique threaded task and as such having cores equal to the number of concurrently planned agents is ideal. Julia also has good support for GPU programming through libraries such as \texttt{CUDA.jl}\cite{besard2018juliagpu}, in their 2018 paper Roberge et al.\cite{robergeFastGeneticAlgorithm2018} showed how effective massively parallelising genetic algorithms can be, seeing a 290x speedup when compared to sequential execution on a CPU.\@ These two factors make the relatively high planning times seen in this report potentially immaterial and could allow for much higher numbers of generations or larger populations to be feasible.\todo{move this para?}
 
-I tested my cooperative planning method against the same road sections I used to test the single agent planner and unless stated otherwise tested with 3 agents with start-goal positions seen in Figure~\ref{fig:multi-agent-roads}
+I tested my cooperative planning method against the same road sections I used to test the single agent planner and unless stated otherwise tested with 3 agents with start-goal positions seen in Figure~\ref{fig:multi-agent-roads}. In all cases I used Gaussian mutation, ranked selection and simple crossover.
 
 When considering the easiest road section, Figure~\ref{subfig:ma-road1}, the average fitness of individuals at low generations and population size is incredibly high, leading to me thresholding it at 40 when producing Figure~\ref{fig:ma-diff1-lim40}. However, it quickly drops producing \textit{good} solutions with average fitness in the region of 18 to 20 within 4 generations over populations around 5 in size.
 
@@ -221,13 +221,50 @@ On a road with an obstacle (Figure~\ref{subfig:ma-road2}), the result seen in Fi
 \end{figure}
 
 
-Increasing the difficulty further, over the road seen in Figure~\ref{subfig:ma-road3}, we see a yet slower convergence rate with consistent \textit{good} results appearing after 8 generations over 8 individuals, we do however see the fitness drop steeply between the 7th and 8th generations, much more steeply than in the \textit{easier} road segments. Planning time is significantly higher than in previous tests with an average planning rising to around 3 minutes on high numbers of generations and sizes of populations.
+Increasing the difficulty further, over the road seen in Figure~\ref{subfig:ma-road3}, we see a yet slower convergence rate with consistently \textit{good} results appearing after 8 generations over 8 individuals, we do however see the fitness drop steeply between the 7th and 8th generations, much more steeply than in the \textit{easier} road segments. Planning time is significantly higher than in previous tests with an average planning rising to around 3 minutes on high numbers of generations and sizes of populations.
 
 \begin{figure}[ht]
   \centering
   \includegraphics[scale=0.19]{figures/ma-diff3.png}
   \caption{\label{fig:ma-diff3-lim40} Multi agent planning number of generations against size of population against planning time (left), fitness limited at 40 (right), planning through road seen in Figure~\ref{subfig:ma-road3}}
 \end{figure}
+
+
+When planning on the most difficult road segment (Figure~\ref{subfig:ma-road4}), my approach appears to be much less stable. In Figure~\ref{fig:ma-diff4}, you can clearly see the fitness still peaks above 200 regularly even after a high number of generation and/or population size. Whilst a general trend lower fitness can be seen, the regular spikes mean collisions or intersections with the obstacle are common, producing infeasible routes. Clearly more work is required for my approach to handle these more complex road spaces well, as well as perhaps higher populations / numbers of generations.
+
+Planning time again is seen to trend upwards proportionally with (number of generations $\times$ size of populations), reaching very high planning times peaking at 280 seconds for 10 generations over populations of size 15 although, interestingly this is lower than the times seen when planning for Figure~\ref{subfig:ma-road3}, this may be due to the start and goal positions changing leading to more routes in which collision detection can be exited early, i.e. routes in which intersections occur early in the trajectory. This could also be due to external factors such as increased background load on my system during the planning of Road~\ref{subfig:ma-road3}
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[scale=0.19]{figures/ma-diff4.png}
+  \caption{\label{fig:ma-diff4} Multi agent planning number of generations against size of population against planning time (left), fitness limited at 300 (right), planning through road seen in Figure~\ref{subfig:ma-road4}}
+\end{figure}
+
+\begin{figure}
+  \centering
+  \begin{subfigure}[b]{0.44\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{figures/ma-road1-eg.png}
+    \caption{\label{subfig:ma-road1-eg}Example routes through easy road space, average fitness = 18.0 }
+  \end{subfigure}
+  \begin{subfigure}[b]{0.44\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{figures/ma-road2-eg.png}
+    \caption{\label{subfig:ma-road2-eg}Example routes through medium road space, average fitness = 18.4 }
+  \end{subfigure}
+  \begin{subfigure}[b]{0.44\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{figures/ma-road3-eg.png}
+    \caption{\label{subfig:ma-road3-eg}Example routes through hard road space, average fitness = 155.8}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.44\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{figures/ma-road4-eg.png}
+    \caption{\label{subfig:ma-road4-eg}Example routes through hard, curved road space, average fitness = 19.3 }
+  \end{subfigure}
+  \caption{\label{fig:multi-agent-roads-egs} Roads used to test single agent planner performance, start and goal positions shown, ordered in terms of difficulty}
+\end{figure}
+
 
 \begin{figure}
   \centering
@@ -254,11 +291,47 @@ Increasing the difficulty further, over the road seen in Figure~\ref{subfig:ma-r
   \caption{\label{fig:multi-agent-roads} Roads used to test single agent planner performance, start and goal positions shown, ordered in terms of difficulty}
 \end{figure}
 
+\begin{figure}
+  \centering
+  \begin{subfigure}[b]{0.44\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{figures/ma-diff1-cps.png}
+    \caption{\label{subfig:ma-diff1-cps}Average number of control points in routes for Road~\ref{subfig:ma-road1}}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.44\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{figures/ma-diff2-cps.png}
+    \caption{\label{subfig:ma-diff2-cps}Average number of control points in routes for Road~\ref{subfig:ma-road2}}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.44\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{figures/ma-diff3-cps.png}
+    \caption{\label{subfig:ma-diff3-cps}Average number of control points in routes for Road~\ref{subfig:ma-road3}}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.44\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{figures/ma-diff4-cps.png}
+    \caption{\label{subfig:ma-diff4-cps}Average number of control points in routes for Road~\ref{subfig:ma-road4}}
+  \end{subfigure}
+  \caption{\label{fig:multi-agent-cps} Average solution complexity for a 3 agents over a varying number of generations and sizes of populations across various roads (See Figure~\ref{fig:multi-agent-roads}) }
+\end{figure}
 
 \todo{Check units for planning time + add link to hosted dynamic version}
 \section{Macro-level Route planning}
 
+The core of my macro-level planner was the previously evaluated multi-agent system, and as such I will not analyse its running time as the extra operations surrounding the invocations of the cooperative GA contribute relatively little time complexiy.
+
 \section{Codebase Evaluation}
+
+In total my codebase consists of around 2000 lines of Julia, a full breakdown can be seen in Figure~\ref{fig:codebase}\todo{is this figure required?}
+
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[scale=0.4]{figures/codebase.png}
+  \caption{\label{fig:codebase} Codebase statistics, provided by tokei}
+\end{figure}
+
 
 %TC:macro \todo 1
 
