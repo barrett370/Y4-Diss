@@ -234,6 +234,15 @@ When planning on the most difficult road segment (Figure~\ref{subfig:ma-road4}),
 
 Planning time again is seen to trend upwards proportionally with (number of generations $\times$ size of populations), reaching very high planning times peaking at 280 seconds for 10 generations over populations of size 15 although, interestingly this is lower than the times seen when planning for Figure~\ref{subfig:ma-road3}, this may be due to the start and goal positions changing leading to more routes in which collision detection can be exited early, i.e. routes in which intersections occur early in the trajectory. This could also be due to external factors such as increased background load on my system during the planning of Road~\ref{subfig:ma-road3}
 
+When varying the number of agents being concurrently planned for we can see that the planning time steadily increases with each new agent added. In Figure~\ref{fig:ma-vary-a} where the planning time surfaces of runs using 1,2,3 and 4 different agents through the road seen in Figure~\ref{subfig:sa-road1}, the surfaces are shown to layer in order of number of agents, thi
+
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[scale=0.5]{figures/ma-vary-a.png}
+  \caption{\label{fig:ma-vary-a} Varying number of agents being concurrently planned through Road~\ref{subfig:ma-road1}}
+\end{figure}
+
 \begin{figure}[ht]
   \centering
   \includegraphics[scale=0.19]{figures/ma-diff4.png}

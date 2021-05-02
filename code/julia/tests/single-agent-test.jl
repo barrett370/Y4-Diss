@@ -26,7 +26,7 @@ function plot_benchmarks(benches, sf=true,zlims=nothing)
         x=ns,
         y=ngens,
         z=means,
-        surfacecolor=mean_fitness,
+        # surfacecolor=mean_fitness,
         layout=layout,
     )
     surf2 = PlotlyJS.surface(
