@@ -118,7 +118,7 @@ function PCGA(start::Point,
         # savefig(plotGeneration!(draw_road(road,0,20),P,road,100,100-n_gens),string("./gifgen/gen-",100-n_gens))
         P = (P
             |> P -> selection(P, method=selection_method)  # Selection operator
-            |> simple_crossover |> new_pop -> append!(P, new_pop)  ## Crossover operator & Add newly generated individuals to population
+            |> k_point_crossover |> new_pop -> append!(P, new_pop)  ## Crossover operator & Add newly generated individuals to population
             |> P -> mutation!(P,road,method=mutation_method) # apply mutation operator
             |> P -> begin map(p -> p.fitness = p |> 𝓕, P); P end # recalculate fitness of population after mutation
             |> P -> map(repair, P)  # attempt repair of invalid solutions
