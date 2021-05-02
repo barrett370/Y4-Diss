@@ -54,14 +54,17 @@ function multi_plot_benchmarks(benches, sf=true, zlims=nothing)
     if sf
         savehtml(p, "images/tmp_multi-agent-result.html")
     end
-    [p, PlotlyJS.plot(surf2, layout2)]
+    p
 
 end
 
-function multi_test_gensPopsize(n=20, n_gens=10; road_difficulty=1,samples=15)
-    starts = [Point(0, 5), Point(0, 8), Point(0, 6)]
+function multi_test_gensPopsize(n=20, n_gens=10; road_difficulty=1,samples=15,n_agents=3)
+    starts = [Point(0, 5), Point(0, 8), Point(0, 6), Point(1,3)]
 
-    goals = [Point(20, 8), Point(18, 3), Point(15, 5)]
+    goals = [Point(20, 8), Point(18, 3), Point(15, 5), Point(17,6)]
+
+    starts = starts[1:n_agents]
+    goals = goals[1:n_agents]
 
 
     b1(x) = 0

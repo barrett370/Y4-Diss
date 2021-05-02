@@ -33,6 +33,11 @@ end
     gaussian
 end
 
+@enum CrossoverMethod begin
+    simple 
+    k_point
+end
+
 MAX_P = 10
 
 function toSVector(i::Individual)::SVector{2 * MAX_P,Float64}

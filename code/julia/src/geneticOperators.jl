@@ -21,6 +21,14 @@ function mutation!(
 
 end
 
+function crossover(P::Array{Individual}; method)::Array{Individual}
+    if method == simple 
+        return simple_crossover(P)
+    elseif method == k_point 
+        return k_point_crossover(P)
+    end
+end
+
 
 function uniform_mutation!(P::Array{Individual})::Array{Individual}
     μ = 0.1
@@ -30,9 +38,9 @@ function uniform_mutation!(P::Array{Individual})::Array{Individual}
                 x_rng = sort([i.phenotype.source.x, i.phenotype.goal.x])
                 y_rng = sort([i.phenotype.source.y, i.phenotype.goal.y])
 
-                x_p0 = rand(Uniform(-10, x_rng[1])) #TODO work out better low value
+                x_p0 = rand(Uniform(-10, x_rng[1])) # TODO work out better low value
                 x_p1 = rand(Uniform(x_rng[1], x_rng[2]))
-                x_p2 = rand(Uniform(x_rng[2], 2 * x_rng[2])) #TODO change 15 to road length once implemented
+                x_p2 = rand(Uniform(x_rng[2], 2 * x_rng[2])) # TODO change 15 to road length once implemented
                 x_r = Distributions.sample(
                     [x_p0, x_p1, x_p2],
                     Weights([0.2, 0.6, 0.2]),
@@ -41,7 +49,7 @@ function uniform_mutation!(P::Array{Individual})::Array{Individual}
                 y_p0 = rand(Uniform(-10, y_rng[1])) # TODO work out better low value
                 sorted_rng = sort([y_rng[1], y_rng[2]])
                 if sorted_rng[1] == sorted_rng[2]
-                    #TODO make this not be a plaster
+                    # TODO make this not be a plaster
                     y_p1 = sorted_rng[1]
                 else
                     y_p1 = rand(Uniform(sorted_rng[1], sorted_rng[2]))
@@ -53,7 +61,7 @@ function uniform_mutation!(P::Array{Individual})::Array{Individual}
                     Weights([0.2, 0.6, 0.2]),
                 )
 
-                i.phenotype.genotype[rand(2:(length(i.phenotype.genotype)-1))] =
+                i.phenotype.genotype[rand(2:(length(i.phenotype.genotype) - 1))] =
                     ControlPoint(x_r, y_r) # TODO Consider allowing mutation to go above or below start or end points
             end
         end
@@ -70,7 +78,7 @@ function gaussian_mutation!(P::Array{Individual}, road::Road)::Array{Individual}
             if i.phenotype.genotype |> length < 3
                 break
             end
-            c_index = rand(2:length(new_i.phenotype.genotype)-1)
+            c_index = rand(2:length(new_i.phenotype.genotype) - 1)
             cᵢ = new_i.phenotype.genotype[c_index] # randomly selected gene
             x_bound = sort([new_i.phenotype.source.x, new_i.phenotype.goal.x])
             y_bound = [
@@ -92,8 +100,8 @@ function gaussian_mutation!(P::Array{Individual}, road::Road)::Array{Individual}
 
 
             # standard deviation
-            σᵢ_x = 0.4* abs(x_bound[1] - x_bound[2])# TODO make sure this is correct
-            σᵢ_y = 0.4* abs(y_bound[1] - y_bound[2])# TODO make sure this is correct
+            σᵢ_x = 0.4 * abs(x_bound[1] - x_bound[2])# TODO make sure this is correct
+            σᵢ_y = 0.4 * abs(y_bound[1] - y_bound[2])# TODO make sure this is correct
 
             cᵢ′ = Point(
                 min(
@@ -107,7 +115,7 @@ function gaussian_mutation!(P::Array{Individual}, road::Road)::Array{Individual}
             )
 
 
-            #@show cᵢ′ == cᵢ
+            # @show cᵢ′ == cᵢ
             new_i.phenotype.genotype[c_index] = cᵢ′
             append!(P, [new_i])
 
@@ -137,26 +145,25 @@ function k_point_crossover(P::Array{Individual})::Array{Individual}
         if n1 > 6 && n2 > 6
 
 
-            @show k = rand(1:Int64(ceil(min(n1,n2)/ 2)))
+            k = rand(1:Int64(ceil(min(n1, n2) / 2)))
 
-            @show p1,p2
-            @show is = vcat(3:2:min(n1, n2)-2)
+            p1, p2
+            is = vcat(3:2:min(n1, n2) - 2)
 
-            @show ks = rand(is,k) |> sort |> unique
-            o1::Array{Real} =p1[1:ks[1]-1]
-            o2::Array{Real}= p2[1:ks[1]-1]
+            ks = rand(is, k) |> sort |> unique
+            o1::Array{Real} = p1[1:ks[1] - 1]
+            o2::Array{Real} = p2[1:ks[1] - 1]
             switch = true
-            for  i in 2:(ks|>length)-1
-                @show i
+            for i in 2:(ks |> length) - 1
                 if switch
-                    @show ks[i], ks[i+1] 
-                   @show append!(o1, p2[ks[i]:ks[i+1]-1])
-                   @show append!(o2, p1[ks[i]:ks[i+1]-1])
-                   switch = false
+                    ks[i], ks[i + 1] 
+                    append!(o1, p2[ks[i]:ks[i + 1] - 1])
+                    append!(o2, p1[ks[i]:ks[i + 1] - 1])
+                    switch = false
                 else
-                   append!(o1, p1[ks[i]:ks[i+1]-1])
-                   append!(o2, p2[ks[i]:ks[i+1]-1])
-                   switch = true
+                    append!(o1, p1[ks[i]:ks[i + 1] - 1])
+                    append!(o2, p2[ks[i]:ks[i + 1] - 1])
+                    switch = true
                 end
             
 
@@ -172,7 +179,7 @@ function k_point_crossover(P::Array{Individual})::Array{Individual}
             )
             append!(
                 offspring,
-                [Individual(Phenotype(start,append!( o2 |> getGenotype,[goal]), goal), 0)],
+                [Individual(Phenotype(start, append!(o2 |> getGenotype, [goal]), goal), 0)],
             )
 
         end
@@ -204,8 +211,8 @@ function simple_crossover(P::Array{Individual})::Array{Individual}
         else
             i = rand(1:2:n2)
         end
-        o1 = append!(p1[1:i], p2[(i+1):end])
-        o2 = append!(p2[1:i], p1[(i+1):end])
+        o1 = append!(p1[1:i], p2[(i + 1):end])
+        o2 = append!(p2[1:i], p1[(i + 1):end])
 
         append!(
             offspring,
@@ -222,16 +229,16 @@ end
 
 function selection(
     P::Array{Individual};
-    method::SelectionMethod = roulette,
+    method::SelectionMethod=roulette,
 )::Array{Individual}
 
-    #@match method begin
+    # @match method begin
     #    roulette => return roulette_selection(P)
     #    ranked => return rank_selection(P)
     #    _ => return MissingException(
     #        "Must be a valid selection function {roulette, ranked}",
     #    )
-    #end
+    # end
 
     if method == roulette
         return roulette_selection(P)
@@ -248,7 +255,7 @@ function roulette_selection(P::Array{Individual})::Array{Individual}
     new_pop::Array{Individual} = []
     Sum_𝓕 = reduce(+, map(p -> p.fitness, P))
     partial = rand(0:0.01:Sum_𝓕)
-    sort!(P, by = p -> p.fitness)
+    sort!(P, by=p -> p.fitness)
     while length(new_pop) < n # Steady state population (for now) TODO review this
         for i in P
             if partial + i.fitness >= Sum_𝓕
@@ -264,11 +271,11 @@ end
 
 function rank_selection(
     P::Array{Individual};
-    ranking_function = "linear",
+    ranking_function="linear",
 )::Array{Individual}
 
     M = length(P)
-    sort!(P, by = p -> p.fitness, rev = true)
+    sort!(P, by=p -> p.fitness, rev=true)
     @match ranking_function begin
         "linear" => begin
 
@@ -279,28 +286,28 @@ function rank_selection(
             new_P = []
             while length(new_P) < M
 
-                for i = 1:M
-                    pᵧ = p(i - 1)
-                    if Distributions.sample(
+        for i = 1:M
+            pᵧ = p(i - 1)
+            if Distributions.sample(
                         [true, false],
                         Weights([pᵧ, 1 - pᵧ]),
                     )[1]
-                        append!(new_P, [P[i]])
-                    end
-                end
+                append!(new_P, [P[i]])
             end
+        end
+    end
 
             return new_P
         end
         "exponential" => begin
-            return MissingException("Not implemented")
-        end
+        return MissingException("Not implemented")
+    end
         "power" => begin
-            return MissingException("Not implemented")
-        end
+        return MissingException("Not implemented")
+    end
         "geometric" => begin
-            return MissingException("Not implemented")
-        end
+        return MissingException("Not implemented")
+    end
         _ => return MissingException("Must be a valid ranking function")
     end
 end

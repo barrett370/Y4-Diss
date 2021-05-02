@@ -2,7 +2,7 @@ import BenchmarkTools
 include("../src/GA.jl")
 using PlotlyJS
 
-function plot_benchmarks(benches, sf=true)
+function plot_benchmarks(benches, sf=true,zlims=nothing)
 
     means =
         map(ns -> map(b -> BenchmarkTools.mean(b).time * 10^-9, ns), benches[1])
@@ -38,7 +38,8 @@ function plot_benchmarks(benches, sf=true)
     )
 
     p = PlotlyJS.plot(surf, layout)
-    [p, PlotlyJS.plot(surf2, layout2)]
+    #[p, PlotlyJS.plot(surf2, layout2)]
+    p
 end
 
 function test_gensPopsize(n=20, n_gens=10; road_difficulty=1,samples=5)

@@ -98,7 +98,8 @@ function PCGA(start::Point,
               other_routes::SharedArray; i::Integer=0,
               n_gens::Real=1, n::Real=10,
               selection_method::SelectionMethod,
-              mutation_method::MutationMethod)::Array{Individual}
+              mutation_method::MutationMethod,
+              crossover_method::CrossoverMethod=simple)::Array{Individual}
     # Initialise population
     i = deepcopy(i)
     @show Threads.threadid()
@@ -118,7 +119,7 @@ function PCGA(start::Point,
         # savefig(plotGeneration!(draw_road(road,0,20),P,road,100,100-n_gens),string("./gifgen/gen-",100-n_gens))
         P = (P
             |> P -> selection(P, method=selection_method)  # Selection operator
-            |> k_point_crossover |> new_pop -> append!(P, new_pop)  ## Crossover operator & Add newly generated individuals to population
+            |> P -> crossover(P,method=crossover_method) |> new_pop -> append!(P, new_pop)  ## Crossover operator & Add newly generated individuals to population
             |> P -> mutation!(P,road,method=mutation_method) # apply mutation operator
             |> P -> begin map(p -> p.fitness = p |> 𝓕, P); P end # recalculate fitness of population after mutation
             |> P -> map(repair, P)  # attempt repair of invalid solutions
