@@ -10,6 +10,7 @@ There is a substantial and growing body of research specifically looking at the 
 \subsection{Genetic algorithms for cooperative route generation}
 \label{subsec:lit_rev-GACoopRoutes}
 
+
 \paragraph{Cai \& Peng - Cooperative Coevolutionary Adaptive Genetic Algorithm in Path Planning of Cooperative Multi-Mobile Robot Systems\cite{caiCooperativeCoevolutionaryAdaptive2002}}
 
 In this 2001 paper, Cai \& Peng give an example of a Cooperative Coevolutionary Adaptive Genetic Algorithm (CCAGA) for planning routes for multiple autonomous agents.
@@ -20,7 +21,27 @@ Their fitness function has two stages, in the first generation the fitness of a 
 
 They conclude that their approach yields good robustness and convergence as well as being suitable for parallel execution, allowing for systems employing this GA approach to run very efficiently.
 
-\paragraph{Raul Kala - Optimization Based Planning 2016\cite{kalaOptimizationBasedPlanning2016}}
+
+\paragraph{Elshamli et al. - Genetic algorithm for dynamic path planning}\cite{elshamliGeneticAlgorithmDynamic2004}
+
+In this 2004 paper Elshamli et al. propose a Genetic Algorithm Planner (GAP) which generates routes made up from edges connecting $n$ points. They penalise routes for colliding with obstacles as well as for not being \textit{smooth}, the core of their route fitness is based on route length.
+
+The smoothness metric is based on the angles between the edges as they connect at a node.
+
+They do not provide concrete evaluations for their implementation but seem to focus on the notion of \textit{dynamic} search spaces and which of their approaches handle these best. They define their dynamic search spaces as spaces in which obstacles are added during generation, for example, after the first generation. Their proposed solutions to this are as follows:
+
+\begin{itemize}
+  \item Utilise high mutation rate of 50\% and a low crossover rate of 50\%
+  \item Introduce newly randomly generated individuals at the beginning of each generation
+  \item A method by which to remember the fittest individuals at the end of each generation and to reintroduce them with a certain chance
+  \item A combination of the previous two
+\end{itemize}
+
+In their testing the best average solution was achieved using the first of these approaches and the best overall solutions were achieved using the final solution.
+
+All of these approaches could potentially be utilised in a cooperative, multi-agent, approach if we consider other agents to be dynamic obstacles.
+
+\paragraph{Raul Kala - On-Road Intelligent Vehicles: Optimization Based Planning 2016\cite{kalaOptimizationBasedPlanning2016}}
 In his book, Kala proposes a GA as an embedded component of a larger planning system which also relies on Djiksra's algorithm for macro-level route planning along with the classical autonomous vehicle real-time collision avoidance toolbox (radar, sonar, etc.). In order to achieve a system capable of planning for multiple agents concurrently, Kala proposed the use of these real-time collision avoidance tools along with embedding \textit{traffic rules} as heuristics into the Djiksta-based component. These traffic rules included ``driving on the left'' and ``overtaking on the right'' etc. This proposed system, while similar to mine, differs in scope. I propose a system for planning routes for a set of autonomous agents within a fully-autonomous road system, meaning agents will not (in theory) interact or encounter any other vehicles which are not a part of the planning network.
 \todo{Talk about Kala's road space coordinate system \& use of Bézier  curves, move to Bézier subsection? }
 

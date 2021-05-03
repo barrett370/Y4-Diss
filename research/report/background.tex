@@ -170,11 +170,13 @@ For simple crossover, randomly select a crossover point, $i \in \{1,\ldots,n \}$
   For the same two parents defined above, with $k$ crossover points, $cp_{1},\ldots,cp_{k}$ we can define our offspring as follows:
 
   \begin{equation}
-    p'_{1} = \{ x_{1}^{[1]},\ldots,x^{[1]}_{cp_{1}-1},\ldots,x_{cp_{1}}^{[2]},\ldots,x_{cp_{2}-1}^{[2]},\ldots x_{cp_{k}-1}^{[1]},\ldots, x_{n}^{[k\%2+1]}\}
+    p'_{1} = \{ x_{1}^{[1]},\ldots,x^{[1]}_{cp_{1}-1},\ldots,x_{cp_{1}}^{[2]},\ldots,x_{cp_{2}-1}^{[2]},\ldots x_{cp_{k}-1}^{[2-k\%2]},\ldots, x_{n}^{[k\%2+1]}\}
   \end{equation}
   \begin{equation}
-    p'_{2} = \{ x_{1}^{[2]},\ldots,x^{[2]}_{cp_{1}-1},\ldots,x_{cp_{1}}^{[1]},\ldots,x_{cp_{2}-1}^{[1]},\ldots x_{cp_{k}-1}^{[1-k\%2]},\ldots, x_{n}^{[2-k\%2]}\}
-  \end{equation}\todo{fix this}
+    p'_{2} = \{ x_{1}^{[2]},\ldots,x^{[2]}_{cp_{1}-1},\ldots,x_{cp_{1}}^{[1]},\ldots,x_{cp_{2}-1}^{[1]},\ldots x_{cp_{k}-1}^{[k\%2+1]},\ldots, x_{n}^{[2-k\%2]}\}
+  \end{equation}
+
+  In cases where $k>1$ and $\%$ is the modulo operator.
 
 \subsubsection{Evaluation}
 After developing potential new individuals, the fitness of these new individuals is calculated using the objective function, $\mathcal{F}$

@@ -44,7 +44,7 @@ texcount background.tex  \
 
 #+RESULTS:
 : 1805
-- [ ] Make sure all techniques used are properly documented in this section
+- [-] Make sure all techniques used are properly documented in this section
 
 ** [-] Literature Review [2/3]
 #+begin_src bash
@@ -96,24 +96,23 @@ CLOCK: [2021-04-09 Fri 10:36]--[2021-04-09 Fri 11:01] =>  0:25
 - [X] grouping agents into concurrent plans
 - [ ] Possible extensions
 - [ ] Make clear what is my original work
-** [ ] Results [0/3]
+** [ ] Results [2/3]
 DEADLINE: <2021-05-03 Mon>
-*** [ ] Single Agent
+*** [X] Single Agent
 - [X] population size
 - [X] number of generations
 - [X] number of obstacles / difficulty of road space
     % of road space that is infeasible
     average number of (required) control points to plan route
     How close is the average fitness to optimal (straight line fitness)
-*** [ ] Multi Agent
+*** [X] Multi Agent
 - [X] population size
 - [X] number of generations
-- [-] number of obstacles / difficulty of road space
-- [ ] number of concurrently planned agents
+- [X] number of obstacles / difficulty of road space
+- [X] number of concurrently planned agents
 *** [ ] Macro Level
-- [ ] sparsity of graph
 
-** [ ] Evaluation [1/6]
+** [ ] Evaluation [2/6]
 #+begin_src bash
 texcount evaluation.tex  \
     | grep "Words in text:" \
@@ -129,23 +128,27 @@ texcount evaluation.tex  \
 - [-] Evaluation of currently implemented operators
   - [X] Selection
   - [X] Mutation
-  - [ ] Crossover
+  - [X] Crossover
   - [X] Fitness
-  - [ ] Other operators and how they may improve
+  - [-] Other operators and how they may improve
   - [-] Performance
+  - [ ] alternative approaches to the problem
 *** [X] Bezier Curves
 - [X] Advantages
 - [X] Disadvantages
 - [X] Alternatives
-*** [ ] Single agent approach
+*** [X] Single agent approach
 - [X] How well did it perform?
-- [ ] How could it be further improved?
+- [X] How could it be further improved?
+- [X] Compared to previous work
 *** [ ] Multi-agent approach
 - [X] How well did it perform?
 - [ ] How could it be further improved?
+- [ ] Compared to previous work
 *** [ ] macro level approach
 - [ ] How well did it perform?
 - [ ] How could it be further improved?
+- [ ] Compared to previous work
 *** [ ] Codebase evaluation
 - [ ] How much work was involved, size of codebase?
 - [ ] Where does my approach fall short?

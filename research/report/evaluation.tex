@@ -39,6 +39,10 @@ In a single generation, over the same 3 sets of 15 individuals, my Gaussian muta
 
 I implemented both single point and $k$ point crossover. I ran my benchmarks using single point crossover in an attempt to minimise the amount of randomness and differences in convergence speed between samples.
 
+Simple crossover amounted for a insignificant proportion of the runtime of 3 sets of 15 agents over a single generation, totalling 0.01\% of the runtime at 1.14ms, averaging $381\mu s$ on each of its 3 runs.
+
+$k$ point crossover has little additional runtime complexity, essentially applying the simple crossover operator $k$ times, although in practice the runtime isn't this simple due to the random nature of the $k$ value.
+
 \todo{Implement another crossover operator to talk about ?}
 
 \subsubsection{Fitness}
@@ -191,10 +195,22 @@ On the example road shown in Figure~\ref{subfig:sa-road4}, the algorithm converg
 
 In general, the analysis of the planning time for my algorithm is difficult due to the inherent stochastic nature of Genetic algorithms. As such, you may notice many erroneous spikes in seemingly random places across the results surfaces, however, in all cases a general upward trend in planning time is seen.\todo{move this to end of evaluation?}
 
+The tuning of parameters is something that I feel requires more time and would lead to more consistent and accurate results. An additional extension that would make the generated routes more feasible is to add considerations to the routes velocity profile and turn angles into the fitness function. Generating Bézier curves with these considerations has been done in other research such as that by Chen et al.\cite{chenQuarticBezierCurve2014} in 2014 in which they generate routes whilst considering the route curvature and velocity constraints, fixing the degree of Bézier curves used may have made this task easier in their case.
+
+\subsection{Comparison with other work}
+
+The closest work to my single agent planner is that outlined by Kala in the 6$^{th}$ chapter of his book ``On-Road Intelligent Vehicles'' in which he details a GA approach using Bézier curves to route a single vehicle through a section of road. It is difficult to directly compare our solutions as Kala does not provide a codified solution and his evaluation does not go into great detail, infact the units are missing from the few graphs he does provide.
+
+Kala does incorporate velocity profiles into his GA, this is an area I have already outline something I would have liked to have added given more time.
+
+Kala's approach seems to rely on much larger populations in order to generate feasible routes, showing a system using cartiesian coordinates (like mine) to require a minimum of 40 individuals to avoid no obstacles, as can be seen in Figure~\ref{fig:sa-col}, my solution requires fewer than 10.
+
+The approach seen in the paper from Elshamli et al.\cite{elshamliGeneticAlgorithmDynamic2004} also did not provide concrete results and as such I struggle to directly compare our approaches. A key factor in their path planning was the path \textit{smoothness}, their routes were made up of straight sections between nodes, not unlike the control points used to form a Bézier curve. Their \textit{smoothness} metric evaluated the angle between the route segments joined by a node, if the angle was too great, it was deemed infeasible and penalised. By virtue of using Bézier curves I feel I have intrinsically included this requirement as by their nature Bézier curves are smooth and continuous, further requirements as to the change in $y$ coordinates could be imposed to ensure turns are not too tight.
+
 \section{Cooperative (Multi-agent) Planning}
 \label{subsec:eval-cooperativeplanning}
 
-My solution to the problem of planning $n$ non-colliding routes for $n$ agents was so wrap my existing \texttt{GA} function in a cooperative \textit{layer}. This cooperative layer relied on a function for detecting collisions which had extremely high overhead, at one point causing around 50x slowdown in the running time of the function. Detecting intersections between two Bézier curves is a non-trivial task with the best methods taking the same approach of recursive subdivision that I utilised.
+\footnote{All data used in constructing the figures seen in this section can be found in the file 'ma-all-data.csv' included with this report}My solution to the problem of planning $n$ non-colliding routes for $n$ agents was so wrap my existing \texttt{GA} function in a cooperative \textit{layer}. This cooperative layer relied on a function for detecting collisions which had extremely high overhead, at one point causing around 50x slowdown in the running time of the function. Detecting intersections between two Bézier curves is a non-trivial task with the best methods taking the same approach of recursive subdivision that I utilised.
 
 As detailed in Section~\ref{sec:maa}, I attempted to speedup my cooperative planning layer through many different means, including parallelising the entire method as well as individual high-complexity sections such as the Bézier curve intersection function. The system on which I have been benchmarking performance is equipped with 16 cores running at a maximum of 4.2GHz.
 
@@ -234,13 +250,30 @@ When planning on the most difficult road segment (Figure~\ref{subfig:ma-road4}),
 
 Planning time again is seen to trend upwards proportionally with (number of generations $\times$ size of populations), reaching very high planning times peaking at 280 seconds for 10 generations over populations of size 15 although, interestingly this is lower than the times seen when planning for Figure~\ref{subfig:ma-road3}, this may be due to the start and goal positions changing leading to more routes in which collision detection can be exited early, i.e. routes in which intersections occur early in the trajectory. This could also be due to external factors such as increased background load on my system during the planning of Road~\ref{subfig:ma-road3}
 
-When varying the number of agents being concurrently planned for we can see that the planning time steadily increases with each new agent added. In Figure~\ref{fig:ma-vary-a} where the planning time surfaces of runs using 1,2,3 and 4 different agents through the road seen in Figure~\ref{subfig:sa-road1}, the surfaces are shown to layer in order of number of agents, thi
+When varying the number of agents being concurrently planned for we can see that the planning time steadily increases with each new agent added. In Figure~\ref{fig:ma-vary-a-surf} where the planning time surfaces of runs using 1,2,3 and 4 different agents through the road seen in Figure~\ref{subfig:sa-road1}, the surfaces are shown to layer in order of number of agents, this can be more easily seen in Figure~\ref{fig:ma-vary-a}, in which the average planning time across all generation-population size variations is averaged for each number of concurrently planned agents in the range 1 to 4.
 
+Figure~\ref{fig:ma-vary-a} shows a trend very close to directly proportional, especially when one considers the amount of extra factors which could be affecting the planning time (system load, randomly generated initial populations, random chances for operator to apply and random extents to which they apply). Each data point in Figure~\ref{fig:ma-vary-a} is the average of 2250 datapoints, this may suggest that at such high sample rates, the (pseudo) random nature of GAs can be ignored. The trend seems to follow the line $y = 11.2x - 8.6$, implying an additional 11.2 seconds of computation for each added agent.\todo{come back to this para}
+
+\subsection{Extensions}
+
+The extensions to this system are much the same as those outlined for the single agent planner: parameter tuning and velocity profiles.
+
+In addition to this there are certain new parameters and values introduced by the cooperative wrapper; the objective size of an agent is something which I have not explicitly fixed, by fixing this value the parameters associated to Beizer curve intersection detection and collision detection could be further refined to give the most accurate result, while minimising runtime.
+
+\subsection{Comparisons with other work}
+
+My approach in its current form is much more abstracted from a real-world system than other research such as that by Kala, as mentioned previously, his proposed system incorporated a velocity profile as well as explicit vehicle sizes. His approach to multiple agents also hinged on inter-vehicle communication to plan overtakes as opposed to my approach using a plan-then-execute methodology, with all coordination taking place within the planner and each agent being assigned a completed route once planning has concluded.
 
 \begin{figure}[ht]
   \centering
   \includegraphics[scale=0.5]{figures/ma-vary-a.png}
   \caption{\label{fig:ma-vary-a} Varying number of agents being concurrently planned through Road~\ref{subfig:ma-road1}}
+\end{figure}
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[scale=0.4]{figures/ma-vary-a-surf.png}
+  \caption{\label{fig:ma-vary-a-surf} Overlaid surfaces for planning time of 1,2,3 and 4 agents through Road~\ref{subfig:ma-road1} over 10 generations and 1 to 15 population, z= planning time /s}
 \end{figure}
 
 \begin{figure}[ht]

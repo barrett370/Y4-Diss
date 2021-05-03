@@ -34,7 +34,7 @@ function PCGA(
         if multi_thread
             @debug "spawning task with c value $c"
             append!(tasks,
-                    [Threads.@spawn PCGA(start,goal,road,current_plans,i=deepcopy(c),
+                    [Threads.@spawn PCGA($start,$goal,road,current_plans,i=$c,
                                          n_gens=n_gens,n=n,selection_method=selection_method,mutation_method=mutation_method)])
             sleep(0.4)
         else
@@ -56,7 +56,6 @@ function PCGA(
             c = c + 1
         end
     end
-    @warn "all agents concluded"
     if multi_thread
         @debug "fetching results"
         for task in tasks
@@ -64,6 +63,7 @@ function PCGA(
             @debug "fetched result $ret"
         end
     end
+    @warn "all agents concluded"
     @warn "starting final fitness check"
     @warn ret
     if !TIMEIT
