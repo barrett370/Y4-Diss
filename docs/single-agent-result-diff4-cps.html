@@ -1,0 +1,30 @@
+<html>
+<head>
+     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+<body>
+     <script>
+    gd = (function() {
+  var WIDTH_IN_PERCENT_OF_PARENT = 100;
+  var HEIGHT_IN_PERCENT_OF_PARENT = 100;
+  var gd = Plotly.d3.select('body')
+    .append('div').attr("id", "66b6f840-9ff6-42c2-81f1-229b5e663bcd")
+    .style({
+      width: WIDTH_IN_PERCENT_OF_PARENT + '%',
+      'margin-left': (100 - WIDTH_IN_PERCENT_OF_PARENT) / 2 + '%',
+      height: HEIGHT_IN_PERCENT_OF_PARENT + 'vh',
+      'margin-top': (100 - HEIGHT_IN_PERCENT_OF_PARENT) / 2 + 'vh'
+    })
+    .node();
+  var plot_json = {"layout":{"scene1":{"xaxis":{"title":"Size of population","domain":[0.0,1.0],"anchor":"y1"},"yaxis":{"title":"Number of generations","domain":[0.0,1.0],"anchor":"x1"}},"annotations":[{"yanchor":"bottom","xanchor":"center","y":1.0,"font":{"size":16},"showarrow":false,"yref":"paper","text":"Single agent planner z = avg. number of control points in generated routes","xref":"paper","x":0.5}],"margin":{"l":50,"b":50,"r":50,"t":60}},"frames":[],"data":[{"y":[1,2,3,4,5,6,7,8,9,10,11],"type":"surface","scene":"scene1","z":[[7.266666666666667,6.6,6.866666666666666,7.866666666666666,6.733333333333333,4.8,7.642857142857143,6.133333333333334,6.75,8.1,8.125,7.0,5.714285714285714,5.555555555555555,8.0],[7.2,6.9,5.153846153846154,5.3076923076923075,6.6,4.375,6.8,6.5,4.8,5.75,6.666666666666667,5.0,8.5,5.0,5.5],[7.2,5.166666666666667,5.142857142857143,4.0,9.333333333333334,4.333333333333333,5.666666666666667,3.0,3.75,6.0,4.0,4.0,6.0,4.5,3.0],[6.6,5.2,7.5,3.6,8.5,4.75,5.0,4.5,5.333333333333333,4.0,3.0,3.0,5.0,3.0,5.0],[5.6,7.5,5.25,6.666666666666667,3.6,5.8,3.0,6.0,4.5,5.333333333333333,4.666666666666667,4.0,3.0,4.0,3.0],[6.888888888888889,12.0,7.5,4.4,9.0,4.25,5.0,5.0,3.0,5.666666666666667,3.0,3.5,3.0,3.0,3.5],[10.5,11.0,8.0,11.0,5.2,5.0,4.0,4.666666666666667,12.0,6.0,4.0,6.0,5.0,4.0,3.0],[6.857142857142857,6.0,4.2,4.25,7.5,4.25,5.0,3.6666666666666665,3.0,6.5,3.5,4.0,4.5,3.0,3.5],[6.0,5.666666666666667,5.2,4.166666666666667,3.1666666666666665,4.333333333333333,4.333333333333333,3.6666666666666665,4.666666666666667,5.5,5.0,10.0,4.5,7.0,3.0],[7.428571428571429,8.0,6.166666666666667,6.0,6.0,3.75,6.5,6.0,6.0,3.0,4.0,3.0,3.0,3.0,6.0],[6.6,5.8,8.0,6.0,5.0,3.25,4.0,4.0,3.0,3.0,3.0,4.0,4.0,4.5,3.0]],"layout":{"xaxis":{"title":"Size of population"},"margin":{"l":50,"b":50,"r":50,"t":60},"title":"Single agent planner z = avg. number of control points in generated routes","yaxis":{"title":"Number of generations"}},"x":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]}]};
+  Plotly.newPlot(gd, plot_json);
+  window.onresize = function() {
+    Plotly.Plots.resize(gd);
+  };
+  return gd;
+})();
+
+ </script>
+
+</body>
+</html>
