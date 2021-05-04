@@ -6,7 +6,16 @@
     <description>Recent content in Posts on Final Year Project Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 08 Oct 2020 12:42:50 +0100</lastBuildDate><atom:link href="/Y4-Diss/posts/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 04 May 2021 10:55:18 +0100</lastBuildDate><atom:link href="/Y4-Diss/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Figures</title>
+      <link>/Y4-Diss/posts/figures/</link>
+      <pubDate>Tue, 04 May 2021 10:55:18 +0100</pubDate>
+      
+      <guid>/Y4-Diss/posts/figures/</guid>
+      <description>Index of interactive figures for my dissertation report  Figure 5.1 Single agent planning: number of generations against size of population against planning time (left), fitness (right), easy road space Figure 5.2 Single agent planning: number of generations against size of population against planning time (left) /s, fitness (right), over moderately difficult road space Figure 5.3 Single agent planning: number of generations against size of population against planning time (left) /s, fitness (right), over moderately difficult road space Figure 5.</description>
+    </item>
+    
     <item>
       <title>Log: Week 2</title>
       <link>/Y4-Diss/posts/week2/</link>
