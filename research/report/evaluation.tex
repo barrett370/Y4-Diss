@@ -1,3 +1,5 @@
+This section of my report contains many 3 dimensional plots. I have included static captures and attempted to capture them at angles which demonstrate the points I am making. I have hosted all 3D plots seen below and they can be found indexed \href{https://barrett370.github.io/Y4-Diss/posts/figures}{here:} https://barrett370.github.io/Y4-Diss/posts/figures. I feel the data is better understood and expressed using these interactive plots.
+
 \section{Genetic Algorithms}
 \label{sec:eval:GAs}
 
@@ -183,15 +185,15 @@ The majority of the components of my single agent planning system have been eval
 
 \todo{Check units for planning time + add link to hosted dynamic version}
 
-In general, I feel that my single agent planner performs well\footnote{\textbf{Note:} all data used in creating the figures referenced in this section can be found in the \textit{sa-all-data.csv} file included with this report }. In a road space such as the one shown in Figure~\ref{subfig:sa-road1} my algorithm converges to within 10\% of the fitness of a direct line between the start and goal point within 2 generations over 4 individuals as seen in Figure~\ref{fig:sa-col}\footnote{interactive plot can be found \href{https://barrett370.github.io/Y4-Diss/single-agent-result-1404-col}{here}: https://barrett370.github.io/Y4-Diss/single-agent-result-1404-col}.
+In general, I feel that my single agent planner performs well\footnote{\textbf{Note:} all data used in creating the figures referenced in this section can be found in the \textit{sa-all-data.csv} file included with this report }. In a road space such as the one shown in Figure~\ref{subfig:sa-road1} my algorithm converges to within 10\% of the fitness of a direct line between the start and goal point within 2 generations over 4 individuals as seen in Figure~\ref{fig:sa-col}.
 
 As the road space complexity increases (See Figures~\ref{subfig:sa-road2},\ref{subfig:sa-road3}), the speed at which my algorithm convergence is reduced.
 
-Over the road space seen in Figure~\ref{subfig:sa-road2}, this is only by a small margin, taking closer to 3 generations (See Figure~\ref{fig:sa-diff2}\footnote{interactive plot can be found \href{https://barrett370.github.io/Y4-Diss/single-agent-result-diff2}{here}: https://barrett370.github.io/Y4-Diss/single-agent-result-diff2}).
+Over the road space seen in Figure~\ref{subfig:sa-road2}, this is only by a small margin, taking closer to 3 generations (See Figure~\ref{fig:sa-diff2}).
 
-However, on a more difficult example such as that seen in Figure~\ref{subfig:sa-road3}, all routes close to a straight line are infeasible, resulting in a lower average fitness as can be seen in Figure~\ref{fig:sa-diff3}\footnote{interactive plot can be found \href{https://barrett370.github.io/Y4-Diss/single-agent-result-diff3}{here}: https://barrett370.github.io/Y4-Diss/single-agent-result-diff3}, as well as a higher average planning time as it is required to perform more involved infeasible distance calculations more often.
+However, on a more difficult example such as that seen in Figure~\ref{subfig:sa-road3}, all routes close to a straight line are infeasible, resulting in a lower average fitness as can be seen in Figure~\ref{fig:sa-diff3}, as well as a higher average planning time as it is required to perform more involved infeasible distance calculations more often.
 
-On the example road shown in Figure~\ref{subfig:sa-road4}, the algorithm converges slower still, but still reaching what I would consider to be a \textit{good} solution within 5 generations with a population size around 7, these results can be seen in Figure~\ref{fig:sa-diff4}\footnote{interactive plot can be found, Link points here:}\todo{update this footnote}. In terms of planning time, with a few anomalous exceptions planning time steadily increases roughly proportionally to (the number of generations $\times$ the population size).
+On the example road shown in Figure~\ref{subfig:sa-road4}, the algorithm converges slower still, but still reaching what I would consider to be a \textit{good} solution within 5 generations with a population size around 7, these results can be seen in Figure~\ref{fig:sa-diff4}. In terms of planning time, with a few anomalous exceptions planning time steadily increases roughly proportionally to (the number of generations $\times$ the population size).
 
 In general, the analysis of the planning time for my algorithm is difficult due to the inherent stochastic nature of Genetic algorithms. As such, you may notice many erroneous spikes in seemingly random places across the results surfaces, however, in all cases a general upward trend in planning time is seen.\todo{move this to end of evaluation?}
 

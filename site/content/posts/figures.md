@@ -1,7 +1,7 @@
 ---
 title: "Figures"
 date: 2021-05-04T10:55:18+01:00
-draft: true
+draft: false
 ---
 
 ## Index of interactive figures for my dissertation report

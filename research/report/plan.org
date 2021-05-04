@@ -146,7 +146,7 @@ texcount evaluation.tex  \
 - [X] How could it be further improved?
 - [X] Compared to previous work
 *** [ ] macro level approach
-- [ ] How well did it perform?
+- [-] How well did it perform?
 - [-] How could it be further improved?
 - [-] Compared to previous work
 *** [ ] Codebase evaluation
