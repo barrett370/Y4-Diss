@@ -10,8 +10,8 @@ function getPathGroups(road_network::Graphs.GenericGraph, macroPaths)
     )
     road_lengths = map(
         p -> map(
-            i -> roads["e$(p[i])$(p[i+1])"].length,
-            collect(1:length(p)-1),
+            i -> roads["e$(p[i])$(p[i + 1])"].length,
+            collect(1:length(p) - 1),
         ),
         macroPaths,
     )
@@ -23,28 +23,28 @@ function getPathGroups(road_network::Graphs.GenericGraph, macroPaths)
     pathGroupings = Dict()
     for i = 1:length(macroPaths)
         @debug "checking for agent $(agents[i])"
-        for j = 1:length(macroPaths[i])-1
-            if (macroPaths[i][j], macroPaths[i][j+1]) in pathGroupings |> keys
-                @debug "already analysed $(pathGroupings[(macroPaths[i][j], macroPaths[i][j+1])])"
-                pre_plan = pathGroupings[(macroPaths[i][j], macroPaths[i][j+1])]
+        for j = 1:length(macroPaths[i]) - 1
+            if (macroPaths[i][j], macroPaths[i][j + 1]) in pathGroupings |> keys
+                @debug "already analysed $(pathGroupings[(macroPaths[i][j], macroPaths[i][j + 1])])"
+                pre_plan = pathGroupings[(macroPaths[i][j], macroPaths[i][j + 1])]
             end
 
-            #"checking for other plans going from $(macroPaths[i][j]) to $(macroPaths[i][j+1])  " |> println
+            # "checking for other plans going from $(macroPaths[i][j]) to $(macroPaths[i][j+1])  " |> println
             microPlanAgents = [i]
             for o = 1:length(macroPaths)
                 if o != i
-                    #"checking against agent $(agents[o])" |> println
+                    # "checking against agent $(agents[o])" |> println
                     if macroPaths[i][j] in macroPaths[o]# both routes pass through vertex at i,j at some point
                         @debug "routes pass same vertex ($(macroPaths[i][j])) at some point"
                         try
-                            if macroPaths[i][j+1] == macroPaths[o][findfirst(
+                            if macroPaths[i][j + 1] == macroPaths[o][findfirst(
                                 x -> x == macroPaths[i][j],
                                 macroPaths[o],
-                            )+1] # both routes travel along same road at some point
+                            ) + 1] # both routes travel along same road at some point
                                 road = filter(
                                     e ->
                                         e.source == macroPaths[i][j] &&
-                                            e.target == macroPaths[i][j+1],
+                                            e.target == macroPaths[i][j + 1],
                                     road_network.edges,
                                 )[1]
                                 @debug "routes $i, $o share an edge, $road, road: $(road.attributes["road"])"
@@ -56,7 +56,7 @@ function getPathGroups(road_network::Graphs.GenericGraph, macroPaths)
                                 )]
                                     @debug "agent $i and agent $o are on road $(road.attributes["road"]) at the same time"
                                     append!(microPlanAgents, o)
-                                    #TODO why does 4 appear in its own plan and along with 4,1 ??
+                                    # TODO why does 4 appear in its own plan and along with 4,1 ??
                                 else
                                     @debug "agent $(agents[i]) leaves road, $road before $(agents[o]) enters, $microPlanAgents "
                                     # TODO how to handle this?
@@ -65,20 +65,20 @@ function getPathGroups(road_network::Graphs.GenericGraph, macroPaths)
                                 end
 
                             end
-                        catch e #TODO remove this, bad practice
-                            #"routes do not share a road, $e" |> println
+                        catch e # TODO remove this, bad practice
+                            # "routes do not share a road, $e" |> println
                         end
                     end
                 end
             end
-            @debug "(($(macroPaths[i][j]), $(macroPaths[i][j+1])) ,$(microPlanAgents))"
-            pathGroupings[(macroPaths[i][j], macroPaths[i][j+1])] =
+            @debug "(($(macroPaths[i][j]), $(macroPaths[i][j + 1])) ,$(microPlanAgents))"
+            pathGroupings[(macroPaths[i][j], macroPaths[i][j + 1])] =
                 [microPlanAgents]
         end
 
     end
     removeDupes(l) = map(
-        i -> map(j -> filter!(e -> e ∉ l[i], l[j]), i-1:-1:1),
+        i -> map(j -> filter!(e -> e ∉ l[i], l[j]), i - 1:-1:1),
         length(l):-1:2,
     )
     for key in pathGroupings |> keys
@@ -101,7 +101,7 @@ end
 function planRoutes(
     agents::Array{Tuple{Int64,Int64}},
     road_network::Graphs.GenericGraph,
-    multi_threaded = true,
+    multi_threaded=true,
 )
     # Given a set of start and end goals on the macro road network, generate a series of sets of routes between roads.
 
@@ -119,11 +119,11 @@ function planRoutes(
     for mp in macroPaths    # TODO make sure all routes being planned have their pre-requisites planned already.
         @debug "Planning macropath $mp"
         macroPath_plans = []
-        for i = 1:length(mp)-1
-            microPath = (mp[i], mp[i+1])
+        for i = 1:length(mp) - 1
+            microPath = (mp[i], mp[i + 1])
             @debug "plotting routes in $microPath"
             if microPath in keys(pathGroupings)
-                #@async begin
+                # @async begin
                 # TODO work out intial starting coordinates a better way
                 # TODO work out goal coordinates a proper way
                 parallel_agent_sets = pathGroupings[microPath]
@@ -148,7 +148,7 @@ function planRoutes(
                     initial_starts = 0
                     c = 0
                     for agent in parallel_agents
-                        if prev_positions[agent] == 0 #Inital section of route, no known previous position
+                        if prev_positions[agent] == 0 # Inital section of route, no known previous position
                             append!(
                                 starts,
                                 [
@@ -184,20 +184,20 @@ function planRoutes(
                         c = c + 1
                     end
 
-                    #@show starts,goals
-                    #oldstd = stdout
-                    #redirect_stdout(open("/dev/null","w"))
-                    res = PCGA(
+                    # @show starts,goals
+                    # oldstd = stdout
+                    # redirect_stdout(open("/dev/null","w"))
+                    res = @timeit to "PCGA" PCGA(
                         starts,
                         goals,
                         road,
                         multi_threaded,
-                        n_gens = 1,
-                        n = 5,
-                        selection_method = roulette,
-                        mutation_method = uniform,
+                        n_gens=4,
+                        n=12,
+                        selection_method=roulette,
+                        mutation_method=gaussian,
                     )
-                    #redirect_stdout(oldstd)
+                    # redirect_stdout(oldstd)
                     @debug "Planned for this goalset"
                     for agent in parallel_agents
                         append!(
@@ -209,7 +209,7 @@ function planRoutes(
                     end
                     @debug "planned microPath $microPath, removing from pathGroupings"
                     filter!(s -> s != parallel_agents, pathGroupings[microPath])
-                    #end
+                    # end
                 end
             else
                 @debug "microPath $microPath already planned"
@@ -236,19 +236,30 @@ function plot_road_network(
             e -> e.source == key[1] && e.target == key[2],
             rn.edges,
         )[1].attributes["road"]
-        is::Array{Individual} = []
+        @show road
+        is::Array{Array{Individual}} = []
+        j = 1
         for group in pathGroups[key]
+        as = []
+            @show group
+            append!(is, [[]])
+            
             for i in group
-                @debug i
                 route_section = findfirst(x -> x == key[1], macroPaths[i])
-                append!(is, [routes[i][route_section]])
+                @show route_section
+                append!(is[j], [routes[i][route_section]])
+                append!(as,[i])
             end
+                r = draw_road(road, 0, road.length)
+                plotGeneration!(r, is[j])
+                plot!(r,title="e$(key[1])$(key[2])-agents($([ a for a in as]))")
+                append!(
+                plots,
+                [r]
+            )
+            j += 1
         end
 
-        append!(
-            plots,
-            [plot_generation_gif(road, is, c, "e$(key[1])$(key[2])")],
-        )
         c = c + 1
     end
     plots

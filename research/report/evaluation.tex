@@ -203,9 +203,9 @@ The closest work to my single agent planner is that outlined by Kala in the 6$^{
 
 Kala does incorporate velocity profiles into his GA, this is an area I have already outline something I would have liked to have added given more time.
 
-Kala's approach seems to rely on much larger populations in order to generate feasible routes, showing a system using cartiesian coordinates (like mine) to require a minimum of 40 individuals to avoid no obstacles, as can be seen in Figure~\ref{fig:sa-col}, my solution requires fewer than 10.
+Kala's approach seems to rely on much larger populations in order to generate feasible routes, showing a system using Cartesian coordinates (like mine) to require a minimum of 40 individuals to plan a route which did not leave the road-space, as can be seen in Figure~\ref{fig:sa-col}, my solution requires fewer than 10.
 
-The approach seen in the paper from Elshamli et al.\cite{elshamliGeneticAlgorithmDynamic2004} also did not provide concrete results and as such I struggle to directly compare our approaches. A key factor in their path planning was the path \textit{smoothness}, their routes were made up of straight sections between nodes, not unlike the control points used to form a Bézier curve. Their \textit{smoothness} metric evaluated the angle between the route segments joined by a node, if the angle was too great, it was deemed infeasible and penalised. By virtue of using Bézier curves I feel I have intrinsically included this requirement as by their nature Bézier curves are smooth and continuous, further requirements as to the change in $y$ coordinates could be imposed to ensure turns are not too tight.
+The approach seen in the paper from Elshamli et al.\cite{elshamliGeneticAlgorithmDynamic2004} also did not provide concrete results and as such I struggle to directly compare our approaches. A key factor in their path planning was the path \textit{smoothness}, their routes were made up of straight sections between nodes, not unlike the control points used to form a Bézier curve. Their \textit{smoothness} metric evaluated the angle between the route segments joined by a node, if the angle was too great, it was deemed infeasible and penalised. By virtue of using Bézier curves I feel I have intrinsically included this requirement as by their nature Bézier curves are smooth and continuous, further requirements as to the change in $y$ coordinates could be imposed to ensure turns are not too \textit{tight} .
 
 \section{Cooperative (Multi-agent) Planning}
 \label{subsec:eval-cooperativeplanning}
@@ -263,6 +263,9 @@ In addition to this there are certain new parameters and values introduced by th
 \subsection{Comparisons with other work}
 
 My approach in its current form is much more abstracted from a real-world system than other research such as that by Kala, as mentioned previously, his proposed system incorporated a velocity profile as well as explicit vehicle sizes. His approach to multiple agents also hinged on inter-vehicle communication to plan overtakes as opposed to my approach using a plan-then-execute methodology, with all coordination taking place within the planner and each agent being assigned a completed route once planning has concluded.
+
+
+Other research such as the work by both Cai \& Peng as well as Crus-Piris et al. took a discrete approach to the search space, both using grids but the latter also utilising cellular automata, this allowed them to avoid the complex calculations and approximations I had to employ when assessing collisions or intersections with infeasible space. I feel that by viewing the road as a discrete search space, you create a need for a lot more post-processing on the routes in order for them to be smooth, possibly invalidating the guarantees given by the planner. By planning smooth, continuous routes directly, I can avoid these issues.\todo{come back to this}
 
 \begin{figure}[ht]
   \centering
@@ -361,11 +364,76 @@ My approach in its current form is much more abstracted from a real-world system
 \todo{Check units for planning time + add link to hosted dynamic version}
 \section{Macro-level Route planning}
 
-The core of my macro-level planner was the previously evaluated multi-agent system, and as such I will not analyse its running time as the extra operations surrounding the invocations of the cooperative GA contribute relatively little time complexiy.
+The core of my macro-level planner was the previously evaluated multi-agent system, and as such I will not analyse its running time as the extra operations surrounding the invocations of the cooperative GA contribute relatively little time complexity.
+
+My approach to routing multiple agents through a road network heavily relies on a number of naive assumptions:
+
+\begin{itemize}
+  \item The constant uniform velocity profile of all agents
+
+        I have spoken about this assumption when evaluating the multi-agent planner but this wrapper also relies heavily upon it.
+
+        When assessing as to whether agents occupy a road space at the same time it assumes each agent takes the most direct route through any previous road spaces at the same speed at which all other agents navigate their previous road spaces. It therefore reasons that if the length of an agent's previous road space segments is less than another agents previous distance + the distance of the road in question, they will share it.
+
+        In reality, this question would be much more complicated, it relies on the knowledge of the actual path length of all agents as well as knowledge of their velocity profiles as they execute these routes.
+
+        An extension to take this into account would require an almost complete re-imagining of Algorithm~\ref{alg:pathgrouping}, unless a pessimistic view of route efficiency is maintained.
+
+
+  \item If two agents are grouped together, sharing a road section, their routes are planned under the assumption that they begin at the start of the road at the same time. Even under the assumption detailed above, this is not accurate. For the system to be extended to allow for agents to start at different points significant changes to the multi-agent planner would be necessary as collisions would need to be ignored until such a time as one agent has \textit{caught up} to another, something that again relies on the implementation of generated variable velocity profiles.
+
+  \item The connections between each road segment are also naively assumed to be non-existent, with one section of road flowing directly into another. Obviously, in the real world, there are a variety of types of junctions linking two stretches of road. However, designing a system which can route traffic through such junctions is a domain unto itself as seen in papers such that by Cruz-Piris et al.\cite{cruz-pirisAutomatedOptimizationIntersections2019} in 2019.
+  \item The assignment of goal points in the road space is also not ideal, simply splitting the width of the road between the concurrent agents and spacing them out equally, not taking into account initial start positions which leads to circumstances where an agent must cross the entire road, increasing the complexity of the planning problem an example of this can be seen in Figure~\ref{subfig:macplan-1}.
+\end{itemize}
+
+In general, I feel this section of my project was able to demonstrate how my underlying system might perform in a larger-scale environment, separate from the toy examples shown above. It performed well with only 3\% of the overall runtime stemming from the macro-level wrapper, i.e. 97\% of the macro planning time comes from the invocations of the parallel cooperative planner evaluated in Section~\ref{subsec:eval-cooperativeplanning}. It is important to note that the performance of Dijkstra's algorithm is primarily related to the total number of vertices in the graph and as such the more intersections a road network has, the more expensive this wrapper will be, however the sparsity of the graph does also play a role.
+
+\begin{figure}
+  \centering
+  \begin{subfigure}[b]{0.44\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{figures/macplan-1.png}
+    \caption{\label{subfig:macplan-1}}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.44\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{figures/macplan-2.png}
+    \caption{\label{subfig:macplan-2}}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.44\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{figures/macplan-3.png}
+    \caption{\label{subfig:macplan-3}}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.44\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{figures/macplan-4.png}
+    \caption{\label{subfig:macplan-4}}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.44\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{figures/macplan-5.png}
+    \caption{\label{subfig:macplan-5}}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.44\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{figures/macplan-6.png}
+    \caption{\label{subfig:macplan-6}}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.44\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{figures/macplan-7.png}
+    \caption{\label{subfig:macplan-7}}
+  \end{subfigure}
+  \caption{\label{fig:macro--plans} Example routes planned using macro route planner, example can be seen in detail in Section~\ref{sec:mrp} }
+\end{figure}
+
 
 \section{Codebase Evaluation}
 
 In total my codebase consists of around 2000 lines of Julia, a full breakdown can be seen in Figure~\ref{fig:codebase}\todo{is this figure required?}
+
+The areas which required the most work were the Bézier intersection procedure, parallelising the cooperative planner, designing the path grouping procedure for the macro level planner and creating the multitude of utility functions for plotting and otherwise visualising the results of the GA(s).
 
 
 \begin{figure}[ht]

@@ -8,7 +8,7 @@
 #+RESULTS:
 : 8304
 
-* Sections [1/8]:
+* Sections [2/8]:
 ** [ ] Abstract [1/1]
 #+begin_src bash
 texcount abstract.tex  \
@@ -96,7 +96,7 @@ CLOCK: [2021-04-09 Fri 10:36]--[2021-04-09 Fri 11:01] =>  0:25
 - [X] grouping agents into concurrent plans
 - [ ] Possible extensions
 - [ ] Make clear what is my original work
-** [ ] Results [2/3]
+** [X] Results [0/0]
 DEADLINE: <2021-05-03 Mon>
 *** [X] Single Agent
 - [X] population size
@@ -110,9 +110,9 @@ DEADLINE: <2021-05-03 Mon>
 - [X] number of generations
 - [X] number of obstacles / difficulty of road space
 - [X] number of concurrently planned agents
-*** [ ] Macro Level
+*** [X] Macro Level
 
-** [ ] Evaluation [2/6]
+** [ ] Evaluation [3/6]
 #+begin_src bash
 texcount evaluation.tex  \
     | grep "Words in text:" \
@@ -141,16 +141,16 @@ texcount evaluation.tex  \
 - [X] How well did it perform?
 - [X] How could it be further improved?
 - [X] Compared to previous work
-*** [ ] Multi-agent approach
+*** [X] Multi-agent approach
 - [X] How well did it perform?
-- [ ] How could it be further improved?
-- [ ] Compared to previous work
+- [X] How could it be further improved?
+- [X] Compared to previous work
 *** [ ] macro level approach
 - [ ] How well did it perform?
-- [ ] How could it be further improved?
-- [ ] Compared to previous work
+- [-] How could it be further improved?
+- [-] Compared to previous work
 *** [ ] Codebase evaluation
-- [ ] How much work was involved, size of codebase?
+- [-] How much work was involved, size of codebase?
 - [ ] Where does my approach fall short?
 
 ** [ ] Conclusion [0/0]

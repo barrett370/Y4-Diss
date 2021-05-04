@@ -400,6 +400,7 @@ A visualisation of this format can be seen in Figure~\ref{fig:demoGraph} with ed
 With the graph constructed the next stage is to plan what I will refer to as the \textit{macro} routes, i.e. the set of edges the agent must travel along $\{e_{1},\ldots,e_{m}\} \subseteq E$ to reach its destination intersection, $d \in V$.
 
 \subsection{Macro-Route planning}
+\label{sec:mrp}
 
 Macro-route planning, as described in Problem~\ref{prob:Spec}, is the process of taking a set of intersection pairs corresponding to agents and producing the set of edges which connect the vertex pairs in the shortest distance. This task is almost the exact specification for Dijkstra's algorithm~\cite{dijkstra1959note} for finding shortest paths in a connected digraph and as such this is the algorithm I employed to solve it.
 
@@ -432,7 +433,7 @@ When planning for multiple agents across multiple road spaces, routes may share 
 
 In the above example, it is trivial to see that agents $a_{1}$ and $a_{3}$ will share the same road at each stage of their route as they are following the same abstract path. We however, must also be able to determine whether agents $a_{1}$ and $a_{4}$ share road $e25$, it occurs in both of their routes but one agent may have left that stretch of road before the other enters.
 
-This problem is solved using the algorithm seen in Algorithm~\ref{alg:pathgrouping}\feedback{do I need to make it more obvious that these algorithms are my own work? Are they clear enough?}
+This problem is solved using my algorithm seen in Algorithm~\ref{alg:pathgrouping}\feedback{do I need to make it more obvious that these algorithms are my own work? Are they clear enough?}
 . For instance, on the example input above, we would expect to see the following grouping:
 
 \begin{align*}
@@ -491,7 +492,7 @@ Once these grouping have been constructed, the next stage is to plan the low-lev
 
 \subsection{Multi-agent route planning}\todo{title?}
 
-This process is a wrapper around the previously implemented parallel planner described in~\ref{sec:maa}. It follows the algorithm outlined in Algorithm~\ref{alg:mrp}.
+This process is a wrapper around the previously implemented parallel planner described in Section~\ref{sec:maa}. It follows my algorithm outlined in Algorithm~\ref{alg:mrp}.\todo{give explanation in words}
 
 \begin{algorithm}
   \caption{Macro-route planner}\label{alg:mrp}
