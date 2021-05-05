@@ -1,5 +1,7 @@
 This section of my report contains many 3 dimensional plots. I have included static captures and attempted to capture them at angles which demonstrate the points I am making. I have hosted all 3D plots seen below and they can be found indexed \href{https://barrett370.github.io/Y4-Diss/posts/figures}{here:} https://barrett370.github.io/Y4-Diss/posts/figures. I feel the data is better understood and expressed using these interactive plots.
 
+\todo{Insert more headings to break up this section}
+
 \section{Genetic Algorithms}
 \label{sec:eval:GAs}
 
@@ -255,6 +257,22 @@ Planning time again is seen to trend upwards proportionally with (number of gene
 When varying the number of agents being concurrently planned for we can see that the planning time steadily increases with each new agent added. In Figure~\ref{fig:ma-vary-a-surf} where the planning time surfaces of runs using 1,2,3 and 4 different agents through the road seen in Figure~\ref{subfig:sa-road1}, the surfaces are shown to layer in order of number of agents, this can be more easily seen in Figure~\ref{fig:ma-vary-a}, in which the average planning time across all generation-population size variations is averaged for each number of concurrently planned agents in the range 1 to 4.
 
 Figure~\ref{fig:ma-vary-a} shows a trend very close to directly proportional, especially when one considers the amount of extra factors which could be affecting the planning time (system load, randomly generated initial populations, random chances for operator to apply and random extents to which they apply). Each data point in Figure~\ref{fig:ma-vary-a} is the average of 2250 datapoints, this may suggest that at such high sample rates, the (pseudo) random nature of GAs can be ignored. The trend seems to follow the line $y = 11.2x - 8.6$, implying an additional 11.2 seconds of computation for each added agent.\todo{come back to this para}
+
+As previously mentioned one of the key improvements I made to my initial approach to reduce planning time was re-writing it to take advantage of multiple cores, before this I wrote it to run asynchronously, taking full advantage of the single thread on which it ran. In Table~\ref{tab:PCGA-speedup} you can see a marked difference in average runtime over these different approaches. The average runtime of my final, parallel cooperative genetic algorithm (PCGA), approach being around 2.6 times faster, when run over the 16-threads of the same CPU with the same 3 agent, single generation, 15 population toy example evaluated earlier.\todo{does this para need to move?}
+
+\begin{table}
+  \centering
+  \begin{tabular}{|l l l l|}
+    \hline
+      Procedure &ncalls     &time   &avg\\
+      \hline
+      Sequential single threaded CGA       & 3    &97.2s  &32.4s\\
+      Async (1 thread) PCGA                & 3    &86.1s  &28.7s\\
+       PCGA           &3    &37.6s   &12.5s\\
+      \hline
+    \end{tabular}
+    \caption{\label{tab:PCGA-speedup} Comparative runtimes for various incarnations of cooperative planner}
+    \end{table}
 
 \subsection{Extensions}
 

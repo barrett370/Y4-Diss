@@ -18,7 +18,7 @@ function PCGA(
     mutation_method::MutationMethod
 )
 
-    global MT = false
+    global MT = true
     if CACHE
         global previous_checks = Dict{Tuple{BezierCurve,BezierCurve},Tuple{Bool,Tuple{Real,Real}}}()
     end
@@ -36,7 +36,6 @@ function PCGA(
             append!(tasks,
                     [Threads.@spawn PCGA($start,$goal,road,current_plans,i=$c,
                                          n_gens=n_gens,n=n,selection_method=selection_method,mutation_method=mutation_method)])
-            sleep(0.4)
         else
             @warn "Not running in multithreaded mode"
             if TIMEIT

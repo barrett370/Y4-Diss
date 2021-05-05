@@ -187,7 +187,7 @@ function planRoutes(
                     # @show starts,goals
                     # oldstd = stdout
                     # redirect_stdout(open("/dev/null","w"))
-                    res = @timeit to "PCGA" PCGA(
+                    res = PCGA(
                         starts,
                         goals,
                         road,
