@@ -15,9 +15,9 @@ cd code
 
 This will create a local VM with all dependencies (minus julia libs) pre-installed
 
-**Note this will be much slower than a local install as only 4 cores and 8GB of RAM is allocated!** 
+*Note this will be much slower than a local install as only 4 cores and 8GB of RAM is allocated!* 
 
-**Note: if your system does not have 4 cores or 8GB of RAM, it may fail to start the box, edit the cpus and memory options in the ~Vagrantfile~**
+*Note: if your system does not have 4 cores or 8GB of RAM, it may fail to start the box, edit the cpus and memory options in the ~Vagrantfile~*
 
 Once finished, run ~vagrant destroy~ to remove the box
 
@@ -42,11 +42,11 @@ All dependencies are stored in a Julia environment, enabling it will cause Julia
 
 #+begin_src julia
 using Pkg
-Pkg.activate("./env/")
+Pkg.activate("./base-env/")
 Pkg.instantiate()
 #+end_src
 
-**Note: you may be forced to run instantiate twice, if the first pass fails**
+*Note: you may be forced to run instantiate twice, if the first pass fails**
 
 or
 
