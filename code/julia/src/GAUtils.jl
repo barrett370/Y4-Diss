@@ -188,7 +188,6 @@ function infeasible_distance(road::Road, curve::BezierCurve)
     l
 end
 
-
 function high_proximity_distance(road::Road, curve::BezierCurve)
     # work out of curve passes too close to obsitcles
     l = 0

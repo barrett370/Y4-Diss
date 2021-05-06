@@ -10,13 +10,16 @@ Alternatively, you can install ~vagrant~ and run:
 #+begin_src bash
 vagrant up
 vagrant ssh
-cd /vagrant/code/julia
+cd code
 #+end_src
 
 This will create a local VM with all dependencies (minus julia libs) pre-installed
 
-**Note this will be much slower than a local install as only 1 core and 1GB of RAM is allocated!**
+**Note this will be much slower than a local install as only 4 cores and 8GB of RAM is allocated!** 
 
+**Note: if your system does not have 4 cores or 8GB of RAM, it may fail to start the box, edit the cpus and memory options in the ~Vagrantfile~**
+
+Once finished, run ~vagrant destroy~ to remove the box
 
 ** Dependency Installation
 
@@ -42,6 +45,8 @@ using Pkg
 Pkg.activate("./env/")
 Pkg.instantiate()
 #+end_src
+
+**Note: you may be forced to run instantiate twice, if the first pass fails**
 
 or
 
