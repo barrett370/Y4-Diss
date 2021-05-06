@@ -1,6 +1,19 @@
 
+Over the past 100 years, roads have become more and more congested. The number of vehicles on the road in the UK alone has increased by more than 50\% since 1994\cite{AllVehiclesVEH01}, this is thought to be considerably higher in developing countries, and the trend over the past decade is a 1-2\% growth year-on-year. This can be seen in Figure~\ref{fig:vehicles-time}. All the while, road networks in countries such as the UK are not being extended, putting the existing infrastructure under increasing strain.
+
+Human piloted vehicles however, on top of this, do not efficiently utilise the roads available, requiring additional space per vehicle due to factors such as \textit{reaction time}, if we were able to remove these human elements it would be possible to greatly increase the throughput of the same amount of road infrastructure.
+
+We can also consider the impact of autonomous navigation on road fatality rates. Over the past 10 years there have been an average of 1984 deaths per year on UK roads\cite{ReportedRoadCasualties}, with around a further 24,000 people seriously injured. Many of these incidents will have occurred due to human error, error which could be eliminated if the human factor were to be removed from vehicle navigation and routing and replaced with a robust, reliable automated system.
+
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[scale=0.5]{figures/vehicles-time.png}
+  \caption{\label{fig:vehicles-time} Total vehicles registered on UK roads over time\cite{AllVehiclesVEH01}}
+\end{figure}
+
+
 \todo[inline]{Lay out different tasks \& steps of the project, identify subgoals}
-\todo[inline]{Move formal goal definitions to Evaluation? }
 \section{Goals}
 
 The overarching goal of this project is to optimally route traffic in the setting of a fully-autonomous road system. This however, is an aspirational goal with many sub-requirements to be fulfilled before it can come to fruition.
@@ -26,7 +39,7 @@ Formally this top-level goal can be said to be to answer the question in Problem
                 where the route for agent $a_i$ is from vertex $v_i^1$ to $v_i^2$
             \end{itemize}
         }
-        \problemquestion{ What is the set of optimal routes $\mathcal{v}_{optimal}$, where the $i^{\text{th}}$ element  is defined as a set of linked Bézier curves connecting $v_i^1$ and $v_i^2$ through feasible space?}
+        \problemquestion{ What is the set of optimal routes $\mathcal{V}_{optimal}$, where the $i^{\text{th}}$ element  is defined as a set of linked Bézier curves connecting $v_i^1$ and $v_i^2$ through feasible space?}
         \end{problem}
 \end{figure}
 

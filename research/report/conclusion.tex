@@ -1,12 +1,17 @@
 
-This is clearly a very broad and difficult area of research. I have shown that the task of safely routing many vehicles through interconnected sections of road can be thought of as multiple, large, sub-problems, many of which are seeing highly targeted research.
+This is clearly a very broad and complex area of research. I have shown that the task of safely routing many vehicles through interconnected sections of road can be thought of as multiple, large, sub-problems, many of which are seeing highly targeted research.
 
-I think I have shown the merits of my approach: the generative nature of GAs as well as their potential for massive parallelisation along with the smooth, continuous and malleable properties of Bézier curves have been shown to produce good quality, feasible routes for multiple agents.
+I have shown the merits of my approach: the generative nature of GAs as well as their potential for massive parallelisation along with the smooth, continuous and malleable properties of Bézier curves have been shown to produce good quality, feasible routes for multiple agents.
 
 However, it is also clear that substantially more research is still required to strip away the levels of abstraction and remove the naive assumptions before any such system could realistically see real-world deployment. As mentioned previously \todo{did I?}, any system seeking real-world use would require substantial government backing, likely requiring a mandated standard protocol and level of autonomous capability to be present in all new cars for a large amount of time, such that the vast majority of road-legal vehicles adhear to it, otherwise the system would need to be extended to plan around human-guided vehicles.
 
 In my opinion, the assumption that all vehicles are fully-autonomous is not so much an assumption as it is a functional requirement for any system such as this to be efficient and achieve the net reduction in travel time that it attempts to.
 
+The performance of the final incarnation of my parallel cooperative genetic algorithm is promising. Seeing substantial improvements in runtime, reliability and quality of generated routes over the course of its relatively short development period. I am confident that given more time it could be improved further, perhaps through persuing the distributed computation approach or parallelising further using GPU processing as mentioned in Chapter~\ref{chap:Eval}.
+
+The implementation and evaluation of more complex genetic operators may also yield improvement, allowing the algorithm to explore the search space more thoroughly in fewer generations or, to better avoid generating infeasible routes, increasing the amount of feasible space a single individual can explore.
+
+My macro level planner proved much more difficult to implement than anticipated. The modelling of a complex road network, including junctions and travel speeds, is beyond the scope of this project and as such I feel I was forced to make too many broad and naive assumptions which reduced the usefulness of the planner as a tool for evaluating my PCGA in a wider setting. In the future, with further research done into these sub-problems, I believe such a system is possible.
 %TC:macro \todo 1
 
 %%% Local Variables:

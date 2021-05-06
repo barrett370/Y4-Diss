@@ -32,13 +32,12 @@ function CGA(start::Point, goal::Point, road::Road, other_routes::Array{Individu
         return []
     end
     𝓕 = curry(curry(Fitness, road), other_routes) # Curry fitness function with road as this is a static attribute of the function. Allows for nicer piping of data.
-    P = generatePopulation(n, start, goal, road)
+    P = generatePopulation(n, start, goal, road) #Generate initial population
     map(p -> p.fitness = p |> 𝓕, P) # Calculate fitness for initial population, map 𝓕 over all Individuals
-    while true && n_gens > 0 && length(P) > 0# Replace with stopping criteria
-        # savefig(plotGeneration!(draw_road(road,0,20),P,road,100,100-n_gens),string("./gifgen/gen-",100-n_gens))
+    while n_gens > 0 && length(P) > 0
         P = (P
             |> P -> selection(P, method=selection_method)  # Selection operator
-            |> simple_crossover |> new_pop -> append!(P, new_pop)  ## Crossover operator & Add newly generated individuals to population
+            |> simple_crossover |> new_pop -> append!(P, new_pop)  ## Crossover + append new individuals
             |> uniform_mutation! # apply mutation operator
             |> P -> begin map(p -> p.fitness = p |> 𝓕, P); P end # recalculate fitness of population after mutation
             |> P -> map(repair, P)  # attempt repair of invalid solutions
@@ -46,10 +45,8 @@ function CGA(start::Point, goal::Point, road::Road, other_routes::Array{Individu
             |> P -> filter(isValid, P) # remove invalid solutions
             |> P -> P[1:minimum([n,length(P)])]# take top n
         )
-        n_gens = n_gens - 1
+        n_gens -= 1
     end
-#    savefig(plotGeneration!(draw_road(road,0,20),P,road,100),string("./gen-",n_gens))
-    # P = filter(i->high_proximity_distance(road,i.phenotype.genotype)==0,filter(i -> infeasible_distance(road,i.phenotype.genotype)==0,P))
     P
 end
 

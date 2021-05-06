@@ -8,7 +8,7 @@
 #+RESULTS:
 : 8304
 
-* Sections [2/8]:
+* Sections [3/8]:
 ** [ ] Abstract [1/1]
 #+begin_src bash
 texcount abstract.tex  \
@@ -146,14 +146,14 @@ texcount evaluation.tex  \
 - [X] How could it be further improved?
 - [X] Compared to previous work
 *** [ ] macro level approach
-- [-] How well did it perform?
-- [-] How could it be further improved?
+- [X] How well did it perform?
+- [X] How could it be further improved?
 - [-] Compared to previous work
 *** [ ] Codebase evaluation
 - [-] How much work was involved, size of codebase?
 - [ ] Where does my approach fall short?
 
-** [ ] Conclusion [0/0]
+** [X] Conclusion [0/0]
 #+begin_src bash
 texcount conclusion.tex  \
     | grep "Words in text:" \

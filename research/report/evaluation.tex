@@ -455,6 +455,16 @@ In total my codebase consists of around 2000 lines of Julia, a full breakdown ca
 
 The areas which required the most work were the Bézier intersection procedure, parallelising the cooperative planner, designing the path grouping procedure for the macro level planner and creating the multitude of utility functions for plotting and otherwise visualising the results of the GA(s).
 
+The main body of my GA resembles the shape of the generic genetic algorithm seen in Algorithm~\ref{alg:GenericGA}, and can be seen in Figure~\ref{fig:core-ga}.
+
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[scale=0.2]{figures/core-ga-shape.png}
+  \caption{\label{fig:core-ga} Core of my GA, written in Julia \\ \small (Note x $\rhd$ f $\Leftrightarrow$f(x))}
+\end{figure}
+
+
 
 \begin{figure}[ht]
   \centering

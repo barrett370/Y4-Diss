@@ -21,4 +21,4 @@ captions=$(echo "${count}"\
     | cut -d : -f2 \
     | sed 's/ //g')
 
-echo `expr $main + $headings + $captions `
+echo $(( "$main" + "$headings" + "$captions" ))
