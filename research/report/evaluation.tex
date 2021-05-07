@@ -311,30 +311,6 @@ Other research such as the work by both Cai \& Peng as well as Crus-Piris et al.
   \caption{\label{fig:ma-diff4} Multi agent planning number of generations against size of population against planning time (left), fitness limited at 300 (right), planning through road seen in Figure~\ref{subfig:ma-road4}}
 \end{figure}
 
-\begin{figure}
-  \centering
-  \begin{subfigure}[b]{0.44\textwidth}
-    \centering
-    \includegraphics[width=\textwidth]{figures/ma-road1-eg.png}
-    \caption{\label{subfig:ma-road1-eg}Example routes through easy road space, average fitness = 18.0 }
-  \end{subfigure}
-  \begin{subfigure}[b]{0.44\textwidth}
-    \centering
-    \includegraphics[width=\textwidth]{figures/ma-road2-eg.png}
-    \caption{\label{subfig:ma-road2-eg}Example routes through medium road space, average fitness = 18.4 }
-  \end{subfigure}
-  \begin{subfigure}[b]{0.44\textwidth}
-    \centering
-    \includegraphics[width=\textwidth]{figures/ma-road3-eg.png}
-    \caption{\label{subfig:ma-road3-eg}Example routes through hard road space, average fitness = 155.8}
-  \end{subfigure}
-  \begin{subfigure}[b]{0.44\textwidth}
-    \centering
-    \includegraphics[width=\textwidth]{figures/ma-road4-eg.png}
-    \caption{\label{subfig:ma-road4-eg}Example routes through hard, curved road space, average fitness = 19.3 }
-  \end{subfigure}
-  \caption{\label{fig:multi-agent-roads-egs} Roads used to test single agent planner performance, start and goal positions shown, ordered in terms of difficulty}
-\end{figure}
 
 
 \begin{figure}
@@ -359,7 +335,32 @@ Other research such as the work by both Cai \& Peng as well as Crus-Piris et al.
     \includegraphics[width=\textwidth]{figures/ma-road4.png}
     \caption{\label{subfig:ma-road4}Road segment with single, medium sized obstacle in a curved road. Approx. 4.9\% of road is infeasible.}
   \end{subfigure}
-  \caption{\label{fig:multi-agent-roads} Roads used to test single agent planner performance, start and goal positions shown, ordered in terms of difficulty}
+  \caption{\label{fig:multi-agent-roads} Roads used to test PCCGA planner performance, start and goal positions shown, ordered in terms of difficulty}
+\end{figure}
+
+\begin{figure}
+  \centering
+  \begin{subfigure}[b]{0.44\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{figures/ma-road1-eg.png}
+    \caption{\label{subfig:ma-road1-eg}Example routes through easy road space, average fitness = 18.0 }
+  \end{subfigure}
+  \begin{subfigure}[b]{0.44\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{figures/ma-road2-eg.png}
+    \caption{\label{subfig:ma-road2-eg}Example routes through medium road space, average fitness = 18.4 }
+  \end{subfigure}
+  \begin{subfigure}[b]{0.44\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{figures/ma-road3-eg.png}
+    \caption{\label{subfig:ma-road3-eg}Example routes through hard road space, average fitness = 155.8}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.44\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{figures/ma-road4-eg.png}
+    \caption{\label{subfig:ma-road4-eg}Example routes through hard, curved road space, average fitness = 19.3 }
+  \end{subfigure}
+  \caption{\label{fig:multi-agent-roads-egs} Examples of routes planned through test road spaces using PCCGA planner}
 \end{figure}
 
 \begin{figure}
