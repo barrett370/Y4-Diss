@@ -1,4 +1,0 @@
-* Inbox
-** [2021-03-03 Wed 12:04] Sketch complexity of:
-- [ ] Plotting routes for $n$ agents
-- [ ] Plotting routes for 1 agent given $n$ agents already plotted

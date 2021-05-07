@@ -123,7 +123,7 @@ end
 
 
 function bezInt(B1::BezierCurve, B2::BezierCurve, rdepth::Int, rdepth_max, c=[])
-	if BEZPLOT && rdepth < 5
+	if BEZPLOT && rdepth < 6 
 		p = plotGeneration([Individual(Phenotype(B1[1], B1, B1[end]), 0),Individual(Phenotype(B2[1], B2, B2[end]), 0)], 100)
 		plot!(p, leg=false, ticks=false)
 		savefig(p, "bezint-$rdepth$c.png")
@@ -135,7 +135,7 @@ function bezInt(B1::BezierCurve, B2::BezierCurve, rdepth::Int, rdepth_max, c=[])
 		end
         return (false, (-1, -1))
     end
-    ε = 1 # TODO tune param
+    ε = 0.5 # TODO tune param
     toLuxPoints = b -> map(p -> lx.Point(p[1], p[2]), b)
     if length(B1) < 2 || length(B2) < 2
         @error "error not enough control points"

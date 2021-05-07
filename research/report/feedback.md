@@ -12,28 +12,6 @@ probability).
 
 
 
-p. 16: Should I change this superscript notation? subscript is being
-used to denote which control points are being considered.
-
-I don't understand your current definition of Bezier curves well enough
-to be able to advise (see the note above about variables/parameters), so
-you'll first need to clarify that. What is t in (2.6) and (2.7)? What
-are P_0 to P_n ? What exactly does B specify? (vectors in the plane?)
-
-----
-
-p. 25: is this clear/ necessary?
-
-Does this refer to the paragraph or the figure? The paragraph is fine,
-though you could be clearer on how the communication between the threads
-works. Does every thread just use whatever information is in the array
-at the given time and update their route whenever they want, or is there
-a common clock to make all routes update at the same time?
-I don't understand Figure 4.5, can you give more explanation in the
-caption and/or the text? I assume the a_k are the agents from the text
-above the diagram, though that's not entirely clear. What does V Threads
-mean? What do the boxes labelled GA represent? What does the vertical
-double-arrow mean? What about the blue and the red box?
 
 ---
 
@@ -70,22 +48,5 @@ As with figures, it's good to give a prose description of (the
 high-level structure of) an algorithm because even pseudo-code can be
 tricky to understand without already having an intuition for what it's
 meant to do.
-
-----
-
-p. 35: Is this a clear way of formatting? I would reference the ID when
-talking about a plot. I would still include a still as a figure
-
-I'm generally in favour of having the link text be more meaningful.
-Ideally the entire URL should be written out somewhere, either here or
-in a footnote or reference (some pdf readers can be a bit fiddly about
-clicking on embedded links, so it's good to have the alternative).
-
-What is your goal with this overview of the dynamic plots; how will it
-help the reader? (I'm not saying it's bad, I'm just not quite sure about
-its purpose without any context.) An alternative could be to
-include/reference the links to the online version in either the caption
-of the corresponding "still" figure, or in the text where you discuss
-that figure.
 
 

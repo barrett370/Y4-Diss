@@ -1,6 +1,7 @@
 \section{Genetic Algorithms}
+\label{sec:back:GAs}
 
-\subsection{History}\todo{Decide whether to keep this section}
+\subsection{History}
 
 Genetic algorithms (GAs) are a type of meta-heuristic optimisation technique that employ the same rationale as classical evolution seen in nature.
 
@@ -53,9 +54,9 @@ Genetic algorithms are both \textit{probabilistically optimal} and \textit{proba
 
 As you can see from Figure \ref{fig:hollandAlg} and Algorithm \ref{alg:GenericGA} the overall shape of GAs has not changed substantially over the course of the past 50 years. Being comprised of a series of operations that a starting population is piped through until criteria are met.
 
-\subsection{Genetic Operators}\todo{Expand definitions of operators used in implementation section}
+\subsection{Genetic Operators}
 \label{subsec:GAOps}
-In the following section I will outline the various genetic operations that take place in a GA, they can be seen in Algorithm~\ref{alg:GenericGA}. Any operators used and analysed in Chapter~\ref{chap:ClassicalApproach} will have more detailed explanations of their process.
+In the following section I will outline the various genetic operations that take place in a GA, they can be seen in Algorithm~\ref{alg:GenericGA}. Any operators used and analysed in Chapters~\ref{chap:ClassicalApproach} and~\ref{chap:Eval} will have more detailed explanations of their process.
 
 \subsubsection{Selection}
 
@@ -85,7 +86,7 @@ The procedure can be written mathematically as:
 
 Given a population $P$ of size $n$ ordered by fitness. We select the top \(\gamma\)-ranked individual, $x_{\gamma}$ with a probability $p(\gamma)$. Where \(\gamma\) is the rank and $p(\gamma)$ is the ranking function.
 
-The ranking function can take different forms including both linear and exponential ranking.\todo[inline]{extend list to include all functions used}
+The ranking function can take different forms including both linear and exponential ranking.
 
 Linear ranking is defined as:
 
@@ -262,7 +263,7 @@ It is a simple procedure, given a Bézier curve $B$, it can be split at any arbi
   \beta_{1} &= B_{P_{0}}(t), B_{P_{0},P_1}(t), \ldots, B_{P_{0},\ldots,P_{n}}(t) \\
   \beta_{2} &= B_{P_{n}}(1-t), B_{P_{n},P_{n-1}}(1-t), \ldots, B_{P_{n},\ldots,P_{0}}(1-t)
 \end{align}
-\feedback{Should I change this superscript notation? subscript is being used to denote which control points are being considered.}
+
 
 % \beta_1 = [ B[1:i](t) for i in 1:length(B) ]
 % \beta_2 = [ B[i:length(B)](1-t) for i in length(B):-1:1 ]

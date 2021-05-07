@@ -17,7 +17,7 @@ In this 2001 paper, Cai \& Peng give an example of a Cooperative Coevolutionary 
 
 Their approach features a discrete grid-based search space featuring rectangular obstacles which the routes must avoid. Their chromosomes are encoded using real-values representing the $x$ and $y$ coordinates of the search grid.
 
-Their fitness function has two stages, in the first generation the fitness of a candidate solution is purely determined by the global \textit{optimality} of the route. In all subsequent generations the fitness also takes into account the best routes from each of the other sub-populations.\todo{make reference to this method being altered for use in my solution( in approach section? )}
+Their fitness function has two stages, in the first generation the fitness of a candidate solution is purely determined by the global \textit{optimality} of the route. In all subsequent generations the fitness also takes into account the best routes from each of the other sub-populations.
 
 They conclude that their approach yields good robustness and convergence as well as being suitable for parallel execution, allowing for systems employing this GA approach to run very efficiently.
 
@@ -43,15 +43,16 @@ All of these approaches could potentially be utilised in a cooperative, multi-ag
 
 \paragraph{Raul Kala - On-Road Intelligent Vehicles: Optimization Based Planning 2016\cite{kalaOptimizationBasedPlanning2016}}
 In his book, Kala proposes a GA as an embedded component of a larger planning system which also relies on Djiksra's algorithm for macro-level route planning along with the classical autonomous vehicle real-time collision avoidance toolbox (radar, sonar, etc.). In order to achieve a system capable of planning for multiple agents concurrently, Kala proposed the use of these real-time collision avoidance tools along with embedding \textit{traffic rules} as heuristics into the Djiksta-based component. These traffic rules included ``driving on the left'' and ``overtaking on the right'' etc. This proposed system, while similar to mine, differs in scope. I propose a system for planning routes for a set of autonomous agents within a fully-autonomous road system, meaning agents will not (in theory) interact or encounter any other vehicles which are not a part of the planning network.
-\todo{Talk about Kala's road space coordinate system \& use of Bézier  curves, move to Bézier subsection? }
+
+Kala also proposes a seemingly novel \textit{road space coordinate system} which allows him to formally bound the genotypic search space by the dimensions of the road, eliminating the possibility of plotting routes outside of the road space. He goes on to show that this approach in his implementation greatly reduces the number of agents required to generate feasible solutions, though it is not discussed how this may impair the GAs ability to generate complex routes which may require control points to lie outside of the road space whilst still defining a feasible curve.
 
 \paragraph{Cruz-Piris et al. - Automated Optimsization of Intersections Using a Genetic Algorithm\cite{cruz-pirisAutomatedOptimizationIntersections2019}}
-\todo{Pare this down?}
+
 A paper published by Cruz-Piris et al. investigates the applications of (binary coded) Genetic Algorithms on routing traffic through busy intersections. Their proposed system is shown to have improvements in traffic throughput of anywhere from 9\% to 36\%.
 
 Their approach involved several assumptions, many of which my research shares. Namely, they assumed vehicles do not stop at any point and that their speed remains constant at all points in time.
 
-Their approach to modelling the solution space takes advantage of the fairly uniform and regular structure of large intersections, and although they work on modelling irregularly shaped intersections, this TCA model begins to fall apart when the size of each cell cannot contain a vehicle and requisite surrounding space, or if input/output lanes do not lie in a regular grid pattern. Facilitating irregularly shaped intersections seems to be a manual process, not a particularly viable method when you consider the number of unique intersections across the world or even just the Continental United States!
+Their approach to modelling the solution space takes advantage of the fairly uniform and regular structure of large intersections, and although they work on modelling irregularly shaped intersections, this traffic cellular automata (TCA) model begins to fall apart when the size of each cell cannot contain a vehicle and requisite surrounding space, or if input/output lanes do not lie in a regular grid pattern. Facilitating irregularly shaped intersections seems to be a manual process, not a particularly viable method when you consider the number of unique intersections across the world or even just the Continental United States!
 
 This approach seems to work relatively well for throughput optimisation problems such as junctions but does not scale well for less structured scenarios where all origins and goals cannot be known beforehand and are not necessarily the same for all subsequent runs.
 
@@ -69,9 +70,9 @@ In their approach Chen et al. also take into account the orientation, change in 
 
 This approach appears to be extremely computationally efficient on the toy examples provided in the paper, on relatively low performance hardware 560 iterations can be computed in around 500ms!
 
-There is no mention, however, to a cooperative element. Explicitly solving quadratic programming tasks is known to be $\mathbf{NP}$-complete as shown by Vavasis in 1990\cite{VAVASIS199073} and adding onto that the requirement that all solutions interact nicely will only increase the real-world runtime of any solution. A real-world scenario with hundreds of vehicles may suffer from an incredibly high runtime, hardware requirement or both.\todo[inline]{is this even correct to say?}
+There is no mention, however, to a cooperative element. Explicitly solving quadratic programming tasks is known to be $\mathbf{NP}$-complete as shown by Vavasis in 1990\cite{VAVASIS199073} and adding onto that the requirement that all solutions interact nicely will only increase the real-world runtime of any solution. A real-world scenario with hundreds of vehicles may suffer from an incredibly high runtime, hardware requirement or both.
 
-\section{Fully Autonomous Road Networks}\todo{Complete this section}
+\section{Fully Autonomous Road Networks}
 
 Fully Autonomous Road Networks (\textit{FARN}s) have the possibility of improving travel in a number of different areas.
 

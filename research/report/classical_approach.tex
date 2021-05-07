@@ -28,7 +28,6 @@ In this approach, the phenotype is abstractly represented as a Bézier curve (Se
 \end{figure}
 
 In the above form the descriptions of genetic operators found in Section~\ref{subsec:GAOps} should be sufficiently detailed to re-implement.
-\todo[inline]{Replace with detailed description of implementation of operators, decisions e.g. allowed range for mutation of control points.}
 
 Initially my Phenotype contained no additional information. However, I still created the distinction to allow for additional properties to be encapsulated during development.
 
@@ -36,16 +35,13 @@ Initially my Phenotype contained no additional information. However, I still cre
 
 Population generation theoretically can be very simple and generate very little diversity, relying on the other operators to explore the search space. However, the more diverse a set of initial routes one can generate, the quicker the system will converge to an optimal solution.
 
-As such we want to ensure that both the number of control points as well as their position are properly varied.
+As such we want to ensure that both the number of control points as well as their position are properly varied. Therefore, my generation procedure randomly generated $x$ position within the range of the start and goal $x$ positions. The $y$ positions can fall outside of the road boundaries as sometimes this is necessary to properly guide a route around an infeasible region. All numbers in this process were generated using a uniform distribution so as maximise the amount of the search space that initial set of candidates covers.
 
 The first and last control points \textbf{must} be the starting and goal position for the agent. In a Bézier curve these are the only two points that the curve definitely passes through. We must also ensure that the $x$ coordinates of the control points are in order, so as to avoid routes which \textit{double back} on themselves. This can also occur as the result of other operators such as crossover and mutation, we can fix this using a simple repair operator which re-orders points based on their $x$ positions.
 
 Once the initial population is generated, the main algorithmic loop can begin, this is the repeated application of the selection, crossover, mutation and evaluation operators (See Section~\ref{subsec:GAOps}) until set termination criteria are met or the maximum number of generations is completed, seen in Algorithm~\ref{alg:GenericGA}.
 
 \subsection{Fitness assessment}
-
-\todo[inline]{Have I actually explicitly stated the construction of my fitness function \& referenced Kala for inspiration?}
-
 
 The foundation of my Fitness function is the length of each route, i.e. the length of a given $n$ degree Bézier curve. This calculation can be accurately approximated using Equation~\ref{eq:bezlength} as the true calculation is expensive and does not generalise nicely to $n$ degrees\cite{gravesenAdaptiveSubdivisionLength1997}.
 
@@ -83,6 +79,8 @@ And the curved road section seen in Figure~\ref{fig:curved-road} functions:
 \end{align*}
 
 Where in both cases the length of the road (and therefore upper bound of $x$) was 25, the lower bound of $x$ was 0.
+
+\textbf{Note:} this format of figure will be used throughout this report and shows a top-down view of the road space, the $y$ axis corresponds to the road width and the $x$ axis to the road length.
 
 \begin{figure}[ht]
   \centering
@@ -143,7 +141,7 @@ A similar process is performed to determine how much of a curve passes too close
     \caption{Stage 5}
   \end{subfigure}
   \caption{\label{fig:ifspace-illustration} Illustration of finding infeasible section of curve}
-\end{figure}\todo[inline]{Technically this infeasible distance calculation has very slightly changed in implementation, is it worth redoing or just leave as is?}
+\end{figure}
 
 Now with the ability to calculate the length of a route as well as the distance it travels through/ too close to infeasible space, I can define my Fitness function:
 
@@ -151,7 +149,7 @@ Now with the ability to calculate the length of a route as well as the distance 
   \mathcal{F}(i) = \\
   L_{i} +\\
   \alpha \cdot \texttt{infeasible distance}(i) + \beta \cdot \texttt{high-proximity distance}(i)
-\end{multline}\todo{formatting}
+\end{multline}
 
 Where:
 \begin{itemize}
@@ -204,7 +202,7 @@ The variants of the mutation operator that I have implemented are Uniform and Ga
 
 Abstractly, my mutation operators select a control point with a random probability and mutate within fixed bounds. These bounds are tied to the size and shape of the road.
 
-In my Gaussian mutation operator, the range of $x$ values for the mutation of a randomly selected point $ p \in B = \{ p_{1}, \ldots, p_{n} \}, n\in \mathbb{Z}^{\geq 2 }$ are:
+In my best performing operator, the Gaussian mutation operator, the range of $x$ values for the mutation of a randomly selected point $ p \in B = \{ p_{1}, \ldots, p_{n} \}, n\in \mathbb{Z}^{\geq 2 }$ are:
 
 \begin{equation}
 \mathcal{X} = \left[p_{1_{x}}, p_{n_{x}}\right], p_{1}, p_{n} \in B
@@ -228,6 +226,8 @@ A pair standard deviations as previously outlined in the Background section are 
 \sigma_{y} = \frac{\mathcal{Y}_{1}-\mathcal{Y}_{2}}{10}
 \end{equation}
 
+Where $\mathcal{X}_{1}$ is the 1st element in $\mathcal{X}$, and the same notation applies for $\mathcal{Y}$
+
 A new point, $p'$, is then constructed as follows:
 
 \begin{align}
@@ -239,13 +239,13 @@ Point $p \in B$ is then replaced with our new point $p' = (p'_{x}, p'_{y})$.
 
 The result of the operation being applied to a example curve can be seen in Figure~\ref{fig:gauss_mutation_eg}
 
-\todo{Talk about implmentation of Uniform mutation operator }
-
 \begin{figure}[ht]
   \centering
   \includegraphics[scale=0.4]{figures/gauss_mutation_eg.png}
   \caption{\label{fig:gauss_mutation_eg} Example of Gaussian mutation on a Bézier curve}
 \end{figure}
+
+Uniform mutation used the same bounds $\mathcal{X}, \mathcal{Y}$ as defined above, where the set bounds, $u_{i},v_{i}$ mentioned in Section~\ref{subsec:GAOps} are correspond to the two values in each of $\mathcal{X}$ and $\mathcal{Y}$.
 
 \subsubsection{Crossover}
 
@@ -253,6 +253,11 @@ Simple crossover is implemented as it is described in Section~\ref{subsec:GAOps}
 Once used to create offspring, an individual cannot again participate in crossover, however, duplicate individuals created via the selection process may effectively reproduce multiple times.
 
 The result of a single (simple) crossover operation can be seen in Figure~\ref{fig:crossover_eg}
+
+$k$-point crossover was also implemented and follows much the same logic. However, here as described in Section~\ref{subsec:GAOps}, genotypic information is exchanged about $k$ randomly selected points where $k$ itself is randomly selected from the range $[1,\min(m,n)]$ where $m$ is the number of control points in $parent_{1}$ and $n$ is the number of control points in $parent_{2}$.
+
+
+Each of the operators outlined in this section are then applied in the order shown in Algorithm~\ref{alg:GenericGA}, until the termination criteria are met. In this case my only termination criteria was the maximum number of generations had taken place.
 
 \begin{figure}
   \centering
@@ -274,15 +279,17 @@ The result of a single (simple) crossover operation can be seen in Figure~\ref{f
 
 So far we have only concerned ourselves with planning a route through a road-space for a single agent. However, in the real world, roads are seldom occupied by a single vehicle and as such we must consider how to efficiently plan a set of routes for a set of agents between between a set of coordinate pairs, such that, our agents do not collide at any point in time.
 
-There are different approaches we can take to this problem. \todo[inline]{refer to lit rev sections discussing approaches by Kala~\cite{kalaOnroadIntelligentVehicles2016} and Cai \& Peng~\cite{caiCooperativeCoevolutionaryAdaptive2002}}
+There are different approaches we can take to this problem.
 
-My initial approach \todo{refer to ?Cai+Peng? as their approach was similar} to a collaborative planning system was somewhat inefficient. The system operated by planning routes for each agent sequentially, using a growing \textit{context} to keep track of the routes that had already been finalised. The first agent to be planned was not concerned with avoiding collisions, because, as far as it was concerned, there were no other agents in the system. Each subsequent agent checked if any of its candidate solutions intersected with any of the routes planned before, a very high penalty was applied to any routes with collisions.
+My initial approach to a collaborative planning system was somewhat inefficient. The system operated by planning routes for each agent sequentially, using a growing \textit{context} to keep track of the routes that had already been finalised. The first agent to be planned was not concerned with avoiding collisions, because, as far as it was concerned, there were no other agents in the system. Each subsequent agent checked if any of its candidate solutions intersected with any of the routes planned before, a very high penalty was applied to any routes with collisions.
 
-This system was very inefficient with the final routes requiring a large number of checks to be carried out by my \texttt{bezInt} function, which itself suffered from \todo[inline]{verify this} exponential time (and space) complexity.
+This system was very inefficient with the final routes requiring a large number of checks to be carried out by my \texttt{bezInt} function, which itself suffered from high time (and space) complexity.
 
-This system was improved upon by splitting the process over multiple threads, each agent being given a separate thread, communicating their most up-to-date plans via a shared array, $S$. Agent $i$ will store its current fittest route in $S[i]$, the calculation for fitness of any candidate checks for collisions with each route in $S$. This system may conduct more checks but it removes the problem of prioritising the first route to be planned and reduces the overall runtime of the system approximately proportionally to the number of threads available, an abstract view of the topology can be seen in Figure~\ref{fig:PCGA} with each agent $a_{k}, k \in [1,n]$ being mapped to a separate threaded instance of my GA planner. Each instance has access to the shared array which stores the fittest route after generation $i \in [1,m]$ with $m$ being the maximum number of generations for each agent.
+This system was improved upon by splitting the process over multiple threads, each agent being given a separate thread, communicating their most up-to-date plans via a shared array, $S$. Agent $i$ will store its current fittest route in $S[i]$, this will be updated at the end of each generation over the $i^{th}$ subpopulation. The calculation for fitness of any candidate checks for collisions with each route in $S$. This system may conduct more checks but it removes the problem of prioritising the first route to be planned and reduces the overall runtime of the system approximately proportionally to the number of threads available, an abstract view of the topology can be seen in Figure~\ref{fig:PCGA} with each agent $a_{k}, k \in [1,n]$ being mapped to a separate threaded instance of my GA planner. Each instance has access to the shared array which stores the fittest route after generation $i \in [1,m]$ with $m$ being the maximum number of generations for each agent.
 
 Updates to the shared array happen as and when each thread reaches the end of a generation. This can mean that routes that terminate before others have to adapt less to other routes, but this trade-off cannot be avoided without instituting constant communication between threads, which in and of itself introduces overhead and slows down planning.
+
+This approach was inspired by that of Cai \& Peng\cite{caiCooperativeCoevolutionaryAdaptive2002} in which they also implemented cooperative coevolutionary genetic algorithms by sharing the fittest solution of each subpopulation with the other subpopulations. My approach takes this a stage further through the use of threading, allowing for this sharing process to occur concurrently.
 
 \begin{figure}
   \centering
@@ -298,7 +305,7 @@ Updates to the shared array happen as and when each thread reaches the end of a 
   \coordinate[right = 0.2cm of rGA1] (rrGA1);
   \coordinate[right = 0.12cm of gan.east] (rGAn);
 
-  \node[below = 1cm of rGAn] (sa) {$\{ B_{a_{1}}^{i}, b_{a_{2}}^{i}, \ldots, B_{a_{n}}^{i} \}, i \in [1,m] $};
+  \node[below = 1cm of rGAn] (sa) {$\{ B_{a_{1}}^{i}, B_{a_{2}}^{i}, \ldots, B_{a_{n}}^{i} \}, i \in [1,m] $};
   \node[right = 2cm of gael] (res) {$\{ B_{a_{1}}^{m}, b_{a_{2}}^{m}, \ldots, B_{a_{n}}^{m} \}$};
 
   \node[draw=black, fit=(rGA1) (rGAn), label={[rotate=-90]center:\tiny Shared Array}]  {};
@@ -333,7 +340,7 @@ With this assumption, we can now say that two routes collide if they intersect a
 \subsubsection{Bézier Curve intersection}
 \label{subsec:approach:bezInt}
 
-The commonly employed technique for finding intersections between two $n$-degree Bézier curves is repeated recursive subdivision. Whilst it is possible to precisely calculate the point of intersection it is very difficult and computationally expensive and does not generalise well to $n$ degrees. For example, to precisely find the intersection two curves of degree 3 we must solve a $9^{th}$ order equation, producing unstable results. This is described by Bézout's theorem which states that two planar algebraic curves of degrees $d_{1}$ and $d_{2}$ will have up to $d_{1}d_{2}$ intersection points.\todo{cite this or remove it}
+The commonly employed technique for finding intersections between two $n$-degree Bézier curves is repeated recursive subdivision. Whilst it is possible to precisely calculate the point of intersection it is very difficult and computationally expensive and does not generalise well to $n$ degrees. For example, to precisely find the intersection two curves of degree 3 we must solve a $9^{th}$ order equation, producing unstable results. This is described by Bézout's theorem which states that two planar algebraic curves of degrees $d_{1}$ and $d_{2}$ will have up to $d_{1}d_{2}$ intersection points.
 
 In their 2006 paper Yap\cite{yapCompleteSubdivisionAlgorithms2006} proposed an efficient method for finding the intersection of two Bézier curves through a 2 stage process surrounding repeated subdivision.
 
@@ -346,8 +353,8 @@ In order to speedup my Bézier intersection function I implemented a number of t
 
         This is a simplified version of the logic presented by Yap in his \textit{Micro Phase} of intersection detection. However, in order to cover all edge cases and make this a reliable rule to follow a lot more precomputation is required (See Elementary curves \& curve coupling in~\cite{yapCompleteSubdivisionAlgorithms2006}).
 
-        As such, I ended up removing this feature as the additional work required was too high for this project.\todo{phrasing? }
-    \item I instead instituted a simpler heuristic using bounded boxes (See Section~\ref{subsec:back_boundedboxes}). Using the \texttt{Luxor} library\cite{JuliaGraphicsLuxorJl2021}, I was able to detect whether two bounded boxes intersected, if they did not, further checks can be skipped.\todo{Merge these first 2? }
+        As such, I ended up removing this feature as the additional work required was too high for this project.
+    \item I instead instituted a simpler heuristic using bounded boxes (See Section~\ref{subsec:back_boundedboxes}). Using the \texttt{Luxor} library\cite{JuliaGraphicsLuxorJl2021}, I was able to detect whether two bounded boxes intersected, if they did not, further checks can be skipped.
   \item If two curve segments have already been checked for intersection, why bother checking them again?
 
         This question was solved by trading computation time for memory, by constructing a hash table linking curve pairs to a tuple containing the approximate values for $t$ representing the point of intersection (if present) and a boolean, when checking two curve sections, if they already exist in the hash table the remaining computation can be skipped with the pre-computed result returned instead.
@@ -357,11 +364,13 @@ In order to speedup my Bézier intersection function I implemented a number of t
         In reality, many curve segments are found repeatedly inside populations and as such many more duplicate checks can be skipped through this method.
   \item I implemented a recursion depth limit so as to introduce an upper bound in computation before the function returns false. Without this I found that often the checks would repeat until it was searching for intersections between infinitesimally small curve sections.
 
-  \item I was also able to reduce the runtime of this function via the use of threading. Upon a subdivision two more threaded tasks are spawned and the lazy disjunction of their results returned. The optimal case for this approach is that the intersection occurs early on in the curve as the task results must be fetched sequentially in the order that they were spawned. \todo{remove this sentence?}
+  \item I was also able to reduce the runtime of this function via the use of threading. Upon a subdivision two more threaded tasks are spawned and the lazy disjunction of their results returned. The optimal case for this approach is that the intersection occurs early on in the curve as the task results must be fetched sequentially in the order that they were spawned.
 
 \end{enumerate}
 
 My method keeps track of the divisions made and using this keeps track of the $t$ value which maps $P_{n}$ from the subcurve to the initial curve. The values of $t$ are then returned if a intersection is found, this allows for the distances from the origin points to the point of intersection to be easily calculated using De Casteljau's algorithm along with my function for finding the length of a Bézier curve.
+
+Upon each recursion, the diameter of the control points of both curves is calculated, if it is below a threshold $\varepsilon$, true is returned along with the estimated $t$ values for each of the curves. Otherwise, unless any of the previously stated early termination criteria are met, the curve with the largest diameter is subdivided and two new threaded tasks are spawned with the lazy disjunction of their result returned.
 
 An illustration of the recursive subdivision method described above can be seen in Figure~\ref{fig:bezIntIllustration}
 
@@ -372,16 +381,15 @@ An illustration of the recursive subdivision method described above can be seen 
 \caption{\label{fig:bezIntIllustration} Illustration of Bezier Intersection recursive subdivision method (Recursion depth =2)}
 \end{figure}
 
-\section{Macro-Level Planning} \todo{Title?}
+\section{Macro-Level Planning}
 
 The next stage in development is to attempt to implement the wrapper to solve Problem~\ref{prob:Spec} using the solution to Problem~\ref{prob:sub1}. I.e. to go from planning for multiple agents in a single section of road to planning for multiple agents across a network of interconnected roads.
 
 \subsection{Road Graph Construction }
 
-As specified in Problem~\ref{prob:Spec}, we require a description of the road space as a graph, $\mathcal{R}= (V,E)$ of intersections, $V$ and road segments $E$\todo[inline]{Should I define it as $\mathcal{R} = (I, R)$?}
-.
+As specified in Problem~\ref{prob:Spec}, we require a description of the road space as a graph, $\mathcal{R}= (V,E)$ of intersections, $V$ and road segments $E$.
 
-This is a malleable definition allowing for a lot of information to be encapsulated whilst maintaining an abstract canonical description compatible with a swathe of mathematics through graph theory.\todo[inline]{wordy?}
+This is a malleable definition allowing for a lot of information to be encapsulated whilst maintaining an abstract canonical description compatible with a swathe of mathematics through graph theory.
 
 I decided to use a mixture libraries to construct my road network: \texttt{Graphs.jl}\cite{JuliaAtticGraphsJl2021}, \texttt{LightGraphs.jl}\cite{Bromberger17}  and \texttt{SimpleWeightedGraphs.jl}\cite{JuliaGraphsSimpleWeightedGraphsJl2021}. The graph structures found in \texttt{Graphs.jl} allow for a lot of data (The entirety of the \texttt{Road} structure can be stored as edge metadata) to be encapsulated but do not offer the same functionality as those found in \texttt{LightGraphs.jl}, \texttt{SimpleWeightedGraphs.jl} utilises the \texttt{LightGraphs.jl} format but allows for weighted edges when applying the various standard graph-based algorithms (including Dijkstra), as such I created my own helper functions to convert between the two formats, which is a relatively simple process of filtering data into a new, more restrictive, structure.
 
@@ -433,7 +441,7 @@ When planning for multiple agents across multiple road spaces, routes may share 
 
 In the above example, it is trivial to see that agents $a_{1}$ and $a_{3}$ will share the same road at each stage of their route as they are following the same abstract path. We however, must also be able to determine whether agents $a_{1}$ and $a_{4}$ share road $e25$, it occurs in both of their routes but one agent may have left that stretch of road before the other enters.
 
-This problem is solved using my algorithm seen in Algorithm~\ref{alg:pathgrouping}\feedback{do I need to make it more obvious that these algorithms are my own work? Are they clear enough?}
+This problem is solved using my algorithm seen in Algorithm~\ref{alg:pathgrouping}
 . For instance, on the example input above, we would expect to see the following grouping:
 
 \begin{align*}
@@ -446,6 +454,31 @@ This problem is solved using my algorithm seen in Algorithm~\ref{alg:pathgroupin
 \end{align*}
 
 Where you can see $a_{4}$ occupies edge $e25$ at a time separate from agents $a_{1}$ and $a_{3}$.
+
+Essentially, Algorithm~\ref{alg:pathgrouping} works as follows:
+
+\begin{enumerate}
+  \item It initialises the return array, which is an array which, for each road in the graph, stores an array of sets of agents which occupy it concurrently at some point in time.
+  \item for each agent's macro-path as calculated using Dijkstra's algorithm, (see above for an example) construct a running total distance for the route. Call this agent $i$
+        For the example $a_{1} \mapsto \{ 1,3,2,5,4 \} $ above, we would get:
+
+        \[
+        [0,10,24,34,41]
+        \]
+\begin{enumerate}
+  \item  for each edge in the macro-path, initialise an array of agents sharing the edge, initially only contains our currently considered agent.
+        \begin{enumerate}
+  \item For each other agent's macro-path, call this agent $j$, check if it contains the currently considered edge, if it does, calculate the distance from the origin of $j$ to the start of this edge. If this is less than the distance from the origin of $i$ to the \textbf{end} of this edge, then they are said to occupy the same edge at the same time as $i$ cannot feasibly leave the edge before $j$ enters. In this case, append $j$ to the array of agents sharing this edge with $i$, otherwise do nothing.
+
+        \end{enumerate}
+
+  \item Upon completing this process for each agent, append the array of agents sharing this edge with $i$ to the previously initialised array corresponding to this section of road.
+\end{enumerate}
+
+
+  \item Once all agents have been considered as $i$, return the constructed array of arrays of sets of agents sharing edges.
+\end{enumerate}
+
 
 \begin{algorithm}
   \caption{Path Grouping, \texttt{getPathGroupings} }\label{alg:pathgrouping}
@@ -490,9 +523,18 @@ Initialise map of roads, \texttt{roads}
 
 Once these grouping have been constructed, the next stage is to plan the low-level curves representing the paths each agent must take through each road segment, avoiding any agents it shares a given road segment with.
 
-\subsection{Multi-agent route planning}\todo{title?}
+\subsection{Multi-agent route generation}
 
-This process is a wrapper around the previously implemented parallel planner described in Section~\ref{sec:maa}. It follows my algorithm outlined in Algorithm~\ref{alg:mrp}.\todo{give explanation in words}
+This process is a wrapper around the previously implemented parallel planner described in Section~\ref{sec:maa}.
+
+Informally the algorithm starts by generating the series of road edges an agent must navigate to reach it's goal intersection. This is done using Djikstra's algorithm.
+
+My path groupings algorithm as described in Algorithm~\ref{alg:pathgrouping} is then applied to these \textit{abstract plans}.
+
+For each edge in each agent's path, if the edge has not already been planned, a set of routes for each agent shown to be occupying the edge concurrently with the current agent is generated using my parallel cooperative genetic algorithm as described in Section~\ref{sec:maa}. When generating the start and goal points for each agent in a road, if a previous plan is known for the agent, the new start position will the same $y$ coordinate as the previous goal position. Newly generated positions are calculated by evenly distributing points across the width of the road.
+
+Once generated, these paths are appended to their corresponding agent's overall plan in the order in which they are executed. Once all plans have been made, this set of sets of routes is returned. A formal definition of this process can be seen in Algorithm~\ref{alg:mrp}
+
 
 \begin{algorithm}
   \caption{Macro-route planner}\label{alg:mrp}
@@ -515,7 +557,7 @@ This process is a wrapper around the previously implemented parallel planner des
 
       \For{concurrentAgents $\in$ concurrentAgentSets}{
 
-        construct start and goal positions for each agent. This process requires further thought/ research \textbf{better way to talk about this?}
+        construct start and goal positions for each agent,
 
         paths = parallelPlanner(startPositions, goalPositions, $e$) \tcp*{Parallel planner, solution to Problem~\ref{prob:sub1}}
 
@@ -529,15 +571,15 @@ This process is a wrapper around the previously implemented parallel planner des
 
   \Return{routes}
 
-\end{algorithm}\todo{phrasing about s/e position calculation on alg~\ref{alg:mrp}}
+\end{algorithm}
 
 
-My approach vastly simplifies the problem of intersection navigation and linking the routes between road segments, essentially assuming all road segments are sections of a single long road which line up exactly. Papers such as ``Automated Optimization of Intersections Using a Genetic Algorithm'' by Cruz-Piris et al.\cite{cruz-pirisAutomatedOptimizationIntersections2019} begin to tackle this problem through the use of cellular automata (building on the work of Maerivoet and De Moor\cite{maerivoetCellularAutomataModels2005}\todo[inline]{necessary?}
+My approach vastly simplifies the problem of intersection navigation and linking the routes between road segments, essentially assuming all road segments are sections of a single long road which line up exactly. Papers such as ``Automated Optimization of Intersections Using a Genetic Algorithm'' by Cruz-Piris et al.\cite{cruz-pirisAutomatedOptimizationIntersections2019} begin to tackle this problem through the use of cellular automata (building on the work of Maerivoet and De Moor\cite{maerivoetCellularAutomataModels2005}
 ) and GAs (See Section~\ref{subsec:lit_rev-GACoopRoutes}) but substantial work would be required to link our two systems together.
 
 
 
-\section{Language Choice}\todo[inline]{decide whether to remove this, I am thinking yes but last para is interesting, maybe move to evaluation}
+\section{Language Choice}
 
 I have chosen to implement my approach using the Julia language project\cite{JuliaProgrammingLanguage}.
 
@@ -547,7 +589,7 @@ Julia operates using multiple dispatch similar to languages such as Haskell. It 
 
 Julia features a syntax similar to both Python and Matlab with performance on par with C. As I am already very familiar with python and have studied functional programming in a number of modules; I found this language very quick and intuitive to learn and the resulting code to be clean, idiomatic and fast.
 
-\todo{revise this para}A real-world deployment of a system based on my research would undoubtedly be required to run on small, relatively low performance, embedded systems and as such Julia may not be appropriate here. A language such as C or Rust may be used instead.
+A real-world deployment of a system based on my research would undoubtedly be required to run on small, relatively low performance, embedded systems and as such Julia may not be appropriate here. A language such as C or Rust may be used instead.
 
 Julia also has distributed computation facilities. This sort of functionality could be extremely useful in a system such as mine as it could allow for computation to be spread across the agents themselves, removing the need for a central planning centre which could be a single point of failure.
 

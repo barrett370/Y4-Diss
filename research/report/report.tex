@@ -1,4 +1,4 @@
-\documentclass[a4paper,12pt]{report}
+\documentclass[a4paper,11pt]{report}
 \usepackage[T2A]{fontenc}
 \usepackage[utf8]{inputenc}
 \usepackage[main=english,russian]{babel}
@@ -77,13 +77,12 @@
 
 \begin{document}
 \maketitle
-\listoftodos
-
-\todo[inline]{check onenote notebook for general ideas about discussion topics etc.}
-\chapter*{Abstract}\label{chap:Abs}
+%\listoftodos
+% TC:ignore
 \input{abstract.tex}
 \tableofcontents
 \listoffigures
+%TC:endignore
 \chapter{Introduction}\label{chap:Intro}
 \input{introduction.tex}
 \chapter{Background}\label{chap:Background}
