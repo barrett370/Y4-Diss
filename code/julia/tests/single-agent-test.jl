@@ -38,8 +38,8 @@ function plot_benchmarks(benches, sf=true,zlims=nothing)
     )
 
     p = PlotlyJS.plot(surf, layout)
-    #[p, PlotlyJS.plot(surf2, layout2)]
-    p
+    [p, PlotlyJS.plot(surf2, layout2)]
+    #p
 end
 
 function test_gensPopsize(n=20, n_gens=10; road_difficulty=1,samples=5)

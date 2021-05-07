@@ -28,7 +28,7 @@ In this 2004 paper Elshamli et al. propose a Genetic Algorithm Planner (GAP) whi
 
 The smoothness metric is based on the angles between the edges as they connect at a node.
 
-They do not provide concrete evaluations for their implementation but seem to focus on the notion of \textit{dynamic} search spaces and which of their approaches handle these best. They define their dynamic search spaces as spaces in which obstacles are added during generation, for example, after the first generation. Their proposed solutions to this are as follows:
+They do not provide concrete evaluations for their implementation but seem to focus on the notion of \textit{dynamic} search spaces and which of their approaches handle these best. They define their dynamic search spaces as spaces in which obstacles are added during route planning, for example, after the first generation. Their proposed solutions to this are as follows:
 
 \begin{itemize}
   \item Utilise high mutation rate of 50\% and a low crossover rate of 50\%
@@ -64,7 +64,7 @@ In this 2018 paper an interesting proposition was made, greatly increasing effic
 
 \paragraph{Chen et al. - Quartic Bézier Curve based Trajectory Generation for Autonomous Vehicles with Curvature and Velocity Constraints}
 
-In this 2014 paper, Chen et. al research the efficacy of quartic (4-degree) Bézier curves for planning continuous routes between points for autonomous vehicles. In order to find an optimal solution they employ sequential quadratic programming.
+In this 2014 paper, Chen et al. research the efficacy of quartic (4-degree) Bézier curves for planning continuous routes between points for autonomous vehicles. In order to find an optimal solution they employ sequential quadratic programming.
 
 In their approach Chen et al. also take into account the orientation, change in orientation and velocity of the routes generated in order to assure all generated routes are \textit{safe} for occupied vehicles to follow.
 

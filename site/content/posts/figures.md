@@ -6,7 +6,7 @@ draft: false
 
 ## Index of interactive figures for my dissertation report
 
-- [Figure 5.1](https://barrett370.github.io/Y4-Diss/single-agent-result-1404-col) Single agent planning: number of generations against size of population against planning time (left), fitness (right), _easy_ road space
+- [Figure 5.1](https://barrett370.github.io/Y4-Diss/single-agent-result-diff1) Single agent planning: number of generations against size of population against planning time (left), fitness (right), _easy_ road space
 - [Figure 5.2](https://barrett370.github.io/Y4-Diss/single-agent-result-diff2) Single agent planning: number of generations against size of population against planning time (left) /s, fitness (right), over _moderately difficult_ road space
 - [Figure 5.3](https://barrett370.github.io/Y4-Diss/single-agent-result-diff3) Single agent planning: number of generations against size of population against planning time (left) /s, fitness (right), over _moderately difficult_ road space
 - [Figure 5.4](https://barrett370.github.io/Y4-Diss/single-agent-result-diff4) Single agent planning: number of generations against size of population against planning time (left) /s, fitness (right), over _difficult_ road space

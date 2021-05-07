@@ -171,7 +171,9 @@ The abstract goal of each genetic operator has already been discussed in Section
 \subsubsection{Selection}
 \label{subsec:approach:selection}
 
-My selection procedure follows very closely to the method outlined in Section~\ref{subsec:GAOps}, relying on the fitness function to duplicate fit individuals, replacing the less fit ones with a certain chance or reasoning.
+My selection procedures follow very closely to the methods outlined in Section~\ref{subsec:GAOps}, relying on the fitness function to duplicate fit individuals, replacing the less fit ones with a certain chance or reasoning.
+
+I implemented both ranked and fitness-proportional (roulette-wheel) selection.
 
 An example of ranked selection on a sample population can be seen in Figure~\ref{fig:selection_eg}
 
@@ -293,13 +295,14 @@ This approach was inspired by that of Cai \& Peng\cite{caiCooperativeCoevolution
 
 \begin{figure}
   \centering
-\begin{tikzpicture}
-  \node[] (V) {$\{ a_{1}, a_{2}, \ldots, a_{n} \} $};
+  \begin{tikzpicture}
+    \node[] (in) {$\{ a_{1}, a_{2}, \ldots, a_{n} \} $};
+  \node[draw, rectangle, right = 1.5cm of in] (V) {$\texttt{PCCGA}$};
 
-  \node[draw, rectangle, above right= of V] (ga1) {$\texttt{GA}(a_{1})$};
-  \node[draw, rectangle, below = of ga1] (ga2) {$\texttt{GA}(a_{2})$};
+  \node[draw, rectangle, above right= of V] (ga1) {$\texttt{PCCGA}(a_{1})$};
+  \node[draw, rectangle, below = of ga1] (ga2) {$\texttt{PCCGA}(a_{2})$};
   \node[below = of ga2] (gael) {$\vdots$};
-  \node[draw, rectangle, below = of gael] (gan) {$\texttt{GA}(a_{n})$};
+  \node[draw, rectangle, below = of gael] (gan) {$\texttt{PCCGA}(a_{n})$};
 
   \coordinate[right = 0.12of ga1.east] (rGA1);
   \coordinate[right = 0.2cm of rGA1] (rrGA1);
@@ -311,6 +314,7 @@ This approach was inspired by that of Cai \& Peng\cite{caiCooperativeCoevolution
   \node[draw=black, fit=(rGA1) (rGAn), label={[rotate=-90]center:\tiny Shared Array}]  {};
   \node[draw=red, fit=(ga1) (gan) (rrGA1)]  {};
 
+  \draw[->] (in) -> (V);
   \draw[->] (V) -> (ga1);
   \draw[->] (V) -> (ga2);
   \draw[->] (V) -> (gael);
@@ -368,11 +372,11 @@ In order to speedup my Bézier intersection function I implemented a number of t
 
 \end{enumerate}
 
-My method keeps track of the divisions made and using this keeps track of the $t$ value which maps $P_{n}$ from the subcurve to the initial curve. The values of $t$ are then returned if a intersection is found, this allows for the distances from the origin points to the point of intersection to be easily calculated using De Casteljau's algorithm along with my function for finding the length of a Bézier curve.
+My method keeps track of the divisions made and using this keeps track of the $t$ value which maps $P_{n}$ from the subcurve to the initial curve. The values of $t$ are then returned if an intersection is found, this allows for the distances from the origin points to the point of intersection to be easily calculated using De Casteljau's algorithm along with my function for finding the length of a Bézier curve.
 
 Upon each recursion, the diameter of the control points of both curves is calculated, if it is below a threshold $\varepsilon$, true is returned along with the estimated $t$ values for each of the curves. Otherwise, unless any of the previously stated early termination criteria are met, the curve with the largest diameter is subdivided and two new threaded tasks are spawned with the lazy disjunction of their result returned.
 
-An illustration of the recursive subdivision method described above can be seen in Figure~\ref{fig:bezIntIllustration}
+An illustration of the recursive subdivision method described above can be seen in Figure~\ref{fig:bezIntIllustration}, though due to diagrammatic constraints, a low recursion depth was used, leading to a balanced binary tree, rather than showing \textit{dead} leaves where intersection possibility has been ruled out.
 
 \begin{figure}
 \begin{turn}{90}
@@ -521,7 +525,7 @@ Initialise map of roads, \texttt{roads}
   \KwRet{roads}\tcp*{A map of edges to a list of lists of routes sharing that edge at the same time.}
 \end{algorithm}
 
-Once these grouping have been constructed, the next stage is to plan the low-level curves representing the paths each agent must take through each road segment, avoiding any agents it shares a given road segment with.
+Once these groupings have been constructed, the next stage is to plan the low-level curves representing the paths each agent must take through each road segment, avoiding any agents it shares a given road segment with.
 
 \subsection{Multi-agent route generation}
 

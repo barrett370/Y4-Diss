@@ -21,13 +21,17 @@ In a single generation, over three populations of 15 individuals, my ranked sele
 
 As you can see in Figure~\ref{fig:selection_eg}, my ranked selection operator performs its task well, removing the obviously less fit individuals in favour of more copies of  fitter ones. This can be seen by the removal of the line that dips below the $x$ axis (in this example the bottom road boundary was defined as $b_{1}(x) = 0 $) and the fact that duplicate routes are found as indicated by the 3rd graph of unique routes showing fewer individuals than the second.
 
-Ranked selection compared with fitness proportional (roulette wheel selection) is much more predictable, it may not explore as much of the search space but it is more likely to thoroughly explore a single area. Most other selection operators seem to focus on maintaining a diverse population so as to not get stuck in local minima.
+Ranked selection compared with fitness proportional (roulette wheel selection) is much more predictable. However, fitness proportional selection may not explore as much of the search space but it is more likely to thoroughly explore a single area. Most other selection operators seem to focus on maintaining a diverse population so as to not get stuck in local minima.
+
+Ranked selection performs best when the fitness of the population is not very diverse. As such performs best in easier situations or in later generations.
+
+It may be possible to implement one of the most advanced hybrid approaches in which the manner in which selection occurs changes as the number of generations increases.
 
 \subsubsection{Mutation}
 
 The mutation operators I implemented were Uniform and Gaussian.
 
-I found Gaussian to perform better in cases where a route may be close to optimal in the phenotypic space, i.e. with minimal changes to trajectory, it would be optimal. In such cases the genotypic fitness may not accurately represent this, a route that collides with another or passes through infeasible space will suffer from a large genotypic fitness penalty possibly encouraging it to be removed from the \textit{gene pool}. Gaussian mutation, preferring mutated points closer to their initial position can be effective as moving such routes closer to the optima.
+I found Gaussian to perform better in cases where a route may be close to optimal in the phenotypic space, i.e. with minimal changes to trajectory, it would be optimal. In such cases the genotypic fitness may not accurately represent this, a route that collides with another or passes through infeasible space will suffer from a large genotypic fitness penalty possibly encouraging it to be removed from the \textit{gene pool}. Gaussian mutation, preferring mutated points closer to their initial position can be effective as moving such routes closer to an optima.
 
 However, in cases where the initial population generation has created all routes far from the optimal, Gaussian mutation can struggle to generate mutated points extreme enough to direct the GA towards the minima.
 
@@ -37,7 +41,7 @@ An example of a relatively large control point mutation leading to a minor direc
 
 It is possible that an approach incorporating a form of Simulated Annealing could help to broadly explore the search space in early generations before refining solutions in a found minima in latter generations. This could operate by applying a different mutation operator such as Uniform mutation in the first 60\% of generations before swapping to Gaussian when we would expect our algorithms to have found some local minima.
 
-In a single generation, over the same 3 sets of 15 individuals, my Gaussian mutation operator ran 3 times totalling $1.71 ms$ runtime, an average of $571\mu s$. This is an insignificant amount of time when compared to the overall runtime of this task which stands at $14.4$.
+In a single generation, over the same 3 sets of 15 individuals, my Gaussian mutation operator ran 3 times totalling $1.71 ms$ runtime, an average of $571\mu s$. This is an insignificant amount of time when compared to the overall runtime of this task which stands at $14.4s$.
 
 \subsubsection{Crossover}
 
@@ -110,7 +114,7 @@ The majority of the components of my single agent planning system have been eval
 
 \begin{figure}[ht]
   \centering
-  \includegraphics[scale=0.14]{figures/sa-1404-col.png}
+  \includegraphics[scale=0.14]{figures/sa-diff1.png}
   \caption{\label{fig:sa-col} Single agent planning: number of generations against size of population against planning time (left), fitness (right), over \textit{easy} road space (Figure~\ref{subfig:sa-road1})}
 \end{figure}
 
@@ -183,7 +187,7 @@ The majority of the components of my single agent planning system have been eval
 \end{figure}
 
 
-In general, I feel that my single agent planner performs well\footnote{\textbf{Note:} all data used in creating the figures referenced in this section can be found in the \textit{sa-all-data.csv} file included with this report }. In a road space such as the one shown in Figure~\ref{subfig:sa-road1} my algorithm converges to within 10\% of the fitness of a direct line between the start and goal point within 2 generations over 4 individuals as seen in Figure~\ref{fig:sa-col}.
+In general, I feel that my single agent planner performs well\footnote{\textbf{Note:} all data used in creating the figures referenced in this section can be found in the \textit{sa-all-data.csv} file included with this report }. In a road space such as the one shown in Figure~\ref{subfig:sa-road1} my algorithm converges to within 10\% of the fitness of a direct line between the start and goal point within 2 generations over 3 individuals as seen in Figure~\ref{fig:sa-col}.
 
 As the road space complexity increases (See Figures~\ref{subfig:sa-road2},\ref{subfig:sa-road3}), the speed at which my algorithm convergence is reduced.
 
@@ -256,7 +260,7 @@ Planning time again is seen to trend upwards proportionally with (number of gene
 
 When varying the number of agents being concurrently planned for we can see that the planning time steadily increases with each new agent added. In Figure~\ref{fig:ma-vary-a-surf} where the planning time surfaces of runs using 1,2,3 and 4 different agents through the road seen in Figure~\ref{subfig:sa-road1}, the surfaces are shown to layer in order of number of agents, this can be more easily seen in Figure~\ref{fig:ma-vary-a}, in which the average planning time across all generation-population size variations is averaged for each number of concurrently planned agents in the range 1 to 4.
 
-Figure~\ref{fig:ma-vary-a} shows a trend very close to directly proportional, especially when one considers the amount of extra factors which could be affecting the planning time (system load, randomly generated initial populations, random chances for operator to apply and random extents to which they apply). Each data point in Figure~\ref{fig:ma-vary-a} is the average of 2250 results, this may suggest that at such high sample rates, the (pseudo) random nature of GAs can be ignored. The trend seems to follow the line $y = 11.2x - 8.6$, implying an additional 11.2 seconds of computation for each added agent. It is difficult to verify this as there are so many subcomponents with varying complexities tied to the number of agents, however, this linear trend is promising as it suggests steady growth in runtime as agents are added rather than a less manageable exponential or even \textbf{NP} time complexity.
+Figure~\ref{fig:ma-vary-a} shows a trend very close to linearly proportional, especially when one considers the amount of extra factors which could be affecting the planning time (system load, randomly generated initial populations, random chances for operator to apply and random extents to which they apply). Each data point in Figure~\ref{fig:ma-vary-a} is the average of 2250 results, this may suggest that at such high sample rates, the (pseudo) random nature of GAs can be thought to \textit{average out} . The trend seems to follow the line $y = 11.2x - 8.6$, implying an additional 11.2 seconds of computation for each added agent. It is difficult to verify this as there are so many subcomponents with varying complexities tied to the number of agents, however, this linear trend is promising as it suggests steady growth in runtime as agents are added rather than a less manageable exponential or even \textbf{NP} time complexity.
 
 As previously mentioned one of the key improvements I made to my initial approach to reduce planning time was re-writing it to take advantage of multiple cores, before this I wrote it to run asynchronously, taking full advantage of the single thread on which it ran. In Table~\ref{tab:PCGA-speedup} you can see a marked difference in average runtime over these different approaches. The average runtime of my final, parallel cooperative coevolutionary genetic algorithm (PCCGA), approach being around 2.6 times faster, when run over the 16-threads of the same CPU with the same 3 agent, single generation, 15 population toy example evaluated earlier.
 
@@ -457,6 +461,23 @@ In total my codebase consists of around 2000 lines of Julia, a full breakdown ca
 The areas which required the most work were the Bézier intersection procedure, parallelising the cooperative planner, designing the path grouping procedure for the macro level planner and creating the multitude of utility functions for plotting and otherwise visualising the results of the GA(s).
 
 The main body of my GA resembles the shape of the generic genetic algorithm seen in Algorithm~\ref{alg:GenericGA}, and can be seen in Figure~\ref{fig:core-ga}.
+
+The key files of interest in my codebase are:
+
+\begin{itemize}
+  \item \texttt{GA.jl} This file contains the main body of both my single agent planner (GA), and my cooperative, sequential planner (CGA)
+  \item \texttt{bezier.jl} This file contains my Bézier curve definition and all attributed methods such as bezier intersection (bezInt)
+  \item \texttt{GAUtils.jl} this file contains various helper methods used throughout the GA
+  \item \texttt{utils.jl}  more miscellaneous helper functions
+  \item \texttt{geneticOperators.jl} this file contains the procedures for all of the genetic operators detailed in the above sections.
+  \item \texttt{roadNetwork.jl} this file contains the definition of my road network graph, including helper functions for conversion between graphing formats
+  \item \texttt{parallelCGA.jl} this contains the body of my PCCGA, (PCGA) along with multiple helper functions and testing infrastructure
+  \item \texttt{plottingUtils.jl} this file contains a multitude of plotting and graphing utilities, used to produce the figures seen throughout this paper
+  \item \texttt{ftbezier.jl} this file contains the versions of the functions found in \texttt{bezier.jl} written to utilise the libbezier fortran library mentioned earlier.
+  \item \texttt{parallelPlanner.jl} this contains the procedures for my macro-level planning, including implementations of Algorithms~\ref{alg:pathgrouping} and ~\ref{alg:mrp}.
+  \item \texttt{tests/single-agent-test.jl} this file contains the methods used to collect and visualise the data seen regarding my single agent GA.
+  \item \texttt{tests/multi-agent-test.jl} this file contains the methods used to collect and visualise the data seen regarding my PCCGA.
+\end{itemize}
 
 
 \begin{figure}[ht]

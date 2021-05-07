@@ -10,7 +10,7 @@ Alternatively, you can install ~vagrant~ and run:
 #+begin_src bash
 vagrant up
 vagrant ssh
-cd code
+cd /vagrant/code/julia
 #+end_src
 
 This will create a local VM with all dependencies (minus julia libs) pre-installed
@@ -46,7 +46,7 @@ Pkg.activate("./base-env/")
 Pkg.instantiate()
 #+end_src
 
-*Note: you may be forced to run instantiate twice, if the first pass fails**
+*Note: you may be forced to run instantiate twice, if the first pass fails. Some may fail to install inside vagrant, this is fine**
 
 or
 
