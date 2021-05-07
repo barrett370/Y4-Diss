@@ -93,3 +93,8 @@ include("src/plottingUtils.jl")
 rg = draw_road(road,0,25)
 plotGeneration(rg,P,road)
     #+end_src
+** Running Macro-agent planner
+   #+begin_src julia
+   include("src/quickstart.jl")
+   routes = planRoutes(desired_routes,rn)
+   #+end_src 

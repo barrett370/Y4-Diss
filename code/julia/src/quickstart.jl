@@ -1,6 +1,9 @@
 include("roadNetwork.jl")
 using TimerOutputs
 include("parallelCGA.jl")
+include("parallelPlanner.jl")
+include("demoRoadNetwork.jl")
+
 global CACHE = true
 global BEZPLOT=false
 global TIMEIT=false
@@ -24,3 +27,9 @@ road = Road(
 
 starts = [Point(0,2),Point(0,6), Point(0,1)]
 goals =  [Point(15,6.8),Point(15.1,4),Point(12,10)]
+desired_paths = [
+           (1,4),
+           (4,2),
+           (1,4),
+           (3,5)
+       ]

@@ -135,7 +135,7 @@ function bezInt(B1::BezierCurve, B2::BezierCurve, rdepth::Int, rdepth_max, c=[])
 		end
         return (false, (-1, -1))
     end
-    ε = 0.5 # TODO tune param
+    ε = 1    # TODO tune param
     toLuxPoints = b -> map(p -> lx.Point(p[1], p[2]), b)
     if length(B1) < 2 || length(B2) < 2
         @error "error not enough control points"
